@@ -1,0 +1,59 @@
+distancia al fantasma más cercano comestible(path) 		P
+distancia al fantasma más cercano no comestible(path) 	I
+distancia a la pill más cercan							P
+distancia a la ppill más cercana						I
+numero de pills/ppills activas							P
+
+Puntuaciones:
+ - Acercarse al fantasma mal: -1/x	tq x = distanciaFantasma
+ + Acercarse al fantasma bien: 1/x	tq x = distanciaFantasma
+ + Acercarse a ppill: distMax - x		tq x = distanciaFantasma
+ + Acercarse a pill: (maxPills - numPills)^2
+ 
+ 
+nextMove() {											I
+	int maxScore, maxIdx = 0;
+	moves = movimientosPosibles()
+	if (moves.size() > 1)
+		for (m : moves)
+			int score = calcScore(...)
+			if (score > maxScore)
+				...
+				
+	return moves[maxIdx]
+}
+
+
+calcScore(pos, move) {									P
+	newPos = ...
+	int score = scoreDistFantasma()
+	score += scorePPill()
+	score += scorePill()
+	
+	return score
+}
+
+scoreDistFantasma(pos, newPos){							I
+	bool edible = ...
+	double scoreBien = -1/(distComestible(pos)*k1) + 1/(distComestible(newPos)*k1)
+	double scoreMal = 1/(distNoComestible(pos)*k2) - 1/(distNoComestible(newPos)*k2)
+	
+	return scoreBien + scoreMal
+}
+
+scorePPill(pos, newPos) {								P
+	if (numPPills = 0)
+		return 0
+
+	double distFantasma = distMax - distNoComestible(pos)
+	double distPPill = distPPill(pos) - distPPill(newPos)
+	
+	return distFantasma * distPPill / k3
+}
+
+scorePill(pos, newPos) {								I
+	numPills = numPillsActivas()
+	double scoreBien =  distPPill(pos) - distPPill(newPos)
+
+	return (maxPills - numPills)^2 * scoreBien / k4
+}
