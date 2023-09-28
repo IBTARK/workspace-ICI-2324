@@ -3,6 +3,7 @@ package es.ucm.fdi.ici.c2324.practica1.grupoYY;
 import java.util.EnumMap;
 
 import pacman.controllers.GhostController;
+import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
@@ -12,10 +13,10 @@ public final class Ghosts extends GhostController {
 
     @Override
     public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue) {
-        moves.clear();
-        for (GHOST ghost : GHOST.values()) {
-            if (game.doesGhostRequireAction(ghost)) {
-                moves.put(ghost, MOVE.NEUTRAL);
+    	moves.clear();
+        for (GHOST ghostType : GHOST.values()) {
+            if (game.doesGhostRequireAction(ghostType)) {
+                moves.put(ghostType, game.getApproximateNextMoveTowardsTarget(game.getGhostCurrentNodeIndex(ghostType), game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(ghostType), DM.PATH));
             }
         }
         return moves;
