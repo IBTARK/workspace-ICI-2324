@@ -30,12 +30,12 @@ public class MsPacMan extends PacmanController{
     	if (possibleMoves.length > 1) {
     		double maxScore = Double.MIN_VALUE, newScore; 
     		MOVE bestMove = null;
-    		ArrayList<Double> bestScores = null;
+    		ArrayList<String> bestScores = new ArrayList<>();
     		
     		//The best movement of the ones possible is selected
     		for(MOVE m : possibleMoves) {
-    			ArrayList<Double> newScores = calcScore(pos, m);
-    			newScore = newScores.get(0);
+    			ArrayList<String> newScores = calcScore(pos, m);
+    			newScore = Double.parseDouble(newScores.get(0));
     			//If the actual movement is better, is saved as the best one until this moment
     			if(newScore > maxScore) {
     				maxScore = newScore;
@@ -44,7 +44,7 @@ public class MsPacMan extends PacmanController{
     			}
     		}
     		
-    		System.out.println(bestScores);
+    		System.out.println("Chosen move: " + bestMove + "   Scores: " + bestScores.toString());
     		
     		return bestMove;
     	}
@@ -53,55 +53,68 @@ public class MsPacMan extends PacmanController{
         return possibleMoves[0];
     }
     
-    private ArrayList<Double> calcScore(int pos, MOVE move) {
+    private ArrayList<String> calcScore(int pos, MOVE move) {
     	int newPos = game.getNeighbour(pos, move);
     	
-    	double scoreGhost = scoreDistGhost(pos, newPos, move);
+    	ArrayList<Double> scoreGhost = scoreDistGhost(pos, newPos, move);
     	double scorePPill = scorePPill(pos, newPos, move);
     	double scorePill = scorePill(pos, newPos, move);
-    	double score = scoreGhost + scorePPill + scorePill;
+    	double score = scoreGhost.get(0) + scorePPill + scorePill;
     	
-    	ArrayList<Double> scoreList = new ArrayList<Double>();
+    	ArrayList<String> scoreList = new ArrayList<String>();
     	
-    	scoreList.add(score);
-    	scoreList.add(scoreGhost);
-    	scoreList.add(scorePPill);
-    	scoreList.add(scorePill);
+    	scoreList.add(Double.toString(score));
+    	scoreList.add("Edible Ghost score: " + Double.toString(scoreGhost.get(1)));
+    	scoreList.add("Chasing Ghost score: " + Double.toString(scoreGhost.get(2)));
+    	scoreList.add("Other Chasing Ghosts score: " + Double.toString(scoreGhost.get(3)));
+    	scoreList.add("Power pill score: " + Double.toString(scorePPill));
+    	scoreList.add("Pill score: " + Double.toString(scorePill));
     	
     	return scoreList;
     }
     
-    private double scoreDistGhost(int pos, int newPos, MOVE m) {
-    	double score = 0;
+    private ArrayList<Double> scoreDistGhost(int pos, int newPos, MOVE m) {
+    	double score = 0, score0 = 0;
     	GHOST nearestEdible = getNearestEdibleGhost((int) distMax), nearestChasing = getNearestChasingGhost();
+    	ArrayList<Double> ghostScores = new ArrayList<Double>();
     	
     	//If there is an edible ghost and the remaining edible time is superior than 10 ticks
     	if(nearestEdible != null && game.getGhostEdibleTime(nearestEdible) > 20) {
     		//Score associated to the nearest edible ghost
-    		score = -k1 / game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearestEdible), game.getPacmanLastMoveMade());
-    		score += k1 / game.getShortestPathDistance(newPos, game.getGhostCurrentNodeIndex(nearestEdible));
+    		score0 = -k1 / game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearestEdible), game.getPacmanLastMoveMade());
+    		score0 += k1 / game.getShortestPathDistance(newPos, game.getGhostCurrentNodeIndex(nearestEdible));
     	}
+    	
+    	score += score0;
+    	
+    	double score1 = 0, score2 = 0;
     	
     	//If there is a chasing ghost
     	if(nearestChasing != null) {
     		//Score associated to the nearest chasing ghost
-    		score +=  k2 / game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearestChasing));
-    		score += -k2 / game.getShortestPathDistance(newPos, game.getGhostCurrentNodeIndex(nearestChasing));
+    		score1 +=  k2 / game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearestChasing));
+    		score1 += -k2 / game.getShortestPathDistance(newPos, game.getGhostCurrentNodeIndex(nearestChasing));
     		
-
+    		score += score1;
     		
 			for (GHOST g : GHOST.values()) {
 				int ghostNode = game.getGhostCurrentNodeIndex(g); 
 				
 				if (!game.isGhostEdible(g) && ghostNode < game.getNumberOfNodes() - 1){
-					score +=  k5 / game.getShortestPathDistance(pos, ghostNode, game.getPacmanLastMoveMade());
-		    		score += -k5 / game.getShortestPathDistance(newPos, ghostNode, game.getPacmanLastMoveMade());	
+					score2 +=  k5 / game.getShortestPathDistance(pos, ghostNode, game.getPacmanLastMoveMade());
+		    		score2 += -k5 / game.getShortestPathDistance(newPos, ghostNode, game.getPacmanLastMoveMade());	
 				}
 			}
-				
+			
+			score += score2;	
 		}
     	
-    	return score;
+    	ghostScores.add(score);
+    	ghostScores.add(score0);
+    	ghostScores.add(score1);
+    	ghostScores.add(score2);
+    	
+    	return ghostScores;
     }
     
     private double scorePPill(int pos, int newPos, MOVE m) {
