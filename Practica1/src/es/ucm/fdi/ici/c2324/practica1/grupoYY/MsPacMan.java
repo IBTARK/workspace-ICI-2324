@@ -2,59 +2,67 @@ package es.ucm.fdi.ici.c2324.practica1.grupoYY;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 import pacman.controllers.PacmanController;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
-import pacman.game.Constants;
 import pacman.game.Game;
 
 public class MsPacMan extends PacmanController{
 	
 	private Game game;
 	private double distMax;
-	private double k1 = 900.0; //Constant of edible ghost (0-1800)
-	private double k2 = 1800.0; //Constant of nearest chasing ghost (0-1800)
-	private double k3 = 100.0; //Constant of power pills (0-300)
-	private double k4 = 1.0/90.0; //Constant of pills (0-1/3)
-	private double k5 = 0;   //Constant of other chasing ghosts (0-1800/3)
+	private static final double RAND_LIM = 1;
+	private static final double k1 = 9000.0; //Constant of edible ghost (0-1800)
+	private static final double k2 = 18000.0; //Constant of nearest chasing ghost (0-1800)
+	private static final double k3 = 0; //Constant of power pills (0-300)
+	private static final double k4 = 1.0/100; //Constant of pills (0-1/3)
+	private static final double k5 = 6000.0;   //Constant of other chasing ghosts (0-1800/3)
 
     @Override
     public MOVE getMove(Game game, long timeDue) {
     	this.game = game;
     	distMax = Math.sqrt(2 * game.getNumberOfNodes());
-
-		int[] pps = game.getPowerPillIndices();
-		System.out.println(game.getShortestPathDistance(pps[0], pps[1]));
-		System.out.println(game.getShortestPathDistance(pps[0], pps[2]));
-		System.out.println(game.getShortestPathDistance(pps[0], pps[3]));
     	
     	int pos = game.getPacmanCurrentNodeIndex(); //MsPacMans position 
     	MOVE[] possibleMoves = game.getPossibleMoves(pos, game.getPacmanLastMoveMade()); //Possible moves of MsPacMan
     	
-    	System.out.println("Possible movements: " + new ArrayList(Arrays.asList(possibleMoves)) + "\n\n");
+    	System.out.println("Possible movements: " + new ArrayList<>(Arrays.asList(possibleMoves)) + "\n\n");
     	
     	//If there is more than one possible movement
     	if (possibleMoves.length > 1) {
-    		double maxScore = Double.NEGATIVE_INFINITY, newScore; 
-    		MOVE bestMove = null;
-    		ArrayList<String> bestScores = new ArrayList<>();
+    		double newScore; 
+    		ArrayList<MOVE> bestMoves = new ArrayList<>();
+    		ArrayList<ArrayList<String>> bestScores = new ArrayList<>();
     		
     		//The best movement of the ones possible is selected
     		for(MOVE m : possibleMoves) {
     			ArrayList<String> newScores = calcScore(pos, m);
     			newScore = Double.parseDouble(newScores.get(0));
     			//If the actual movement is better, is saved as the best one until this moment
-    			if(newScore > maxScore) {
-    				maxScore = newScore;
-    				bestScores = newScores;
-    				bestMove = m;
+    			if(bestMoves.isEmpty()) {
+    				bestMoves.add(m);
+    				bestScores.add(newScores);
+    			}
+    			else if (newScore + RAND_LIM >= Double.parseDouble(bestScores.get(0).get(0))) {
+    				if (newScore - RAND_LIM > Double.parseDouble(bestScores.get(bestScores.size()-1).get(0))) {
+    					bestScores.clear();
+    					bestMoves.clear();
+    				}
+    				else if (newScore - RAND_LIM > Double.parseDouble(bestScores.get(0).get(0))) {
+    					bestScores.remove(0);
+    					bestMoves.remove(0);
+    				}
+    				bestScores.add(newScores);
+    				bestMoves.add(m);
     			}
     		}
+    		int bestIdx = bestMoves.size() == 1 ? 0 : new Random().nextInt(bestMoves.size());
     		
-    		System.out.println("Chosen move: " + bestMove + "   Scores: " + bestScores.toString() + "\n\n\n");
+    		System.out.println("Chosen move: " + bestMoves.get(bestIdx) + "   Scores: " + bestScores.get(bestIdx).toString() + "\n\n\n");
     		
-    		return bestMove;
+    		return bestMoves.get(bestIdx);
     	}
     	
     	
@@ -94,10 +102,10 @@ public class MsPacMan extends PacmanController{
     		int dist1 = game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearestEdible), game.getPacmanLastMoveMade());
     		int dist2 = game.getShortestPathDistance(newPos, game.getGhostCurrentNodeIndex(nearestEdible), m);
     		//Score associated to the nearest edible ghost
-    		score0 = -k1 / (dist1 > 0 ? dist1 : 0.1);
-    		score0 += k1 / (dist2 > 0 ? dist2 : 0.1);
+    		score0 = -k1 / (dist1 +10);
+    		score0 += k1 / (dist2 +10);
     		
-    		System.out.println("Dist neares edible pos: " +  dist1 + " Dist nearest edible newPos: " + dist2);
+    		System.out.println("Dist nearest edible pos: " +  dist1 + " Dist nearest edible newPos: " + dist2);
     	}
     	
     	score += score0;
@@ -109,12 +117,12 @@ public class MsPacMan extends PacmanController{
     		int dist3 = game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearestChasing));
     		int dist4 = game.getShortestPathDistance(newPos, game.getGhostCurrentNodeIndex(nearestChasing));
     		//Score associated to the nearest chasing ghost
-    		score1 +=  k2 / (dist3 > 0 ? dist3 : 0.1);
-    		score1 += -k2 / (dist4 > 0 ? dist4 : 0.1);
+    		score1 +=  k2 / (dist3 + 5);
+    		score1 += -k2 / (dist4 + 5);
     		
     		score += score1;
     		
-    		System.out.println("Dist neares chasing pos: " +  dist3 + " Dist nearest chasing newPos: " + dist4);
+    		System.out.println("Dist nearest chasing (" + nearestChasing + ") pos: " +  dist3 + " Dist nearest chasing newPos: " + dist4);
     		
     		//The rest of the chasing ghost are taken into consideration
 			for (GHOST g : GHOST.values()) {
@@ -122,10 +130,10 @@ public class MsPacMan extends PacmanController{
 				
 				//It the ghost is not the nearest chasing one and its edible and its not on the lair, is taken into consideration
 				if (g != nearestChasing && !game.isGhostEdible(g) && game.getGhostLairTime(g) <= 0){
-					int dist5 = game.getShortestPathDistance(pos, ghostNode, game.getPacmanLastMoveMade());
-					int dist6 = game.getShortestPathDistance(newPos, ghostNode, game.getPacmanLastMoveMade());
-					score2 +=  k5 / (dist5 > 0 ? dist5 : 0.1);
-		    		score2 += -k5 / (dist6 > 0 ? dist6 : 0.1);	
+					int dist5 = game.getShortestPathDistance(pos, ghostNode);
+					int dist6 = game.getShortestPathDistance(newPos, ghostNode);
+					score2 +=  k5 / (dist5 + 10);
+		    		score2 += -k5 / (dist6 + 10);	
 		    		
 		    		System.out.println("Dist chasing pos ghost " +  g + ": " + dist5 + " Dist chasing newPos ghost " + g + ": " + dist6);
 				}
@@ -179,8 +187,8 @@ public class MsPacMan extends PacmanController{
     	}
     	
     	//The fewer remaining pills there are more important it is to take them
-		double score = ((game.getNumberOfPills() - game.getNumberOfActivePills()) ^ 2) * distPill * k4;
-    	return Math.max(score, -20);
+		double score = (game.getNumberOfPills() - game.getNumberOfActivePills()) * distPill * k4;
+    	return Math.max(score, 0);
     }
 	
     //Get the nearest chasing ghost
@@ -190,7 +198,7 @@ public class MsPacMan extends PacmanController{
 		for (GHOST g : GHOST.values()) {
 			//Only those that are not on the lair
 			if(game.getGhostLairTime(g) <= 0) {
-				double dist = game.getDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(g), Constants.DM.PATH);
+				double dist = game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(g));
 				if (dist < minDist && !game.isGhostEdible(g))
 					nearest = g;
 			}
@@ -203,7 +211,7 @@ public class MsPacMan extends PacmanController{
 		double minDist = limit + 1;
 		GHOST nearest = null;
 		for (GHOST g : GHOST.values()) {
-			double dist = game.getDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(g), Constants.DM.PATH);
+			double dist = game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(g));
 			if (dist < minDist && game.isGhostEdible(g))
 				nearest = g;
 		}

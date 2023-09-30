@@ -144,7 +144,7 @@ public class Executor {
         }
 
         public Executor build() {
-        	logInfo("MsPacMan Engine - Ingeniería de Comportamientos Inteligentes. Version "+Executor.VERSION);
+        	logInfo("MsPacMan Engine - Ingenierï¿½a de Comportamientos Inteligentes. Version "+Executor.VERSION);
             return new Executor(pacmanPO, ghostPO, ghostsMessage, messenger, scaleFactor, setDaemon, visuals, tickLimit, timeLimit, poType, sightLimit, peek, pacmanPOvisual, ghostsPOvisual);
         }
 
@@ -369,7 +369,7 @@ public class Executor {
         System.out.println(game.getScore());
         
         postcompute(pacManController, ghostController);
-        
+        gv.closeGame();
         return game.getScore();
     }
     
