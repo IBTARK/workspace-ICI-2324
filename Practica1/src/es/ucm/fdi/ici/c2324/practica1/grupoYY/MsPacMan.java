@@ -131,8 +131,11 @@ public class MsPacMan extends PacmanController{
     	
     	Integer nearestPPill = getNearestPowerPill();
 		//Score associated to the nearest power pill
-		int distPPill = (game.getShortestPathDistance(pos, nearestPPill, game.getPacmanLastMoveMade()) - (game.getShortestPathDistance(newPos, nearestPPill, m)));
-    	double score = (cercaniaFantasma < 10 ? 1 : -1) * distPPill * cercaniaFantasma * k3;
+    	int distPPill1 = game.getShortestPathDistance(pos, nearestPPill, game.getPacmanLastMoveMade());
+    	int distPPill2 = (game.getShortestPathDistance(newPos, nearestPPill, m));
+    	System.out.println("Dist Power Pill pos: " + distPPill1 + " Dist Power Pill newPos: " + distPPill2);
+		int distPPill = (distPPill1 - distPPill2);
+		double score = (cercaniaFantasma < 10 ? 1 : -1) * distPPill * cercaniaFantasma * k3;
     	return score;
     }
     
@@ -141,8 +144,12 @@ public class MsPacMan extends PacmanController{
     	Integer nearestPill = getNearestPill(), distPill = 0;
     	//If the are remaining power pills
     	if(nearestPill != null) {
+    		double distPill1 = game.getShortestPathDistance(pos, nearestPill, game.getPacmanLastMoveMade());
+    		double distPill2 = (game.getShortestPathDistance(newPos, nearestPill, m));
     		//Score associated to the nearest power pill
-    		distPill = (int) (game.getShortestPathDistance(pos, nearestPill, game.getPacmanLastMoveMade()) - (game.getShortestPathDistance(newPos, nearestPill, m)));
+    		distPill = (int) (distPill1 - distPill2);
+    		
+    		System.out.println("Dist Pill pos: " + distPill1 + " Dist Pill newPos: " + distPill2);
     	}
 		double score = ((game.getNumberOfPills() - game.getNumberOfActivePills()) ^ 2) * distPill * k4;
     	return score;
