@@ -14,9 +14,9 @@ public class MsPacMan extends PacmanController{
 	private Game game;
 	private double distMax;
 	private static final double RAND_LIM = 1;
-	private static final double k1 = 9000.0; //Constant of edible ghost (0-1800)
+	private static final double k1 = 18000.0; //Constant of edible ghost (0-1800)
 	private static final double k2 = 18000.0; //Constant of nearest chasing ghost (0-1800)
-	private static final double k3 = 0; //Constant of power pills (0-300)
+	private static final double k3 = 500; //Constant of power pills (0-300)
 	private static final double k4 = 1.0/100; //Constant of pills (0-1/3)
 	private static final double k5 = 6000.0;   //Constant of other chasing ghosts (0-1800/3)
 
@@ -98,7 +98,7 @@ public class MsPacMan extends PacmanController{
     	ArrayList<Double> ghostScores = new ArrayList<Double>();
     	
     	//If there is an edible ghost and the remaining edible time is superior than 10 ticks
-    	if(nearestEdible != null && game.getGhostEdibleTime(nearestEdible) > 20) {
+    	if(nearestEdible != null && game.getGhostEdibleTime(nearestEdible) > 17) {
     		int dist1 = game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearestEdible), game.getPacmanLastMoveMade());
     		int dist2 = game.getShortestPathDistance(newPos, game.getGhostCurrentNodeIndex(nearestEdible), m);
     		//Score associated to the nearest edible ghost
@@ -114,8 +114,8 @@ public class MsPacMan extends PacmanController{
     	
     	//If there is a chasing ghost
     	if(nearestChasing != null) {
-    		int dist3 = game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearestChasing));
-    		int dist4 = game.getShortestPathDistance(newPos, game.getGhostCurrentNodeIndex(nearestChasing));
+    		int dist3 = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(nearestChasing), pos);
+    		int dist4 = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(nearestChasing), newPos);
     		//Score associated to the nearest chasing ghost
     		score1 +=  k2 / (dist3 + 5);
     		score1 += -k2 / (dist4 + 5);
@@ -130,8 +130,8 @@ public class MsPacMan extends PacmanController{
 				
 				//It the ghost is not the nearest chasing one and its edible and its not on the lair, is taken into consideration
 				if (g != nearestChasing && !game.isGhostEdible(g) && game.getGhostLairTime(g) <= 0){
-					int dist5 = game.getShortestPathDistance(pos, ghostNode);
-					int dist6 = game.getShortestPathDistance(newPos, ghostNode);
+					int dist5 = game.getShortestPathDistance(ghostNode, pos);
+					int dist6 = game.getShortestPathDistance(ghostNode, newPos);
 					score2 +=  k5 / (dist5 + 10);
 		    		score2 += -k5 / (dist6 + 10);	
 		    		
@@ -157,7 +157,7 @@ public class MsPacMan extends PacmanController{
     	
     	double cercaniaFantasma;
     	try {
-	    	cercaniaFantasma = game.getManhattanDistance(pos, 
+	    	cercaniaFantasma = game.getShortestPathDistance(pos, 
 	    			game.getGhostCurrentNodeIndex(getNearestChasingGhost()));
     	} catch (NullPointerException e) {
     		return 0;
@@ -198,7 +198,7 @@ public class MsPacMan extends PacmanController{
 		for (GHOST g : GHOST.values()) {
 			//Only those that are not on the lair
 			if(game.getGhostLairTime(g) <= 0) {
-				double dist = game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(g));
+				double dist = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), game.getPacmanCurrentNodeIndex());
 				if (dist < minDist && !game.isGhostEdible(g))
 					nearest = g;
 			}
@@ -211,9 +211,11 @@ public class MsPacMan extends PacmanController{
 		double minDist = limit + 1;
 		GHOST nearest = null;
 		for (GHOST g : GHOST.values()) {
-			double dist = game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(g));
-			if (dist < minDist && game.isGhostEdible(g))
-				nearest = g;
+			if(game.getGhostLairTime(g) <= 0) {
+				double dist = game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(g), game.getPacmanLastMoveMade());
+				if (dist < minDist && game.isGhostEdible(g))
+					nearest = g;
+			}
 		}
 		return nearest;
 	}

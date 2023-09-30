@@ -18,7 +18,7 @@ public class ExecutorTest {
         
         while (true) 
         System.out.println( 
-            executor.runGame(pacMan, ghosts, 20) //last parameter defines speed
+            executor.runGame(pacMan, ghosts, 1) //last parameter defines speed
         );     
     }
 	
