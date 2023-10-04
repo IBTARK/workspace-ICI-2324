@@ -15,8 +15,8 @@ public class MsPacMan extends PacmanController{
 	private double distMax;
 	private static final double RAND_LIM = 1;
 	private static final double k1 = 18000.0; //Constant of edible ghost
-	private static final double k2 = 12000.0; //Constant of nearest chasing ghost
-	private static final double k3 = 800; //Constant of power pills
+	private static final double k2 = 14000.0; //Constant of nearest chasing ghost
+	private static final double k3 = 750; //Constant of power pills
 	private static final double k4 = 1.0/25; //Constant of pills
 	private static final double k5 = 10000.0;   //Constant of other chasing ghosts
 
