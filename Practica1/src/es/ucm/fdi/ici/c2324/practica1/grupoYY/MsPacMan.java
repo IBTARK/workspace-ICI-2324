@@ -14,11 +14,11 @@ public class MsPacMan extends PacmanController{
 	private Game game;
 	private double distMax;
 	private static final double RAND_LIM = 1;
-	private static final double k1 = 18000.0; //Constant of edible ghost (0-1800)
-	private static final double k2 = 18000.0; //Constant of nearest chasing ghost (0-1800)
-	private static final double k3 = 500; //Constant of power pills (0-300)
-	private static final double k4 = 1.0/100; //Constant of pills (0-1/3)
-	private static final double k5 = 6000.0;   //Constant of other chasing ghosts (0-1800/3)
+	private static final double k1 = 18000.0; //Constant of edible ghost
+	private static final double k2 = 12000.0; //Constant of nearest chasing ghost
+	private static final double k3 = 800; //Constant of power pills
+	private static final double k4 = 1.0/25; //Constant of pills
+	private static final double k5 = 10000.0;   //Constant of other chasing ghosts
 
     @Override
     public MOVE getMove(Game game, long timeDue) {

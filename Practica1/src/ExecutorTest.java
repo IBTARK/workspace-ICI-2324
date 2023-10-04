@@ -5,6 +5,8 @@ import pacman.controllers.GhostController;
 import pacman.controllers.PacmanController;
 
 public class ExecutorTest {
+	
+	private static final int N = 50;
 
     public static void main(String[] args) {
         Executor executor = new Executor.Builder()
@@ -16,10 +18,13 @@ public class ExecutorTest {
         PacmanController pacMan = new MsPacMan();
         GhostController ghosts = new Ghosts();
         
-        while (true) 
-        System.out.println( 
-            executor.runGame(pacMan, ghosts, 1) //last parameter defines speed
-        );     
+        int score, total = 0;
+        for (int i = 0; i < N; ++i) {
+        	score = executor.runGame(pacMan, ghosts, 1); //last parameter defines speed
+	        System.out.println(score);   
+	        total += score;
+        }
+        System.out.println(String.format("Puntuación media: %d", total / N));
     }
 	
 }
