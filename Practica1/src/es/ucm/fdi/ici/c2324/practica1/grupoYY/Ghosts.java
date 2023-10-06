@@ -14,12 +14,16 @@ public class Ghosts extends GhostController {
 	
 	private Game game;
 	private Random rand;
-	private static final int SECURITY_DIST = 30;
+	private static final int SECURITY_DIST = 50; //original 30 (mejor 50)
     private static final MOVE[] allMoves = MOVE.values();
+    private static final String NAME = "I+D";
+	private static final double RAND_LIM = 10; //original 1 (mejor 10)
+    private static final double k1 = 5000.0;  //original 12000 (mejor 5000)
+    private static final double k2 = 18000.0; //original 18000 (mejor 18000)
     
-	private static final double RAND_LIM = 1;
-    private static final double k1 = 12000.0;  
-    private static final double k2 = 18000.0;
+    public String getName() {
+		return NAME;
+	}
 
 	@Override
 	public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue) {
