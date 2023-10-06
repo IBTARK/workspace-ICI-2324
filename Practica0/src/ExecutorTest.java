@@ -1,4 +1,3 @@
-import es.ucm.fdi.ici.c2324.practica0.grupoIndividual.GhostsRandom;
 import es.ucm.fdi.ici.c2324.practica0.grupoIndividual.MsPacManRandom;
 import es.ucm.fdi.ici.c2324.practica0.grupoIndividual.GhostsAggresive;
 import es.ucm.fdi.ici.c2324.practica0.grupoIndividual.MsPacManRunAway;

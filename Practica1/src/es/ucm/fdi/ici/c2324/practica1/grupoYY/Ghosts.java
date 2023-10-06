@@ -16,7 +16,7 @@ public class Ghosts extends GhostController {
     private static final String NAME = "I+D";
 
 	private static final int SECURITY_DIST_PPILL = 50; //original 30 (mejor 50)
-	private static final int SECURITY_DIST_PACMAN = 100; //original 100 (mejor )
+	private static final int SECURITY_DIST_PACMAN = 120; //original 100 (mejor 120)
 	private static final double RAND_LIM = 10; //original 1 (mejor 10)
     private static final double k1 = 5000.0;  //original 12000 (mejor 5000)
     private static final double k2 = 18000.0; //original 18000 (mejor 18000)
