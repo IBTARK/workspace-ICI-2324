@@ -13,10 +13,10 @@ import pacman.game.Game;
 public class Ghosts extends GhostController {
 	
 	private Game game;
-	private Random rand;
-	private static final int SECURITY_DIST = 50; //original 30 (mejor 50)
-    private static final MOVE[] allMoves = MOVE.values();
     private static final String NAME = "I+D";
+
+	private static final int SECURITY_DIST_PPILL = 50; //original 30 (mejor 50)
+	private static final int SECURITY_DIST_PACMAN = 100; //original 100 (mejor )
 	private static final double RAND_LIM = 10; //original 1 (mejor 10)
     private static final double k1 = 5000.0;  //original 12000 (mejor 5000)
     private static final double k2 = 18000.0; //original 18000 (mejor 18000)
@@ -28,7 +28,7 @@ public class Ghosts extends GhostController {
 	@Override
 	public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue) {
 		this.game = game;
-		this.rand = new Random();
+
 		EnumMap<GHOST, MOVE> moves = new EnumMap<GHOST, MOVE>(GHOST.class);
 		for (GHOST g : GHOST.values()) 
 			if (game.doesGhostRequireAction(g))
@@ -98,8 +98,12 @@ public class Ghosts extends GhostController {
 		score += -k1 / (dist3 + 5);
 		score += k1 / (dist4 + 5);
 		
-		if(game.isGhostEdible(g) || isCloseToPPill()) return -score;
-		else return score;
+		if(game.isGhostEdible(g) || isCloseToPPill()) {
+			if (dist3 > SECURITY_DIST_PACMAN)
+				return 0;
+			return -score;
+		}
+		return score;
 	}
 	
 
@@ -127,7 +131,7 @@ public class Ghosts extends GhostController {
 	private boolean isCloseToPPill() {
 		int pacman = game.getPacmanCurrentNodeIndex();
 		for (int pp : game.getActivePowerPillsIndices())
-			if (SECURITY_DIST >= game.getDistance(pacman, pp, Constants.DM.PATH))
+			if (SECURITY_DIST_PPILL >= game.getDistance(pacman, pp, Constants.DM.PATH))
 				return true;
 		return false;
 	}

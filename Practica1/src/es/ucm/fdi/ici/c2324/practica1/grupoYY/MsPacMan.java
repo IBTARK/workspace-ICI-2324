@@ -1,8 +1,8 @@
 package es.ucm.fdi.ici.c2324.practica1.grupoYY;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
+
 import pacman.controllers.PacmanController;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
@@ -14,6 +14,7 @@ public class MsPacMan extends PacmanController{
 	private double distMax;
 	private static final String NAME = "I+D";
 	private static final double RAND_LIM = 1;
+	private static final int SECURITY_EDIBLE_TIME = 20;
 	private static final double k1 = 18000.0; //Constant of edible ghost
 	private static final double k2 = 14000.0; //Constant of nearest chasing ghost
 	private static final double k3 = 20; //Constant of power pills
@@ -85,7 +86,7 @@ public class MsPacMan extends PacmanController{
     	GHOST nearestEdible = getNearestEdibleGhost((int) distMax), nearestChasing = getNearestChasingGhost();
     	
     	//If there is an edible ghost and the remaining edible time is superior than 10 ticks
-    	if(nearestEdible != null && game.getGhostEdibleTime(nearestEdible) > 17) {
+    	if(nearestEdible != null && game.getGhostEdibleTime(nearestEdible) > SECURITY_EDIBLE_TIME) {
     		int distNow = game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearestEdible), game.getPacmanLastMoveMade());
     		int distNext = game.getShortestPathDistance(newPos, game.getGhostCurrentNodeIndex(nearestEdible), m);
     		//Score associated to the nearest edible ghost
