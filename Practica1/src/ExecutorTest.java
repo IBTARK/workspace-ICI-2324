@@ -20,7 +20,7 @@ public class ExecutorTest {
         
         int score, total = 0;
         for (int i = 0; i < N; ++i) {
-        	score = executor.runGame(pacMan, ghosts, 20); //last parameter defines speed
+        	score = executor.runGame(pacMan, ghosts, 1); //last parameter defines speed
 	        System.out.println(score);   
 	        total += score;
         }
