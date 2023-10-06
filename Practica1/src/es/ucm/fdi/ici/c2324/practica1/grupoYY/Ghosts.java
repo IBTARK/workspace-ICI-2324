@@ -13,22 +13,18 @@ import pacman.game.Game;
 public class Ghosts extends GhostController {
 	
 	private Game game;
-	private static final String NAME = "I+D";
+	private Random rand;
+	private static final int SECURITY_DIST = 30;
+    private static final MOVE[] allMoves = MOVE.values();
+    
+	private static final double RAND_LIM = 1;
+    private static final double k1 = 12000.0;  
+    private static final double k2 = 18000.0;
 
-	private static final int SECURITY_DIST_PACMAN = 100;
-	private static final int SECURITY_DIST_PPILL = 50; 	// Originalmente 30
-	private static final double RAND_LIM = 10;			// Originalmente 1		
-    private static final double k1 = 5000.0;  			// Originalmente 12000
-    private static final double k2 = 18000.0;			// Originalmente 18000
-
-	@Override
-	public String getName() {
-		return NAME;
-	}
-	
 	@Override
 	public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue) {
 		this.game = game;
+		this.rand = new Random();
 		EnumMap<GHOST, MOVE> moves = new EnumMap<GHOST, MOVE>(GHOST.class);
 		for (GHOST g : GHOST.values()) 
 			if (game.doesGhostRequireAction(g))
@@ -74,7 +70,7 @@ public class Ghosts extends GhostController {
 			}
 		}
 		int bestIdx = bestMoves.size() == 1 ? 0 : new Random().nextInt(bestMoves.size());
-		
+				
 		return bestMoves.get(bestIdx);
 	}
 
@@ -92,18 +88,14 @@ public class Ghosts extends GhostController {
 			return 0;
 		
 		double score = 0;
-		int distNow = game.getShortestPathDistance(pos, game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(g));
-		int distNext = game.getShortestPathDistance(newPos, game.getPacmanCurrentNodeIndex(), m);
+		int dist3 = game.getShortestPathDistance(pos, game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(g));
+		int dist4 = game.getShortestPathDistance(newPos, game.getPacmanCurrentNodeIndex(), m);
 		//Score associated to the nearest chasing ghost
-		score += -k1 / (distNow + 5);
-		score += k1 / (distNext + 5);
+		score += -k1 / (dist3 + 5);
+		score += k1 / (dist4 + 5);
 		
-		if(game.isGhostEdible(g) || isCloseToPPill()) {
-			if (distNow > SECURITY_DIST_PACMAN)
-				return 0;
-			return -score;
-		}
-		return score;
+		if(game.isGhostEdible(g) || isCloseToPPill()) return -score;
+		else return score;
 	}
 	
 
@@ -117,10 +109,10 @@ public class Ghosts extends GhostController {
 			
 			//It the ghost is not the nearest chasing one and its edible and its not on the lair, is taken into consideration
 			if (game.getGhostLairTime(g) <= 0){
-				int distNow = game.getShortestPathDistance(pos, ghostNode);
-				int distNext = game.getShortestPathDistance(newPos, ghostNode);
-				score +=  k2 / (distNow + 10);
-	    		score += -k2 / (distNext + 10);	
+				int dist5 = game.getShortestPathDistance(pos, ghostNode);
+				int dist6 = game.getShortestPathDistance(newPos, ghostNode);
+				score +=  k2 / (dist5 + 10);
+	    		score += -k2 / (dist6 + 10);	
 				score *= (isEdible == game.isGhostEdible(ghost) ? 1 : -1);
 	    	}
 		}
@@ -131,7 +123,7 @@ public class Ghosts extends GhostController {
 	private boolean isCloseToPPill() {
 		int pacman = game.getPacmanCurrentNodeIndex();
 		for (int pp : game.getActivePowerPillsIndices())
-			if (SECURITY_DIST_PPILL >= game.getDistance(pacman, pp, Constants.DM.PATH))
+			if (SECURITY_DIST >= game.getDistance(pacman, pp, Constants.DM.PATH))
 				return true;
 		return false;
 	}
