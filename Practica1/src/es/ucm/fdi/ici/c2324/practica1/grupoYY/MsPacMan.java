@@ -16,10 +16,10 @@ public class MsPacMan extends PacmanController{
 	private static final double RAND_LIM = 1;
 	private static final int SECURITY_EDIBLE_TIME = 20;
 	private static final double k1 = 18000.0; //Constant of edible ghost
-	private static final double k2 = 14000.0; //Constant of nearest chasing ghost
-	private static final double k3 = 20; //Constant of power pills
-	private static final double k4 = 1.0/25; //Constant of pills
-	private static final double k5 = 10000.0;   //Constant of other chasing ghosts
+	private static final double k2 = 10000.0; //Constant of nearest chasing ghost
+	private static final double k3 = 8; //Constant of power pills
+	private static final double k4 = 1.0/20; //Constant of pills
+	private static final double k5 = 8500.0;   //Constant of other chasing ghosts
 
 	public String getName() {
 		return NAME;

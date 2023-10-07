@@ -15,11 +15,11 @@ public class Ghosts extends GhostController {
 	private Game game;
     private static final String NAME = "I+D";
 
-	private static final int SECURITY_DIST_PPILL = 50; //original 30 (mejor 50)
+	private static final int SECURITY_DIST_PPILL = 45; //original 30 (mejor 45)
 	private static final int SECURITY_DIST_PACMAN = 120; //original 100 (mejor 120)
-	private static final double RAND_LIM = 10; //original 1 (mejor 10)
+	private static final double RAND_LIM = 1; //original 1 (mejor 1)
     private static final double k1 = 5000.0;  //original 12000 (mejor 5000)
-    private static final double k2 = 18000.0; //original 18000 (mejor 18000)
+    private static final double k2 = 15000.0; //original 18000 (mejor 15000)f
     
     public String getName() {
 		return NAME;
@@ -100,7 +100,7 @@ public class Ghosts extends GhostController {
 		
 		if(game.isGhostEdible(g) || isCloseToPPill()) {
 			if (dist3 > SECURITY_DIST_PACMAN)
-				return 0;
+				return score;
 			return -score;
 		}
 		return score;
