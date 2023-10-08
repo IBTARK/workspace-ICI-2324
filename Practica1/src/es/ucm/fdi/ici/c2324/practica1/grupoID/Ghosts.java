@@ -1,12 +1,10 @@
-package es.ucm.fdi.ici.c2324.practica1.grupoYY;
+package es.ucm.fdi.ici.c2324.practica1.grupoID;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Random;
-
-import org.apache.poi.util.SystemOutLogger;
 
 import pacman.controllers.GhostController;
 import pacman.game.Constants;

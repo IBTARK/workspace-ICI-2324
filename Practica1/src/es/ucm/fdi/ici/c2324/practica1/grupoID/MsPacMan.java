@@ -1,4 +1,4 @@
-package es.ucm.fdi.ici.c2324.practica1.grupoYY;
+package es.ucm.fdi.ici.c2324.practica1.grupoID;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -21,10 +21,12 @@ public class MsPacMan extends PacmanController{
 	private static final double k4 = 1.0/20; //Constant of pills
 	private static final double k5 = 8500.0;   //Constant of other chasing ghosts
 
+	//Name of the team
 	public String getName() {
 		return NAME;
 	}
-    @Override
+	
+	//Gets the best move of MsPacMan
     public MOVE getMove(Game game, long timeDue) {
     	this.game = game;
     	distMax = Math.sqrt(2 * game.getNumberOfNodes());
@@ -69,6 +71,7 @@ public class MsPacMan extends PacmanController{
         return possibleMoves[0];
     }
     
+    //Computes the score of a given movement
     private double calcScore(int pos, MOVE move) {
     	int newPos = game.getNeighbour(pos, move);
     	
@@ -125,21 +128,24 @@ public class MsPacMan extends PacmanController{
     	if (game.getNumberOfActivePowerPills() < 1)
     		return 0;
     	
-    	double cercaniaFantasma;
+    	double closenessGhost;
     	try {
-	    	cercaniaFantasma = game.getShortestPathDistance(pos, 
+    		closenessGhost = game.getShortestPathDistance(pos, 
 	    			game.getGhostCurrentNodeIndex(getNearestChasingGhost()));
     	} catch (NullPointerException e) {
     		return 0;
     	}
+    	//Gets the nearest power pill
     	int nearestPPill = getNearestPowerPill();
+    	//Distance from MsPacMan to the nearest power pill in the actual position
     	int distPPillNow = game.getShortestPathDistance(pos, nearestPPill, game.getPacmanLastMoveMade());
+    	//Distance from MsPacMan to the nearest power pill in the next position
 		int distPPillNext = (game.getShortestPathDistance(newPos, nearestPPill, m));
 		
 		int distPPill = distPPillNext- distPPillNow;
     	
-		double punt = k3 / cercaniaFantasma * (-(distPPill - 60) ^ 3);
-		//System.out.println(punt);
+		//Score
+		double punt = k3 / closenessGhost * (-(distPPill - 60) ^ 3);
     	return punt;
     }
     
