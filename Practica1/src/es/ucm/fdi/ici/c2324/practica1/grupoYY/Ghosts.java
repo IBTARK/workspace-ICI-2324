@@ -1,6 +1,8 @@
 package es.ucm.fdi.ici.c2324.practica1.grupoYY;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Random;
 
@@ -10,7 +12,7 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-public class Ghosts extends GhostController {
+public class Ghosts extends GhostController{
 	
 	private Game game;
     private static final String NAME = "I+D";
@@ -19,7 +21,8 @@ public class Ghosts extends GhostController {
 	private static final int SECURITY_DIST_PACMAN = 120; //original 100 (mejor 120)
 	private static final double RAND_LIM = 1; //original 1 (mejor 1)
     private static final double k1 = 5000.0;  //original 12000 (mejor 5000)
-    private static final double k2 = 15000.0; //original 18000 (mejor 15000)f
+    private static final double k2 = 15000.0; //original 18000 (mejor 15000)
+    private static final double k3 = 5000.0; //original 18000 (mejor 5000)
     
     public String getName() {
 		return NAME;
@@ -30,13 +33,29 @@ public class Ghosts extends GhostController {
 		this.game = game;
 
 		EnumMap<GHOST, MOVE> moves = new EnumMap<GHOST, MOVE>(GHOST.class);
-		for (GHOST g : GHOST.values()) 
-			if (game.doesGhostRequireAction(g))
-				moves.put(g, getGhostMove(g));
+		
+		//Array of ghosts
+		GHOST[] ghosts = GHOST.values();
+		//the array of ghosts is ordered by distance to pacMan
+		Arrays.sort(ghosts, new Comparator<GHOST>(){
+			public int compare(pacman.game.Constants.GHOST g1, pacman.game.Constants.GHOST g2) {
+				 return game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g1), game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(g1)) - 
+		        		 game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g2), game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(g2));
+			}
+		});
+
+		int cont = 0;
+		
+		for (GHOST g : ghosts) { 
+			if (game.doesGhostRequireAction(g)) {
+				moves.put(g, getGhostMove(g, cont));
+			}
+			cont++;
+		}
 		return moves;
 	}
 	
-	private MOVE getGhostMove(GHOST g) {
+	private MOVE getGhostMove(GHOST g, int cont) {
     	int pos = game.getGhostCurrentNodeIndex(g); //Ghosts position 
     	ArrayList<MOVE> possibleMoves = new ArrayList<>(); //Possible moves of Ghost
 
@@ -54,7 +73,7 @@ public class Ghosts extends GhostController {
 		//The best movement of the ones possible is selected
 		for(MOVE m : possibleMoves) {
 			int newPos = game.getNeighbour(pos, m);
-			newScore = getMovementScore(g, pos, newPos, m);
+			newScore = getMovementScore(g, pos, newPos, m, cont);
 			//If the actual movement is better, is saved as the best one until this moment
 			if(bestMoves.isEmpty()) {
 				bestMoves.add(m);
@@ -78,10 +97,13 @@ public class Ghosts extends GhostController {
 		return bestMoves.get(bestIdx);
 	}
 
-	private double getMovementScore(GHOST g, int pos, int newPos, MOVE m) {
+	//Gets the score of those ghost that have to chase MsPacMan
+	private double getMovementScore(GHOST g, int pos, int newPos, MOVE m, int cont) {
 		double score = 0;
 		
-		score += scoreDistPacman(g, pos, newPos, m);
+		if(cont <= 1) score += scoreDistPacman(g, pos, newPos, m);
+		else score += scoreDistJunction(g, pos, newPos, m);
+		
 		score += scoreDistGhosts(g, pos, newPos, m);
 	
 		return score;	
@@ -97,6 +119,25 @@ public class Ghosts extends GhostController {
 		//Score associated to the nearest chasing ghost
 		score += -k1 / (dist3 + 5);
 		score += k1 / (dist4 + 5);
+		
+		if(game.isGhostEdible(g) || isCloseToPPill()) {
+			if (dist3 > SECURITY_DIST_PACMAN)
+				return score;
+			return -score;
+		}
+		return score;
+	}
+	
+	private double scoreDistJunction(GHOST g, int pos, int newPos, MOVE m) {
+		if (game.wasPacManEaten())
+			return 0;
+		
+		double score = 0;
+		int dist3 = game.getShortestPathDistance(pos, getMsPacManNextJunction(), game.getGhostLastMoveMade(g));
+		int dist4 = game.getShortestPathDistance(newPos, getMsPacManNextJunction(), m);
+		//Score associated to the nearest chasing ghost
+		score += -k3 / (dist3 + 5);
+		score += k3 / (dist4 + 5);
 		
 		if(game.isGhostEdible(g) || isCloseToPPill()) {
 			if (dist3 > SECURITY_DIST_PACMAN)
@@ -134,5 +175,20 @@ public class Ghosts extends GhostController {
 			if (SECURITY_DIST_PPILL >= game.getDistance(pacman, pp, Constants.DM.PATH))
 				return true;
 		return false;
+	}
+	
+	//Gets the next junction that MsPacman is moving to
+	private int getMsPacManNextJunction() {
+		int actualNode =  game.getPacmanCurrentNodeIndex();
+		MOVE pacManLastMove = game.getPacmanLastMoveMade();
+		int[] neighbours = game.getNeighbouringNodes(actualNode, pacManLastMove); 
+		
+		while(neighbours.length == 1) {
+			pacManLastMove = game.getPossibleMoves(actualNode, pacManLastMove)[0];
+			actualNode = neighbours[0];
+			neighbours = game.getNeighbouringNodes(actualNode, pacManLastMove);
+		}
+		
+		return actualNode;
 	}
 }
