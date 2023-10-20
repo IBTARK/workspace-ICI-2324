@@ -1,6 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman;
 
 import es.ucm.fdi.ici.Input;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.MsPacManTools;
 import pacman.game.Constants.GHOST;
 import pacman.game.Game;
 
@@ -10,7 +11,8 @@ public class MsPacManInput extends Input {
 	private static final int TH_CHASING_GHOST = 50; 
 	
 	private int dangerLevel = 0;
-	private boolean levelUp = false;
+	private boolean levelUp;
+	private boolean ppillAccessible;
 
 	public MsPacManInput(Game game) {
 		super(game);
@@ -27,7 +29,8 @@ public class MsPacManInput extends Input {
 		
 		levelUp = game.getCurrentLevelTime() == 0;
 		
-		
+		int pos = game.getPacmanCurrentNodeIndex(), ppill = MsPacManTools.closestPPill(game);
+		ppillAccessible = 0 < MsPacManTools.possiblePaths(game, pos, ppill).size();
 	}
 	
 	public int dangerLevel() {
@@ -36,5 +39,9 @@ public class MsPacManInput extends Input {
 	
 	public boolean levelUp() {
 		return levelUp;
+	}
+	
+	public boolean ppillAccessible() {
+		return ppillAccessible;
 	}
 }
