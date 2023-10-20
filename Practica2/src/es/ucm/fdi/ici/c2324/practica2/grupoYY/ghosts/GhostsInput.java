@@ -1,5 +1,8 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import es.ucm.fdi.ici.Input;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
@@ -7,10 +10,7 @@ import pacman.game.Game;
 
 public class GhostsInput extends Input {
 
-	private boolean BLINKYedible;
-	private boolean INKYedible;
-	private boolean PINKYedible;
-	private boolean SUEedible;
+	private Map<GHOST, Boolean> edible = new HashMap<>();
 	private double minPacmanDistancePPill;
 	
 	public GhostsInput(Game game) {
@@ -19,10 +19,8 @@ public class GhostsInput extends Input {
 
 	@Override
 	public void parseInput() {
-		this.BLINKYedible = game.isGhostEdible(GHOST.BLINKY);
-		this.INKYedible = game.isGhostEdible(GHOST.INKY);
-		this.PINKYedible = game.isGhostEdible(GHOST.PINKY);
-		this.SUEedible = game.isGhostEdible(GHOST.SUE);
+		for (GHOST g : GHOST.values())
+			edible.put(g, game.isGhostEdible(g));
 	
 		int pacman = game.getPacmanCurrentNodeIndex();
 		this.minPacmanDistancePPill = Double.MAX_VALUE;
@@ -32,22 +30,9 @@ public class GhostsInput extends Input {
 		}
 	}
 
-	public boolean isBLINKYedible() {
-		return BLINKYedible;
+	public boolean edible(GHOST g) {
+		return edible.get(g);
 	}
-
-	public boolean isINKYedible() {
-		return INKYedible;
-	}
-
-	public boolean isPINKYedible() {
-		return PINKYedible;
-	}
-
-	public boolean isSUEedible() {
-		return SUEedible;
-	}
-
 	public double getMinPacmanDistancePPill() {
 		return minPacmanDistancePPill;
 	}
