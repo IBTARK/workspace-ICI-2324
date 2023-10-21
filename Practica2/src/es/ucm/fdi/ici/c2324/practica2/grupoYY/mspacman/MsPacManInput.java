@@ -16,6 +16,7 @@ public class MsPacManInput extends Input {
 	private boolean levelUp;
 	private boolean ppillAccessible;
 	private boolean attack = false;
+	private boolean combo = false;
 
 	public MsPacManInput(Game game) {
 		super(game);
@@ -36,6 +37,8 @@ public class MsPacManInput extends Input {
 		}
 		
 		closestPPill = MsPacManTools.closestPPill(game);
+		// El numero que devuelde getNumGhostEaten() no esta definido ...
+		combo = game.getNumGhostsEaten() >= 2; 
 		levelUp = game.getCurrentLevelTime() == 0;
 		
 		int pos = game.getPacmanCurrentNodeIndex(), ppill = MsPacManTools.closestPPill(game);
@@ -60,5 +63,9 @@ public class MsPacManInput extends Input {
 	
 	public int getClosestPPil() {
 		return closestPPill;
+	}
+	
+	public boolean getCombo() {
+		return combo;
 	}
 }

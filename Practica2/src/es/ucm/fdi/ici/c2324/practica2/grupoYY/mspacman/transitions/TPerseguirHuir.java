@@ -10,7 +10,7 @@ public class TPerseguirHuir implements Transition {
 	public boolean evaluate(Input in) {
 		MsPacManInput msPcinput= (MsPacManInput) in;
 		
-		return msPcinput.dangerLevel() > 0 && !(/*msPcinput.getCombo() &&*/ msPcinput.getAttack());
+		return msPcinput.dangerLevel() > 0 && !(msPcinput.getCombo() && msPcinput.getAttack());
 	}
 
 	@Override
