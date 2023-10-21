@@ -9,10 +9,13 @@ public class MsPacManInput extends Input {
 	
 	// Thresholds
 	private static final int TH_CHASING_GHOST = 50; 
+	private static final int TH_EDIBLE_GHOST = 60;
 	
 	private int dangerLevel = 0;
+	private int closestPPill;
 	private boolean levelUp;
 	private boolean ppillAccessible;
+	private boolean attack = false;
 
 	public MsPacManInput(Game game) {
 		super(game);
@@ -25,8 +28,14 @@ public class MsPacManInput extends Input {
 											 					game.getPacmanCurrentNodeIndex(), 
 											 					game.getGhostLastMoveMade(g)))
 				dangerLevel++;
+			if (TH_EDIBLE_GHOST > game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), 
+											 				   game.getPacmanCurrentNodeIndex(), 
+											 				   game.getGhostLastMoveMade(g)))
+				attack = true;
+				
 		}
 		
+		closestPPill = MsPacManTools.closestPPill(game);
 		levelUp = game.getCurrentLevelTime() == 0;
 		
 		int pos = game.getPacmanCurrentNodeIndex(), ppill = MsPacManTools.closestPPill(game);
@@ -43,5 +52,13 @@ public class MsPacManInput extends Input {
 	
 	public boolean ppillAccessible() {
 		return ppillAccessible;
+	}
+	
+	public boolean getAttack() {
+		return attack;
+	}
+	
+	public int getClosestPPil() {
+		return closestPPill;
 	}
 }
