@@ -1,7 +1,10 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY.tools;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
@@ -9,11 +12,26 @@ import pacman.game.Game;
 
 public class MsPacManTools {
 
-	public static List<int[]> possiblePaths(Game game, int orig, int dest) {
-		List<int[]> paths = new ArrayList<>();
-		for (MOVE m : MOVE.values())
-			if (game.getNeighbour(dest, m.opposite()) > -1)
-				paths.add(game.getShortestPath(dest, orig, m));
+	public static List<Integer[]> possiblePaths(Game game, int orig, int dest, MOVE lastMove) {
+		List<Integer[]> paths = new ArrayList<>();
+		int maxDist = game.getShortestPathDistance(orig, dest, lastMove) * 2;
+		
+		//Búsqueda de caminos en anchura con poda
+		Queue<ArrayList<Integer>> queue = new LinkedList<>();
+		for (int n : game.getNeighbouringNodes(orig, lastMove))
+			if (n == dest) paths.add(new Integer[] {orig, n});
+			else queue.add(new ArrayList<Integer> (Arrays.asList(orig, n)));
+		
+		while (!queue.isEmpty()) {
+			ArrayList<Integer> act = queue.remove();
+			for (int n : game.getNeighbouringNodes(orig, lastMove)) {
+				act.add(n);
+				if (n == dest) paths.add((Integer[]) act.toArray());
+				else if (act.size() < maxDist) queue.add(new ArrayList<Integer>(act));
+				act.remove(act.size()-1);
+			}
+		}
+		
 		return paths;
 	}
 	
@@ -50,5 +68,17 @@ public class MsPacManTools {
 			pos = game.getNeighbour(pos, move);
 		}
 		return pos;
+	}
+	
+	public static List<MOVE> movesInPath(Game game, Integer[] path) {
+		List<MOVE> moves = new ArrayList<>();
+		for (int i = 0; i < path.length-1; ++i)
+			if (game.isJunction(path[i]))
+				moves.add(game.getMoveToMakeToReachDirectNeighbour(path[i], path[i+1]));
+		return moves;
+	}
+	
+	public static boolean blocked(Game game, Integer[] path) {
+		return true; //TODO ibon
 	}
 }

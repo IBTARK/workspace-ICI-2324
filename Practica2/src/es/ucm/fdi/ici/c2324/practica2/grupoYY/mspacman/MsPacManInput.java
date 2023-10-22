@@ -1,5 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import es.ucm.fdi.ici.Input;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.MsPacManTools;
 import pacman.game.Constants.GHOST;
@@ -48,7 +50,13 @@ public class MsPacManInput extends Input {
 		
 		int pos = game.getPacmanCurrentNodeIndex(), ppill = MsPacManTools.closestPPill(game);
 		MOVE lastMove = game.getPacmanLastMoveMade();
-		ppillAccessible = 0 < MsPacManTools.possiblePaths(game, pos, ppill).size();
+		
+		
+		ppillAccessible = false;
+		if (!MsPacManTools.blocked(game, ArrayUtils.toObject(game.getShortestPath(pos, ppill, lastMove)))) ppillAccessible = true;
+		else for (Integer[] path : MsPacManTools.possiblePaths(game, pos, ppill, lastMove))
+				ppillAccessible |= !MsPacManTools.blocked(game, path);
+		
 		ppillClose = TH_PPILL > game.getShortestPathDistance(pos, ppill, lastMove);
 		
 		GHOST nearest = MsPacManTools.getNearestEdible(game, pos, lastMove);
