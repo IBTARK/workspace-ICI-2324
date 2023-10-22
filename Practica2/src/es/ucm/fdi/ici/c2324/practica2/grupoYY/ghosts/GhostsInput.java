@@ -102,4 +102,8 @@ public class GhostsInput extends Input {
 	public boolean nearestChasingBlocked(GHOST g) {
 		return nearestChasingBlocked.get(g);
 	}
+	
+	public boolean ediblesNotCoveredClose(GHOST g) {
+		return true; //TODO yikang
+	}
 }

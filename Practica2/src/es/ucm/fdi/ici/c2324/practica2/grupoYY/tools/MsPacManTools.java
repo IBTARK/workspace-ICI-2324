@@ -27,11 +27,12 @@ public class MsPacManTools {
 			for (int n : game.getNeighbouringNodes(orig, lastMove)) {
 				act.add(n);
 				if (n == dest) paths.add((Integer[]) act.toArray());
-				else if (act.size() < maxDist) queue.add(new ArrayList<Integer>(act));
+				else if (maxDist > act.size() + game.getShortestPathDistance(act.get(act.size()-1), dest, 
+								   				game.getMoveToMakeToReachDirectNeighbour(act.get(act.size()-2), act.get(act.size()-1)))) 
+					queue.add(new ArrayList<Integer>(act));
 				act.remove(act.size()-1);
 			}
 		}
-		
 		return paths;
 	}
 	

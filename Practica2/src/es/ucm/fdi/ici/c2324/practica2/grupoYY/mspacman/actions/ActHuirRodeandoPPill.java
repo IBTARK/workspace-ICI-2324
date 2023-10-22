@@ -10,8 +10,11 @@ public class ActHuirRodeandoPPill implements Action {
 	@Override
 	public MOVE execute(Game game) {
 		int pos = game.getPacmanCurrentNodeIndex();
-		int ppill = MsPacManTools.closestPPill(game);
 		MOVE lastMove = game.getPacmanLastMoveMade();
+		if (!game.isJunction(pos))
+			return game.getPossibleMoves(pos, lastMove)[0];
+		
+		int ppill = MsPacManTools.closestPPill(game);
 		Integer[] path = null;
 		for (Integer [] p : MsPacManTools.possiblePaths(game, pos, ppill, lastMove))
 			if (!MsPacManTools.blocked(game, p) && (path == null || path.length > p.length))

@@ -13,6 +13,9 @@ public class ActFlanquearFantasma implements Action {
 	public MOVE execute(Game game) {
 		int pos = game.getPacmanCurrentNodeIndex();
 		MOVE lastMove = game.getPacmanLastMoveMade();
+		if (!game.isJunction(pos))
+			return game.getPossibleMoves(pos, lastMove)[0];
+		
 		GHOST ghost = MsPacManTools.getNearestEdible(game, pos, lastMove);
 		int junction = MsPacManTools.nextJunction(game, game.getGhostCurrentNodeIndex(ghost), game.getGhostLastMoveMade(ghost));
 		

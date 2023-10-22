@@ -13,7 +13,22 @@ public class GhostsTools {
 			int dist = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(ghost), 
 													game.getGhostCurrentNodeIndex(g), 
 													game.getGhostLastMoveMade(ghost));
-			if (!g.equals(ghost) && dist >= 0 && minDist > dist) {
+			if (!g.equals(ghost) && !game.isGhostEdible(g) && dist >= 0 && minDist > dist) {
+				minDist = dist;
+				nearest = g;
+			}
+		}
+		return nearest;
+	}
+	
+	public static GHOST getNearestEdible(Game game, GHOST ghost) {
+		GHOST nearest = null;
+		int minDist = Integer.MAX_VALUE;
+		for (GHOST g : GHOST.values()) {
+			int dist = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(ghost), 
+													game.getGhostCurrentNodeIndex(g), 
+													game.getGhostLastMoveMade(ghost));
+			if (!g.equals(ghost) && game.isGhostEdible(g) && dist >= 0 && minDist > dist) {
 				minDist = dist;
 				nearest = g;
 			}

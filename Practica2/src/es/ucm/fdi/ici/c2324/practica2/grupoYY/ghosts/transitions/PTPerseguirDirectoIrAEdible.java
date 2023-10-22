@@ -17,7 +17,7 @@ public class PTPerseguirDirectoIrAEdible implements Transition {
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
 		
-		return true; //TODO david
+		return gin.ediblesNotCoveredClose(ghost);
 	}
 
 	@Override
