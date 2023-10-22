@@ -10,11 +10,11 @@ public class TPerseguirHuir implements Transition {
 	public boolean evaluate(Input in) {
 		MsPacManInput msPcinput= (MsPacManInput) in;
 		
-		return msPcinput.dangerLevel() > 0 && !(msPcinput.getCombo() && msPcinput.getAttack());
+		return msPcinput.danger() && !(msPcinput.combo() && msPcinput.attack());
 	}
 
 	@Override
 	public String toString() {
-		return String.format("PerseguirHuir Transition \n");
+		return String.format("Perseguir->Huir Transition \n");
 	}
 }

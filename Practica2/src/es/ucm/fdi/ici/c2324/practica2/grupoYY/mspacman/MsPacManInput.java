@@ -49,6 +49,10 @@ public class MsPacManInput extends Input {
 		return dangerLevel;
 	}
 	
+	public boolean danger() {
+		return dangerLevel > 0;
+	}
+	
 	public boolean levelUp() {
 		return levelUp;
 	}
@@ -57,7 +61,7 @@ public class MsPacManInput extends Input {
 		return ppillAccessible;
 	}
 	
-	public boolean getAttack() {
+	public boolean attack() {
 		return attack;
 	}
 	
@@ -65,7 +69,7 @@ public class MsPacManInput extends Input {
 		return closestPPill;
 	}
 	
-	public boolean getCombo() {
+	public boolean combo() {
 		return combo;
 	}
 }
