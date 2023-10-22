@@ -1,6 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY.tools;
 
 import pacman.game.Constants.GHOST;
+import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
 public class GhostsTools {
@@ -18,5 +19,14 @@ public class GhostsTools {
 			}
 		}
 		return nearest;
+	}
+	
+	public static int nextJunction(Game game, int pos, MOVE lastMove) {
+		MOVE move = lastMove;
+		while (!game.isJunction(pos)) {
+			move = game.getPossibleMoves(pos, move)[0];
+			pos = game.getNeighbour(pos, move);
+		}
+		return pos;
 	}
 }
