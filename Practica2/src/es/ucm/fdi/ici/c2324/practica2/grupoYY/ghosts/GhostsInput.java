@@ -19,6 +19,8 @@ public class GhostsInput extends Input {
 	private Map<GHOST, GHOST> nearestChasing = new HashMap<>();
 	private Map<GHOST, Integer> pacmanDist = new HashMap<>();
 	private Map<GHOST, Integer> pacmanJunctDist = new HashMap<>();
+	private Map<GHOST, Integer> ppillDist = new HashMap<>();
+	private Map<GHOST, Boolean> nearestChasingBlocked = new HashMap<>();
 	private double minPacmanDistancePPill;
 	
 	public GhostsInput(Game game) {
@@ -30,6 +32,16 @@ public class GhostsInput extends Input {
 		int pacman = game.getPacmanCurrentNodeIndex();
 		int pacmanNextJunction = GhostsTools.nextJunction(game, pacman, game.getPacmanLastMoveMade());
 		
+		int closestPPill = -1;
+		this.minPacmanDistancePPill = Double.MAX_VALUE;
+		for(int ppill: game.getPowerPillIndices()) {
+			double distance = game.getDistance(pacman, ppill, DM.PATH);
+			if (distance < minPacmanDistancePPill) {
+				minPacmanDistancePPill = distance;
+				closestPPill = ppill;
+			}
+		}
+		
 		for (GHOST g : GHOST.values()) {
 			int pos = game.getGhostCurrentNodeIndex(g);
 			MOVE lastMove = game.getGhostLastMoveMade(g);
@@ -38,12 +50,8 @@ public class GhostsInput extends Input {
 			nearestChasing.put(g, GhostsTools.getNearestChasing(game, g));
 			pacmanDist.put(g, game.getShortestPathDistance(pos, pacman, lastMove));
 			pacmanJunctDist.put(g, game.getShortestPathDistance(pos, pacmanNextJunction, lastMove));
-		}
-		
-		this.minPacmanDistancePPill = Double.MAX_VALUE;
-		for(int ppill: game.getPowerPillIndices()) {
-			double distance = game.getDistance(pacman, ppill, DM.PATH);
-			this.minPacmanDistancePPill = Math.min(distance, this.minPacmanDistancePPill);
+			ppillDist.put(g, (closestPPill < 0 ? Integer.MAX_VALUE : game.getShortestPathDistance(pos, closestPPill, lastMove)));
+			nearestChasingBlocked.put(g, GhostsTools.blocked(game, g, nearestChasing.get(g)));
 		}
 	}
 
@@ -67,6 +75,10 @@ public class GhostsInput extends Input {
 		return true; //TODO ibon
 	}
 	
+	public boolean ediblesClose(GHOST g) {
+		return true; //TODO yikang
+	}
+	
 	public int getDistToMsPacMan(GHOST g) {
 		return pacmanDist.get(g);
 	}
@@ -77,5 +89,17 @@ public class GhostsInput extends Input {
 	
 	public boolean ppillCovered() {
 		return true; //TODO ibon
+	}
+	
+	public int ppillDistance(GHOST g) {
+		return ppillDist.get(g);
+	}
+	
+	public boolean isNearestEdible(GHOST g) {
+		return true; //TODO ibon
+	}
+	
+	public boolean nearestChasingBlocked(GHOST g) {
+		return nearestChasingBlocked.get(g);
 	}
 }

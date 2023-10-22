@@ -29,4 +29,13 @@ public class GhostsTools {
 		}
 		return pos;
 	}
+	
+	public static boolean blocked(Game game, GHOST orig, GHOST dest) {
+		int posOrig = game.getGhostCurrentNodeIndex(orig),
+			posDest = game.getGhostCurrentNodeIndex(dest);
+		for (int node : game.getShortestPath(posOrig, posDest, game.getGhostLastMoveMade(orig))) 
+			if (game.getPacmanCurrentNodeIndex() == node)
+				return true;
+		return false;
+	}
 }

@@ -5,11 +5,11 @@ import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.GhostsInput;
 import es.ucm.fdi.ici.fsm.Transition;
 import pacman.game.Constants.GHOST;
 
-public class PTPerseguirDirectoCubrirPPill implements Transition {
+public class PTPerseguirDirectoIrAEdible implements Transition {
 	
 	private GHOST ghost;
 	
-	public PTPerseguirDirectoCubrirPPill(GHOST g) {
+	public PTPerseguirDirectoIrAEdible(GHOST g) {
 		ghost = g;
 	} 
 
@@ -17,12 +17,11 @@ public class PTPerseguirDirectoCubrirPPill implements Transition {
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
 		
-		return !gin.chasingClose(ghost) && !gin.ppillCovered() && !gin.msPacManFarFromPPill() 
-				&& gin.ppillDistance(ghost) < gin.getMinPacmanDistancePPill();
+		return true; //TODO david
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Perseguir: PerseguirDirectamente->CubrirPPill \n");
+		return String.format("Perseguir: PerseguirDirectamente->IrACompañeroEdible \n");
 	}
 }
