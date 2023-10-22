@@ -4,17 +4,17 @@ import es.ucm.fdi.ici.Input;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.MsPacManInput;
 import es.ucm.fdi.ici.fsm.Transition;
 
-public class PTPerseguirFlanquear implements Transition {
-	
+public class HTRodearAPPillHuirVarios implements Transition {
+
 	@Override
 	public boolean evaluate(Input in) {
 		MsPacManInput pcin = (MsPacManInput) in;
 		
-		return pcin.getNearestEdibleDistance() > pcin.nearestEdibleNextJunctionDistance();
+		return !pcin.isPPillClose() || !pcin.ppillAccessible();
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Perseguir: PerseguirFantasma->FlanquearFantasma \n");
+		return String.format("Huir: HuirRodeandoHaciaPPill->HuirDeVariosFantasmas \n");
 	}
 }
