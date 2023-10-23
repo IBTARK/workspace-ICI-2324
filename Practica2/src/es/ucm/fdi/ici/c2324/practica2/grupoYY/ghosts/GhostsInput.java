@@ -14,7 +14,9 @@ public class GhostsInput extends Input {
 	
 	//Thresholds
 	private static final int TH_PACMAN_PPILL = 30;
+	private static final int TH_CHASING = 30;
 
+	private Map<GHOST, Boolean> alive = new HashMap<>();
 	private Map<GHOST, Boolean> edible = new HashMap<>();
 	private Map<GHOST, GHOST> nearestChasing = new HashMap<>();
 	private Map<GHOST, Integer> pacmanDist = new HashMap<>();
@@ -46,6 +48,7 @@ public class GhostsInput extends Input {
 			int pos = game.getGhostCurrentNodeIndex(g);
 			MOVE lastMove = game.getGhostLastMoveMade(g);
 			
+			alive.put(g, game.getGhostLairTime(g) <= 0);
 			edible.put(g, game.isGhostEdible(g));
 			nearestChasing.put(g, GhostsTools.getNearestChasing(game, g));
 			pacmanDist.put(g, game.getShortestPathDistance(pos, pacman, lastMove));
@@ -55,6 +58,10 @@ public class GhostsInput extends Input {
 		}
 	}
 
+	public boolean isAlive(GHOST g) {
+		return alive.get(g);
+	}
+	
 	public boolean edible(GHOST g) {
 		return edible.get(g);
 	}
@@ -72,7 +79,9 @@ public class GhostsInput extends Input {
 	}
 	
 	public boolean chasingClose(GHOST g) {
-		return true; //TODO ibon
+		return game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), 
+				game.getGhostCurrentNodeIndex(GhostsTools.getNearestChasing(game, g)), 
+				game.getGhostLastMoveMade(g)) <= TH_CHASING ;
 	}
 	
 	public boolean ediblesClose(GHOST g) {
@@ -87,7 +96,7 @@ public class GhostsInput extends Input {
 		return pacmanJunctDist.get(g);
 	}
 	
-	public boolean ppillCovered() {
+	public boolean ppillCovered(int PPill) {
 		return true; //TODO ibon
 	}
 	
@@ -95,8 +104,16 @@ public class GhostsInput extends Input {
 		return ppillDist.get(g);
 	}
 	
+	//Checks if the given ghost is the nearest one to MsPacMan
 	public boolean isNearestEdible(GHOST g) {
-		return true; //TODO ibon
+		//If the given ghost is not edible, it can't be the nearest edible one to MsPacMan
+		if(!edible.get(g)) return false;
+		
+		//Check if there is another edible ghost closer to MsPacMan
+		for(GHOST ghost : GHOST.values()) {
+			if(ghost != g && edible.get(ghost) && pacmanDist.get(ghost) < pacmanDist.get(g)) return false;
+		}
+		return true;
 	}
 	
 	public boolean nearestChasingBlocked(GHOST g) {
