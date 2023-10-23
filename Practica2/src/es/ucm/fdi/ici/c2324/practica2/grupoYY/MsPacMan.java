@@ -5,15 +5,23 @@ import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import es.ucm.fdi.ici.Input;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.MsPacManInput;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActFlanquearFantasma;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActHuirRodeandoPPill;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.HTHuirFantasmaHuirVarios;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.HTRodearAPPillHuirVarios;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.PTPerseguirFlanquear;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.TKamikazePillHuir;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.TNeutralHuir;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.TNeutralPerseguir;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.TPerseguirHuir;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.TPerseguirKamikazeFantasma;
 import es.ucm.fdi.ici.fsm.CompoundState;
 import es.ucm.fdi.ici.fsm.FSM;
-import es.ucm.fdi.ici.Input;
 import es.ucm.fdi.ici.fsm.SimpleState;
 import es.ucm.fdi.ici.fsm.Transition;
 import es.ucm.fdi.ici.fsm.observers.GraphFSMObserver;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.MsPacManInput;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.RandomAction;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.RandomTransition;
 import pacman.controllers.PacmanController;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
@@ -32,41 +40,92 @@ public class MsPacMan extends PacmanController {
     	GraphFSMObserver observer = new GraphFSMObserver(fsm.toString());
     	fsm.addObserver(observer);
     	
-    	SimpleState state1 = new SimpleState("state1", new RandomAction());
-    	SimpleState state2 = new SimpleState("state2", new RandomAction());
-    	SimpleState state3 = new SimpleState("state3", new RandomAction());
+    	FSM cfsmHuir = new FSM("Huir");
+    	GraphFSMObserver huirObserver = new GraphFSMObserver(cfsmHuir.toString());
+    	cfsmHuir.addObserver(huirObserver);
+    	SimpleState hStateHuirDeUnFantasma = new SimpleState("Huir de un fantasma", null); //TODO
+    	SimpleState hStateHuirDeVariosFantasmas = new SimpleState("Huir de varios fantasmas", null); //TODO
+    	SimpleState hStateHaciaPPill = new SimpleState("Huir hacia PPill", null); //TODO
+    	SimpleState hStateHuirRodeandoHaciaPPill = new SimpleState("Huir rodeando hacia PPill", new ActHuirRodeandoPPill());
+    	Transition tranH1 = new HTHuirFantasmaHuirVarios();
+    	Transition tranH2 = null; //TODO
+    	Transition tranH3 = null; //TODO
+    	Transition tranH4 = null; //TODO
+    	Transition tranH5 = null; //TODO
+    	Transition tranH6 = new HTRodearAPPillHuirVarios();
+    	Transition tranH7 = null; //TODO
+    	Transition tranH8 = null; //TODO
+    	cfsmHuir.add(hStateHuirDeUnFantasma, tranH1, hStateHuirDeVariosFantasmas);
+    	cfsmHuir.add(hStateHuirDeVariosFantasmas, tranH2, hStateHuirDeUnFantasma);
+    	cfsmHuir.add(hStateHuirDeUnFantasma, tranH3, hStateHaciaPPill);
+    	cfsmHuir.add(hStateHuirDeVariosFantasmas, tranH4, hStateHaciaPPill);
+    	cfsmHuir.add(hStateHaciaPPill, tranH5, hStateHuirDeVariosFantasmas);
+    	cfsmHuir.add(hStateHuirRodeandoHaciaPPill, tranH6, hStateHuirDeVariosFantasmas);
+    	cfsmHuir.add(hStateHaciaPPill, tranH7, hStateHuirRodeandoHaciaPPill);
+    	cfsmHuir.add(hStateHuirRodeandoHaciaPPill, tranH8, hStateHaciaPPill);
+    	cfsmHuir.ready(hStateHuirDeUnFantasma);
     	
-    	Transition tran1 = new RandomTransition(.3);
-    	Transition tran2 = new RandomTransition(.2);
-    	Transition tran3 = new RandomTransition(.1);
-    	Transition tran4 = new RandomTransition(.01);
     	
-    	FSM cfsm1 = new FSM("Compound1");
-    	GraphFSMObserver c1observer = new GraphFSMObserver(cfsm1.toString());
-    	cfsm1.addObserver(c1observer);
+    	FSM cfsmPerseguir = new FSM("Perseguir");
+    	GraphFSMObserver perseguirObserver = new GraphFSMObserver(cfsmPerseguir.toString());
+    	cfsmPerseguir.addObserver(perseguirObserver);
+    	SimpleState pStatePerseguirFantasma = new SimpleState("Perseguir fantasma", null); //TODO
+    	SimpleState pStateFlanquearFantasma = new SimpleState("Flanquear fantasma", new ActFlanquearFantasma());
+    	Transition tranP1 = new PTPerseguirFlanquear();
+    	Transition tranP2 = null; //TODO
+    	cfsmHuir.add(pStatePerseguirFantasma, tranP1, pStateFlanquearFantasma);
+    	cfsmHuir.add(pStateFlanquearFantasma, tranP2, pStatePerseguirFantasma);
+    	cfsmHuir.ready(pStatePerseguirFantasma);
     	
-    	SimpleState cstate1 = new SimpleState("cstate1", new RandomAction());
-    	SimpleState cstate2 = new SimpleState("cstate2", new RandomAction());
-    	Transition ctran1 = new RandomTransition(.35);
-    	Transition ctran2 = new RandomTransition(.25);
-    	cfsm1.add(cstate1, ctran1, cstate2);
-    	cfsm1.add(cstate2, ctran2, cstate1);
-    	cfsm1.ready(cstate1);
-    	CompoundState compound1 = new CompoundState("compound1", cfsm1);
     	
-    	fsm.add(state1, tran1, state2);
-    	fsm.add(state2, tran2, state3);
-    	fsm.add(state3, tran3, compound1);
-    	fsm.add(compound1, tran4, state1);
+    	FSM cfsmNeutral = new FSM("Neutral");
+    	GraphFSMObserver neutralObserver = new GraphFSMObserver(cfsmNeutral.toString());
+    	cfsmNeutral.addObserver(neutralObserver);
+    	SimpleState nStateBuscarPills = new SimpleState("Buscar pills", null); //TODO
+    	SimpleState nStateEvitarPPill = new SimpleState("Evitar PPill", null); //TODO
+    	Transition tranN1 = null; //TODO
+    	Transition tranN2 = null; //TODO
+    	cfsmHuir.add(nStateBuscarPills, tranN1, nStateEvitarPPill);
+    	cfsmHuir.add(nStateEvitarPPill, tranN2, nStateBuscarPills);
+    	cfsmHuir.ready(nStateBuscarPills);
+    	
+    	CompoundState compoundHuir = new CompoundState("Huir", cfsmHuir);
+    	CompoundState compoundPerseguir = new CompoundState("Perseguir", cfsmPerseguir);
+    	CompoundState compoundNeutral = new CompoundState("Neutral", cfsmNeutral);
+    	
+    	SimpleState stateKamikazeFant = new SimpleState("Kamikaze a fantasma", null); //TODO
+    	SimpleState stateKamikazePill = new SimpleState("Kamikaze a pills", null); //TODO
+    	
+    	Transition tran1 = new TPerseguirHuir();
+    	Transition tran2 = null; //TODO
+    	Transition tran3 = new TNeutralHuir();
+    	Transition tran4 = null; //TODO
+    	Transition tran5 = new TNeutralPerseguir();
+    	Transition tran6 = null; //TODO
+    	Transition tran7 = new TPerseguirKamikazeFantasma();
+    	Transition tran8 = null; //TODO
+    	Transition tran9 = new TKamikazePillHuir();
+    	Transition tran10 = null; //TODO
+    	
+    	fsm.add(compoundPerseguir, tran1, compoundHuir);
+    	fsm.add(compoundHuir, tran2, compoundPerseguir);
+    	fsm.add(compoundNeutral, tran3, compoundHuir);
+    	fsm.add(compoundHuir, tran4, compoundNeutral);
+    	fsm.add(compoundNeutral, tran5, compoundPerseguir);
+    	fsm.add(compoundPerseguir, tran6, compoundNeutral);
+    	fsm.add(compoundPerseguir, tran7, stateKamikazeFant);
+    	fsm.add(stateKamikazeFant, tran8, compoundHuir);
+    	fsm.add(stateKamikazePill, tran9, compoundHuir);
+    	fsm.add(compoundHuir, tran10, stateKamikazePill);
 
-    	fsm.ready(state1);
+    	fsm.ready(compoundNeutral);
     	
     	
     	JFrame frame = new JFrame();
     	JPanel main = new JPanel();
     	main.setLayout(new BorderLayout());
     	main.add(observer.getAsPanel(true, null), BorderLayout.CENTER);
-    	main.add(c1observer.getAsPanel(true, null), BorderLayout.SOUTH);
+    	main.add(neutralObserver.getAsPanel(true, null), BorderLayout.SOUTH);
     	frame.getContentPane().add(main);
     	frame.pack();
     	frame.setVisible(true);
