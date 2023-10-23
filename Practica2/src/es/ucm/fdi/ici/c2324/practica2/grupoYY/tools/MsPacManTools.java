@@ -79,7 +79,12 @@ public class MsPacManTools {
 		return moves;
 	}
 	
+	//Checks if there is a ghost in the given path coming 
 	public static boolean blocked(Game game, Integer[] path) {
-		return true; //TODO ibon
+		for(int node : path) {
+			for(GHOST g :  GHOST.values())
+				if(game.getGhostCurrentNodeIndex(g) == node) return true;
+		}
+		return false;
 	}
 }
