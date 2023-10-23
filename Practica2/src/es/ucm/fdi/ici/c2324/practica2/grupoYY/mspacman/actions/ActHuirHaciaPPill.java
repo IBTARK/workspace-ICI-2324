@@ -2,13 +2,12 @@ package es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions;
 
 import es.ucm.fdi.ici.Action;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.MsPacManTools;
-import pacman.game.Game;
-import pacman.game.Constants.MOVE;
 import pacman.game.Constants.DM;
-import pacman.game.Constants.GHOST;
+import pacman.game.Constants.MOVE;
+import pacman.game.Game;
 
-//Action to chase the closest ghost
-public class ActPerseguirFantasma implements Action{
+public class ActHuirHaciaPPill implements Action{
+
 	@Override
 	public MOVE execute(Game game) {
 		//MsPacMans current position
@@ -20,15 +19,15 @@ public class ActPerseguirFantasma implements Action{
 		if (!game.isJunction(pos))
 			return game.getPossibleMoves(pos, lastMove)[0];
 		
-		//Nearest edible ghost to MsPacMan
-		GHOST nearestEdible = MsPacManTools.getNearestEdible(game, pos, lastMove);
+		//Nearest Power Pill to MsPacMan
+		int nearestPPill = MsPacManTools.closestPPill(game);
 		
-		//Move to chase the nearest edible ghost reducing the path distance
-		return game.getNextMoveTowardsTarget(pos, game.getGhostCurrentNodeIndex(nearestEdible), lastMove, DM.PATH);
+		//Move to reduce the distance to the nearest Power Pill
+		return game.getNextMoveTowardsTarget(pos, nearestPPill, lastMove, DM.PATH);
 	}
 
 	@Override
 	public String getActionId() {
-		return "Perseguir Fantasma";
+		return "Huir Hacia Power Pill";
 	}
 }
