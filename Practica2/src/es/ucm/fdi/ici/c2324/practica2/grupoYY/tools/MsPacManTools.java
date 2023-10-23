@@ -38,7 +38,7 @@ public class MsPacManTools {
 	
 	public static int closestPPill(Game game) {
 		int node = -1, dist = Integer.MAX_VALUE;
-		for (int p : game.getPowerPillIndices()) {
+		for (int p : game.getActivePowerPillsIndices()) {
 			int aux = game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), 
 			 									   p, game.getPacmanLastMoveMade());
 			if (dist > aux) {
@@ -101,14 +101,14 @@ public class MsPacManTools {
 		return false;
 	}
 	
-	//Checks if there is a ppill in the given path coming 
-		public static boolean blockedByClosestPPill(Game game, int[] path) {
-			int ppillIndex = closestPPill(game);
-			for(int node : path) {
-				if(ppillIndex == node) return true;
-			}
-			return false;
+	//Checks if there is a PPill in the given path coming 
+	public static boolean blockedByClosestPPill(Game game, int[] path) {
+		int ppillIndex = closestPPill(game);
+		for(int node : path) {
+			if(ppillIndex == node) return true;
 		}
+		return false;
+	}
 
 	public static GHOST getNearestChasing(Game game, int pos, MOVE lastMove) {
 		GHOST nearest = null;

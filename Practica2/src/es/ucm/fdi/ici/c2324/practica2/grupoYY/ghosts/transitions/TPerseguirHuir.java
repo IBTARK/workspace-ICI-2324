@@ -5,8 +5,11 @@ import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.GhostsInput;
 import es.ucm.fdi.ici.fsm.Transition;
 import pacman.game.Constants.GHOST;
 
+
+//Transition from "Perseguir" to "Huir"
 public class TPerseguirHuir implements Transition {
 	
+	//Owner of the FMS
 	private GHOST ghost;
 	
 	public TPerseguirHuir(GHOST g) {
@@ -14,6 +17,7 @@ public class TPerseguirHuir implements Transition {
 	}
 
 	@Override
+	//Evaluate if the transition can be made
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
 		

@@ -7,16 +7,18 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
+//Action to run away from the ghosts
 public class ActHuirDeFantasma implements Action {
 
 	@Override
+	//Execute the action, returning the necessary movement
 	public MOVE execute(Game game) {
 		//MsPacMans current position
 		int pos = game.getPacmanCurrentNodeIndex();
 		//MsPacMans last move
 		MOVE lastMove = game.getPacmanLastMoveMade();
 		
-		//If MsPacMan is not in a junction only one move is possible
+		//If MsPacMan is not in a junction only one movement is possible
 		if (!game.isJunction(pos))
 			return game.getPossibleMoves(pos, lastMove)[0];
 		
@@ -25,7 +27,7 @@ public class ActHuirDeFantasma implements Action {
 		//Nearest (and only) chasing ghost to pacman
 		GHOST nearestChasing = MsPacManTools.getNearestChasing(game, pos, lastMove);
 		
-		//Chose the best available move.
+		//Choose the best available move.
 		return MOVE.NEUTRAL;
 	}
 

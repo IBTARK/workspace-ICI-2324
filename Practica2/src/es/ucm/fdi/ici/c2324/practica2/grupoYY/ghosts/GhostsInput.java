@@ -102,9 +102,9 @@ public class GhostsInput extends Input {
 	//Checks if there are chasing ghost near the given ghost
 	public boolean chasingClose(GHOST g) {
 		
-		//Check if any of the distances between g and the other ghost is smaller than the threshold
-		for(int dist : distanceBetweenGhosts.get(g).values()) {
-			if(dist <= TH_CHASING) return true;
+		//Check if any of the distances between g and the chasing ghosts is smaller than the threshold
+		for(GHOST g2 : GHOST.values()) {
+			if(g2 != g && !edible.get(g2) && distanceBetweenGhosts.get(g).get(g2) <= TH_CHASING) return true;
 		}
 		
 		return false;

@@ -9,7 +9,9 @@ import pacman.game.Constants.GHOST;
 
 //Action to chase the closest ghost
 public class ActPerseguirFantasma implements Action{
+	
 	@Override
+	//Executes the action, returning the necessary movement
 	public MOVE execute(Game game) {
 		//MsPacMans current position
 		int pos = game.getPacmanCurrentNodeIndex();

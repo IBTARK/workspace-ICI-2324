@@ -5,8 +5,12 @@ import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.GhostsInput;
 import es.ucm.fdi.ici.fsm.Transition;
 import pacman.game.Constants.GHOST;
 
+//Higher state "Perseguir"
+
+//Transition from "Separarse de otro fantasma" to "Perseguir directamente"
 public class PTSepararseFantasmaPerseguirDirecto implements Transition {
 	
+	//Owner of the FMS
 	private GHOST ghost;
 	
 	public PTSepararseFantasmaPerseguirDirecto(GHOST g) {
@@ -14,10 +18,11 @@ public class PTSepararseFantasmaPerseguirDirecto implements Transition {
 	} 
 
 	@Override
+	//Evaluate if the transition can be made
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
 		
-		return gin.chasingClose(ghost) && gin.getDistToMsPacMan(ghost) < gin.getDistToMsPacManNextJunction(ghost);
+		return !gin.chasingClose(ghost) && gin.getDistToMsPacMan(ghost) < gin.getDistToMsPacManNextJunction(ghost);
 	}
 
 	@Override

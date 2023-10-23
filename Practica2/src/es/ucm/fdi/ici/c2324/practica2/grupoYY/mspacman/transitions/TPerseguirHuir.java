@@ -4,13 +4,15 @@ import es.ucm.fdi.ici.Input;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.MsPacManInput;
 import es.ucm.fdi.ici.fsm.Transition;
 
+//Transition from "Perseguir" to "Huir"
 public class TPerseguirHuir implements Transition {
 
 	@Override
+	//Evaluate if the transition can be made
 	public boolean evaluate(Input in) {
-		MsPacManInput msPcinput= (MsPacManInput) in;
+		MsPacManInput pcin= (MsPacManInput) in;
 		
-		return msPcinput.danger() && !(msPcinput.combo() && msPcinput.attack());
+		return pcin.danger() && !(pcin.combo() && pcin.attack());
 	}
 
 	@Override

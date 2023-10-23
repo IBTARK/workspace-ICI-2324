@@ -7,8 +7,10 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
+//Action to avoid the closest PPill to the ghost
 public class ActEvitarPPill implements Action {
 	
+	//Owner of the FMS
 	private GHOST ghost;
 	
 	public ActEvitarPPill(GHOST g) {
@@ -16,13 +18,19 @@ public class ActEvitarPPill implements Action {
 	}
 	
 	@Override
+	//Execute the action, returning the necessary movement
 	public MOVE execute(Game game) {
+		//If the ghost does not require an action
+		if (!game.doesGhostRequireAction(ghost))
+			return  MOVE.NEUTRAL;
+		
 		int pos = game.getGhostCurrentNodeIndex(ghost);
 		MOVE lastMove = game.getGhostLastMoveMade(ghost);
-		if (!game.isJunction(pos))
-			return game.getPossibleMoves(pos, lastMove)[0];
 		
+		//Get the closest PPill
 		int ppill = MsPacManTools.closestPPill(game);
+		
+		//Get the movement that makes the ghost move away from the closest PPill to him
 		return game.getNextMoveAwayFromTarget(pos, ppill, lastMove, DM.PATH);
 	}
 

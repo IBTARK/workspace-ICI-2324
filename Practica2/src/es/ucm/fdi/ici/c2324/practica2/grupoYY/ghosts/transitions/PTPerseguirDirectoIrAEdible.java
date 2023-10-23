@@ -5,8 +5,12 @@ import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.GhostsInput;
 import es.ucm.fdi.ici.fsm.Transition;
 import pacman.game.Constants.GHOST;
 
+//Higher state "Perseguir"
+
+//Transition from "Perseguir directamente" to "Ir a compañero edible"
 public class PTPerseguirDirectoIrAEdible implements Transition {
 	
+	//Owner of the FMS
 	private GHOST ghost;
 	
 	public PTPerseguirDirectoIrAEdible(GHOST g) {
@@ -14,6 +18,7 @@ public class PTPerseguirDirectoIrAEdible implements Transition {
 	} 
 
 	@Override
+	//Evaluate if the transition can be made
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
 		

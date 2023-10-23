@@ -6,9 +6,11 @@ import pacman.game.Constants.DM;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
+//Action to run away from the ghost moving towards the closest PPill
 public class ActHuirHaciaPPill implements Action{
 
 	@Override
+	//Execute the action, returning the necessary movement
 	public MOVE execute(Game game) {
 		//MsPacMans current position
 		int pos = game.getPacmanCurrentNodeIndex();
