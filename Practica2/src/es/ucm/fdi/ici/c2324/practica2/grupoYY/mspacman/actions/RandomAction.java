@@ -9,7 +9,7 @@ import pacman.game.Game;
 public class RandomAction implements Action {
 
 	public RandomAction() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
     private Random rnd = new Random();
