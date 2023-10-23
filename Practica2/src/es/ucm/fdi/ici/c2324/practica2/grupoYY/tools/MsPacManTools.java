@@ -100,6 +100,15 @@ public class MsPacManTools {
 		}
 		return false;
 	}
+	
+	//Checks if there is a ppill in the given path coming 
+		public static boolean blockedByClosestPPill(Game game, int[] path) {
+			int ppillIndex = closestPPill(game);
+			for(int node : path) {
+				if(ppillIndex == node) return true;
+			}
+			return false;
+		}
 
 	public static GHOST getNearestChasing(Game game, int pos, MOVE lastMove) {
 		GHOST nearest = null;
