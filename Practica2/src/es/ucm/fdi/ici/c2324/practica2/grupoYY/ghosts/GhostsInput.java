@@ -146,7 +146,7 @@ public class GhostsInput extends Input {
 	
 	//Indicates if the nearest chasing ghost to the given ghost is blocked
 	public boolean nearestChasingBlocked(GHOST g) {
-		return true;
+		return nearestChasingBlocked.get(g);
 	}
 	
 	//Indicates if there are any edible none covered ghost near the given ghost
