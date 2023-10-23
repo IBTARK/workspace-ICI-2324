@@ -4,16 +4,18 @@ import es.ucm.fdi.ici.Input;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.MsPacManInput;
 import es.ucm.fdi.ici.fsm.Transition;
 
-public class NTEvitarPPillBuscarPills implements Transition{
+public class HTRodearPPillHuirHaciaPPill implements Transition {
+
 	@Override
 	public boolean evaluate(Input in) {
 		MsPacManInput pcin = (MsPacManInput) in;
 		
-		return !pcin.isPPillClose();
+		return pcin.isPPillClose() && !pcin.isNearestPPillBlocked();
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Neutral: EvitarPPill-> BuscarPills \n");
+		return String.format("Huir: HuirRodeandoHaciaPPill-> Huir hacia PPill \n");
 	}
+
 }
