@@ -15,10 +15,12 @@ public class GhostsInput extends Input {
 	//Thresholds
 	private static final int TH_PACMAN_PPILL = 30;
 	private static final int TH_CHASING = 30;
+	private static final int TH_EDIBLE = 30;
 
 	private Map<GHOST, Boolean> alive = new HashMap<>(); //Map indicating if the ghosts are alive or not
 	private Map<GHOST, Boolean> edible = new HashMap<>(); //Map indicating if the ghosts are edible or not
 	private Map<GHOST, GHOST> nearestChasing = new HashMap<>(); //Map indicating for every ghost the nearest chasing ghost to him
+	private Map<GHOST, GHOST> nearestEdible = new HashMap<>(); //Map indicating for every  ghost the nearest edible ghost to him
 	private Map<GHOST, Integer> pacmanDist = new HashMap<>(); //Map indicating for every ghost the distance from him to MsPacMan
 	private Map<GHOST, Integer> pacmanJunctDist = new HashMap<>(); //Map indicating for every ghost the distance from him to MsPacMans next junction
 	private Map<GHOST, Integer> ppillDist = new HashMap<>(); //Map indicating for every ghost the distance from him to his closest PPill
@@ -57,6 +59,7 @@ public class GhostsInput extends Input {
 			pacmanJunctDist.put(g, game.getShortestPathDistance(pos, pacmanNextJunction, lastMove));
 			ppillDist.put(g, (closestPPill < 0 ? Integer.MAX_VALUE : game.getShortestPathDistance(pos, closestPPill, lastMove)));
 			nearestChasingBlocked.put(g, GhostsTools.blocked(game, g, nearestChasing.get(g)));
+			nearestEdible.put(g, GhostsTools.getNearestEdible(game, g));
 			
 			HashMap<GHOST, Integer> distances = new HashMap<GHOST, Integer>();
 			//Compute the distances between ghosts
@@ -109,7 +112,9 @@ public class GhostsInput extends Input {
 	
 	//Indicates if there are any edible ghosts near to the given ghost
 	public boolean ediblesClose(GHOST g) {
-		return true; //TODO yikang
+		//Check if any of the distances between g and the other ghost is smaller than the threshold
+		return distanceBetweenGhosts.get(g).get(nearestEdible.get(g)) <= TH_EDIBLE;
+		
 	}
 	
 	//Gets the length of the shortest path from the given ghost to MsPacMan
