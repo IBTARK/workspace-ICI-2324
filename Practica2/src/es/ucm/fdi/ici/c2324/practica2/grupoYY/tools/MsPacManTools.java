@@ -49,6 +49,19 @@ public class MsPacManTools {
 		return node;
 	}
 	
+	public static int closestPill(Game game) {
+		int node = -1, dist = Integer.MAX_VALUE;
+		for (int p : game.getActivePillsIndices()) {
+			int aux = game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), 
+			 									   p, game.getPacmanLastMoveMade());
+			if (dist > aux) {
+				node = p;
+				dist = aux;
+			}
+		}
+		return node;
+	}
+	
 	public static GHOST getNearestEdible(Game game, int pos, MOVE lastMove) {
 		GHOST nearest = null;
 		int minDist = Integer.MAX_VALUE;
@@ -86,5 +99,21 @@ public class MsPacManTools {
 				if(game.getGhostCurrentNodeIndex(g) == node) return true;
 		}
 		return false;
+	}
+
+	public static GHOST getNearestChasing(Game game, int pos, MOVE lastMove) {
+		GHOST nearest = null;
+		int aux = Integer.MAX_VALUE, dist = Integer.MAX_VALUE;
+		
+		for (GHOST g : GHOST.values()) {
+			if(!game.isGhostEdible(g))
+				aux = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), 
+				 							   	   pos, game.getGhostLastMoveMade(g));
+			if (dist > aux) {
+				dist = aux;
+				nearest = g;
+			}
+		}
+		return nearest;
 	}
 }

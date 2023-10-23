@@ -7,11 +7,18 @@ import javax.swing.JPanel;
 
 import es.ucm.fdi.ici.Input;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.MsPacManInput;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActBuscarPills;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActFlanquearFantasma;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActHuirRodeandoPPill;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActKamikazeAPill;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.HTHuirFantasmaHuirVarios;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.HTHuirHaciaPPillRodearAPPill;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.HTHuirVariosHuirFantasma;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.HTRodearAPPillHuirVarios;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.PTFlanquearPerseguir;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.PTPerseguirFlanquear;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.THuirPerseguir;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.TKamikazeFantasmaHuir;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.TKamikazePillHuir;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.TNeutralHuir;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.TNeutralPerseguir;
@@ -48,12 +55,12 @@ public class MsPacMan extends PacmanController {
     	SimpleState hStateHaciaPPill = new SimpleState("Huir hacia PPill", null); //TODO
     	SimpleState hStateHuirRodeandoHaciaPPill = new SimpleState("Huir rodeando hacia PPill", new ActHuirRodeandoPPill());
     	Transition tranH1 = new HTHuirFantasmaHuirVarios();
-    	Transition tranH2 = null; //TODO
+    	Transition tranH2 = new HTHuirVariosHuirFantasma();
     	Transition tranH3 = null; //TODO
     	Transition tranH4 = null; //TODO
     	Transition tranH5 = null; //TODO
     	Transition tranH6 = new HTRodearAPPillHuirVarios();
-    	Transition tranH7 = null; //TODO
+    	Transition tranH7 = new HTHuirHaciaPPillRodearAPPill();
     	Transition tranH8 = null; //TODO
     	cfsmHuir.add(hStateHuirDeUnFantasma, tranH1, hStateHuirDeVariosFantasmas);
     	cfsmHuir.add(hStateHuirDeVariosFantasmas, tranH2, hStateHuirDeUnFantasma);
@@ -72,7 +79,7 @@ public class MsPacMan extends PacmanController {
     	SimpleState pStatePerseguirFantasma = new SimpleState("Perseguir fantasma", null); //TODO
     	SimpleState pStateFlanquearFantasma = new SimpleState("Flanquear fantasma", new ActFlanquearFantasma());
     	Transition tranP1 = new PTPerseguirFlanquear();
-    	Transition tranP2 = null; //TODO
+    	Transition tranP2 = new PTFlanquearPerseguir();
     	cfsmHuir.add(pStatePerseguirFantasma, tranP1, pStateFlanquearFantasma);
     	cfsmHuir.add(pStateFlanquearFantasma, tranP2, pStatePerseguirFantasma);
     	cfsmHuir.ready(pStatePerseguirFantasma);
@@ -81,7 +88,7 @@ public class MsPacMan extends PacmanController {
     	FSM cfsmNeutral = new FSM("Neutral");
     	GraphFSMObserver neutralObserver = new GraphFSMObserver(cfsmNeutral.toString());
     	cfsmNeutral.addObserver(neutralObserver);
-    	SimpleState nStateBuscarPills = new SimpleState("Buscar pills", null); //TODO
+    	SimpleState nStateBuscarPills = new SimpleState("Buscar pills", new ActBuscarPills());
     	SimpleState nStateEvitarPPill = new SimpleState("Evitar PPill", null); //TODO
     	Transition tranN1 = null; //TODO
     	Transition tranN2 = null; //TODO
@@ -94,16 +101,16 @@ public class MsPacMan extends PacmanController {
     	CompoundState compoundNeutral = new CompoundState("Neutral", cfsmNeutral);
     	
     	SimpleState stateKamikazeFant = new SimpleState("Kamikaze a fantasma", null); //TODO
-    	SimpleState stateKamikazePill = new SimpleState("Kamikaze a pills", null); //TODO
+    	SimpleState stateKamikazePill = new SimpleState("Kamikaze a pills", new ActKamikazeAPill());
     	
     	Transition tran1 = new TPerseguirHuir();
     	Transition tran2 = null; //TODO
     	Transition tran3 = new TNeutralHuir();
-    	Transition tran4 = null; //TODO
+    	Transition tran4 = new THuirPerseguir();
     	Transition tran5 = new TNeutralPerseguir();
     	Transition tran6 = null; //TODO
     	Transition tran7 = new TPerseguirKamikazeFantasma();
-    	Transition tran8 = null; //TODO
+    	Transition tran8 = new TKamikazeFantasmaHuir();
     	Transition tran9 = new TKamikazePillHuir();
     	Transition tran10 = null; //TODO
     	

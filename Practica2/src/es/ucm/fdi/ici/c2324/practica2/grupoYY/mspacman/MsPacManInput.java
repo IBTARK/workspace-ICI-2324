@@ -35,11 +35,13 @@ public class MsPacManInput extends Input {
 	@Override
 	public void parseInput() {
 		for (GHOST g : GHOST.values()) {
-			if (TH_CHASING_GHOST > game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), 
+			if (!game.isGhostEdible(g)
+				&& TH_CHASING_GHOST > game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), 
 											 					game.getPacmanCurrentNodeIndex(), 
 											 					game.getGhostLastMoveMade(g)))
 				dangerLevel++;
-			if (TH_EDIBLE_GHOST > game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), 
+			if (game.isGhostEdible(g)
+				&& TH_EDIBLE_GHOST > game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), 
 											 				   game.getPacmanCurrentNodeIndex(), 
 											 				   game.getGhostLastMoveMade(g)))
 				attack = true;
