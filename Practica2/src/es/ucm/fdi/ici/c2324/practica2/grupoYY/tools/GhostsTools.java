@@ -6,6 +6,27 @@ import pacman.game.Game;
 
 public class GhostsTools {
 
+	//Get the closest PPill to the given ghost
+	public static int getClosestPPill(Game game, GHOST ghost) {
+		int minDist = Integer.MAX_VALUE, closestPPill = -1;
+		//Index of the ghost
+		int pos = game.getGhostCurrentNodeIndex(ghost);
+		//Last movement made by the ghost
+		MOVE lastMove = game.getPacmanLastMoveMade();
+		
+		//Search for the closest PPill to the ghost
+		for(int i : game.getActivePowerPillsIndices()) {
+			int dist = game.getShortestPathDistance(pos, i, lastMove);
+			if(dist < minDist) {
+				minDist = dist;
+				closestPPill = i;
+			}
+		}
+		
+		return closestPPill;
+	}
+	
+	
 	public static GHOST getNearestChasing(Game game, GHOST ghost) {
 		GHOST nearest = null;
 		int minDist = Integer.MAX_VALUE;

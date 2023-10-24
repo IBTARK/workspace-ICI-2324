@@ -24,12 +24,13 @@ public class GhostsInput extends Input {
 	private Map<GHOST, GHOST> nearestEdible = new HashMap<>(); //Map indicating for every  ghost the nearest edible ghost to him
 	private Map<GHOST, Integer> pacmanDist = new HashMap<>(); //Map indicating for every ghost the distance from him to MsPacMan
 	private Map<GHOST, Integer> pacmanJunctDist = new HashMap<>(); //Map indicating for every ghost the distance from him to MsPacMans next junction
-	private Map<GHOST, Integer> ppillDist = new HashMap<>(); //Map indicating for every ghost the distance from him to his closest PPill
+	private Map<GHOST, Integer> ppillDist = new HashMap<>(); //Map indicating for every ghost the distance from him to MsPacMans closest PPill
 	private Map<GHOST, Boolean> nearestChasingBlocked = new HashMap<>(); //Map indicating for every ghost if the nearest ghost to him is blocked 
 	private Map<GHOST, Map<GHOST, Integer>> distanceBetweenGhosts = new HashMap<>(); //Map of distances between ghosts
 	private Map<GHOST, Map<Integer, Integer>> distanceGhostsPPills = new HashMap<>(); //Map of the distances of the ghost to every PPill remaining
 	private double minPacmanDistancePPill; //Distance from MsPacMan to the nearest PPill to her
 	private int closestPPillMsPacMan; //PPill MsPacMan is closest to
+	private int numPPills; //Number of remaining PPills
 	
 	public GhostsInput(Game game) {
 		super(game);
@@ -51,6 +52,8 @@ public class GhostsInput extends Input {
 			}
 		}
 		closestPPillMsPacMan = closestPPill;
+		
+		numPPills = game.getNumberOfActivePowerPills();
 		
 		for (GHOST g : GHOST.values()) {
 			int pos = game.getGhostCurrentNodeIndex(g);
@@ -182,5 +185,10 @@ public class GhostsInput extends Input {
 	//Indicate if a ghost is in danger (close to MsPacMan)
 	public boolean danger(GHOST g) {
 		return pacmanDist.get(g) <= TH_DANGER;
+	}
+	
+	//Indicate the number of remaining PPills
+	public int numPPills() {
+		return numPPills;
 	}
 }
