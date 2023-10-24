@@ -28,12 +28,12 @@ public class ActHuirDeFantasma implements Action {
 		GHOST nearestChasing = MsPacManTools.getNearestChasing(game, pos, lastMove);
 		int ghostIndex = game.getGhostCurrentNodeIndex(nearestChasing);
 		MOVE ghostMove = game.getGhostLastMoveMade(nearestChasing);
-		int[] ghostPath = game.getShortestPath(ghostIndex, pos, ghostMove);
 		
 		// Nearest edible ghost index
 		int nearestEdibleGhostIndex = game.getGhostCurrentNodeIndex(MsPacManTools.getNearestEdible(game, pos, lastMove));
 		
 		// Nearest PPill index
+		// TODO annadir que el bucle ignore el camino con PPill a no ser que sea estrictamente necesario
 		int nearestPPill = MsPacManTools.closestPPill(game);
 		
 		/*
@@ -71,11 +71,22 @@ public class ActHuirDeFantasma implements Action {
 				//Increasing the distance
 				distance++;
 				//Moving to the next node
-				curNode = game.getNeighbour(curNode, game.getPossibleMoves(curNode, onlyMove)[0]);
+				onlyMove = game.getPossibleMoves(curNode, onlyMove)[0];
+				curNode = game.getNeighbour(curNode, onlyMove);
 			}
 			// In case of having reached a junction, check if the ghost can reach that junction before us
-			if(availableMove && (game.getShortestPathDistance(ghostIndex, curNode, ghostMove) <= distance))
-				availableMove = false;
+			if(availableMove && (game.getShortestPathDistance(ghostIndex, curNode, ghostMove) <= distance)) {
+				// We have to calculate the move the ghost does arriving at the junction.
+				int[] ghostPath = game.getShortestPath(ghostIndex, curNode, ghostMove);
+				// The last ghost move (ghostPath[length-1] to ghostPath[length-2]) or ghostMove arriving at the junction.
+				MOVE ghostArrivingMove = ghostPath.length > 1 ? 
+								game.getMoveToMakeToReachDirectNeighbour(ghostPath[ghostPath.length-1], ghostPath[ghostPath.length-2]) : 
+								ghostMove;
+				// If ghostArrivingMove is different from our onlyMove (arriving move at the junction) then the ghost can get us.
+				if(ghostArrivingMove != onlyMove) {
+					availableMove = false;
+				}
+			}
 			
 			// Update de maxScore and nextMove
 			if(availableMove && auxScore > maxScore) {
