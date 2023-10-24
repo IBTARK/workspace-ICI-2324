@@ -23,6 +23,6 @@ public class ActMuerto implements Action {
 
 	@Override
 	public String getActionId() {
-		return "Dispersarse";
+		return "Muerto";
 	}
 }

@@ -7,6 +7,8 @@ import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.GhostsInput;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActDispersarse;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActEvitarPPill;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActPerseguirDirectamente;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActHuirDirectamente;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActFlanquear;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.HTHuirDirectoDispersarse;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.HTHuirDirectoIrAChasing;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.HTMantenerDistanciasDispersarse;
@@ -50,7 +52,7 @@ public class Ghosts extends GhostController {
 			FSM cfsmHuir = new FSM("Huir");
 			GraphFSMObserver obsHuir = new GraphFSMObserver(cfsmHuir.toString());
 			cfsmHuir.addObserver(obsHuir);
-			SimpleState hStateHuirDirectamente = null; 	//TODO
+			SimpleState hStateHuirDirectamente = new SimpleState(new ActHuirDirectamente(ghost));
 			SimpleState hStateIrAChasing = null;		//TODO
 			SimpleState hStateDispersarse = new SimpleState(new ActDispersarse(ghost));
 			SimpleState hStateMantenerDistancias = null;//TODO
@@ -73,7 +75,7 @@ public class Ghosts extends GhostController {
 			cfsmPerseguir.addObserver(obsPerseguir);
 			SimpleState pStatePerseguirDirectamente = new SimpleState(new ActPerseguirDirectamente(ghost));
 			SimpleState pStateSeperarseDeFantasma = null; 	//TODO
-			SimpleState pStateFlanquear = null; 			//TODO
+			SimpleState pStateFlanquear = new SimpleState(new ActFlanquear(ghost));
 			SimpleState pStateCubrirPPill = null; 			//TODO
 			SimpleState pStateEvitarPPill = new SimpleState(new ActEvitarPPill(ghost));
 			SimpleState pStateIrAEdible = null; 			//TODO
