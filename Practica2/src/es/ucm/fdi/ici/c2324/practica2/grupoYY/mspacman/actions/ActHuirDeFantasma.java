@@ -68,7 +68,10 @@ public class ActHuirDeFantasma implements Action {
 				//Check if the current node is a pill (add score)
 				if(activePills.contains(curNode)) 
 					auxScore++;
+				//Increasing the distance
 				distance++;
+				//Moving to the next node
+				curNode = game.getNeighbour(curNode, game.getPossibleMoves(curNode, onlyMove)[0]);
 			}
 			// In case of having reached a junction, check if the ghost can reach that junction before us
 			if(availableMove && (game.getShortestPathDistance(ghostIndex, curNode, ghostMove) <= distance))
