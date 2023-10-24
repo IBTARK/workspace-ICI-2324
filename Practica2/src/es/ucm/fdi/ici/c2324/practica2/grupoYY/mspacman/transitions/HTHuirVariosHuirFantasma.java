@@ -19,7 +19,7 @@ public class HTHuirVariosHuirFantasma implements Transition {
 	
 	@Override
 	public String toString() {
-		return String.format("Huir: HuirDeVariosFantasmas->HuirDeUnFantasma\n");
+		return String.format("Huir: HuirDeVariosFantasmas -> HuirDeUnFantasma\n");
 	}
 
 }

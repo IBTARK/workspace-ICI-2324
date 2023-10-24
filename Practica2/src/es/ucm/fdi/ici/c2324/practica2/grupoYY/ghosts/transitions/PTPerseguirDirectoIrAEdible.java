@@ -27,6 +27,6 @@ public class PTPerseguirDirectoIrAEdible implements Transition {
 
 	@Override
 	public String toString() {
-		return String.format("Perseguir: PerseguirDirectamente->IrACompañeroEdible \n");
+		return String.format("Perseguir: PerseguirDirectamente -> IrACompañeroEdible \n");
 	}
 }

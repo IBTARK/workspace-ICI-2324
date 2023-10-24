@@ -17,7 +17,7 @@ public class TKamikazePillHuir implements Transition {
 	
 	@Override
 	public String toString() {
-		return String.format("KamikazePill->Huir Transition \n");
+		return String.format("KamikazePill -> Huir Transition \n");
 	}
 
 }

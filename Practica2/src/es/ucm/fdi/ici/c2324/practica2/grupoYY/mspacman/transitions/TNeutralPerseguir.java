@@ -17,7 +17,7 @@ public class TNeutralPerseguir implements Transition {
 	
 	@Override
 	public String toString() {
-		return String.format("Neutral->Perseguir Transition \n");
+		return String.format("Neutral -> Perseguir Transition \n");
 	}
 
 }

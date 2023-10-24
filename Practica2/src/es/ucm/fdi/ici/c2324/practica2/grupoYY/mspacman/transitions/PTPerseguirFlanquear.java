@@ -19,6 +19,6 @@ public class PTPerseguirFlanquear implements Transition {
 
 	@Override
 	public String toString() {
-		return String.format("Perseguir: PerseguirFantasma->FlanquearFantasma \n");
+		return String.format("Perseguir: PerseguirFantasma -> FlanquearFantasma \n");
 	}
 }

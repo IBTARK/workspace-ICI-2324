@@ -27,6 +27,6 @@ public class HTHuirDirectoIrAChasing implements Transition {
 
 	@Override
 	public String toString() {
-		return String.format("Huir: HuirDirectamente->IrACompañeroChasing \n");
+		return String.format("Huir: HuirDirectamente -> IrACompañeroChasing \n");
 	}
 }

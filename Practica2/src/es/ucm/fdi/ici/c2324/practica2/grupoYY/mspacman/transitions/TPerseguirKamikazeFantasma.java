@@ -17,6 +17,6 @@ public class TPerseguirKamikazeFantasma implements Transition {
 
 	@Override
 	public String toString() {
-		return String.format("Perseguir->KamikazeFantasma Transition \n");
+		return String.format("Perseguir -> KamikazeFantasma Transition \n");
 	}
 }

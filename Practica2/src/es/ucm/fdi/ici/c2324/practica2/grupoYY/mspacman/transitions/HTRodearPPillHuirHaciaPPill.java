@@ -19,7 +19,7 @@ public class HTRodearPPillHuirHaciaPPill implements Transition {
 
 	@Override
 	public String toString() {
-		return String.format("Huir: HuirRodeandoHaciaPPill-> Huir hacia PPill \n");
+		return String.format("Huir: HuirRodeandoHaciaPPill -> Huir hacia PPill \n");
 	}
 
 }

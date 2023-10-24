@@ -20,7 +20,7 @@ public class NTBuscarPillsEvitarPPill implements Transition {
 
 	@Override
 	public String toString() {
-		return String.format("Neutral: BuscarPills-> EvitarPPill \n");
+		return String.format("Neutral: BuscarPills -> EvitarPPill \n");
 	}
 
 }

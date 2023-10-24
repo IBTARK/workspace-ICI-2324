@@ -23,11 +23,11 @@ public class PTPerseguirDirectoCubrirPPill implements Transition {
 		GhostsInput gin = (GhostsInput) in;
 		
 		return !gin.chasingClose(ghost) && !gin.ppillCovered() && !gin.msPacManFarFromPPill() 
-				&& gin.ppillDistance(ghost) < gin.getMinPacmanDistancePPill();
+				&& gin.closestPPillDistance(ghost) < gin.getMinPacmanDistancePPill();
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Perseguir: PerseguirDirectamente->CubrirPPill \n");
+		return String.format("Perseguir: PerseguirDirectamente -> CubrirPPill \n");
 	}
 }

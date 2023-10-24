@@ -16,6 +16,7 @@ public class GhostsInput extends Input {
 	private static final int TH_PACMAN_PPILL = 30;
 	private static final int TH_CHASING = 30;
 	private static final int TH_EDIBLE = 30;
+	private static final int TH_DANGER = 30;
 
 	private Map<GHOST, Boolean> alive = new HashMap<>(); //Map indicating if the ghosts are alive or not
 	private Map<GHOST, Boolean> edible = new HashMap<>(); //Map indicating if the ghosts are edible or not
@@ -26,7 +27,9 @@ public class GhostsInput extends Input {
 	private Map<GHOST, Integer> ppillDist = new HashMap<>(); //Map indicating for every ghost the distance from him to his closest PPill
 	private Map<GHOST, Boolean> nearestChasingBlocked = new HashMap<>(); //Map indicating for every ghost if the nearest ghost to him is blocked 
 	private Map<GHOST, Map<GHOST, Integer>> distanceBetweenGhosts = new HashMap<>(); //Map of distances between ghosts
+	private Map<GHOST, Map<Integer, Integer>> distanceGhostsPPills = new HashMap<>(); //Map of the distances of the ghost to every PPill remaining
 	private double minPacmanDistancePPill; //Distance from MsPacMan to the nearest PPill to her
+	private int closestPPillMsPacMan; //PPill MsPacMan is closest to
 	
 	public GhostsInput(Game game) {
 		super(game);
@@ -37,7 +40,7 @@ public class GhostsInput extends Input {
 		int pacman = game.getPacmanCurrentNodeIndex();
 		int pacmanNextJunction = GhostsTools.nextJunction(game, pacman, game.getPacmanLastMoveMade());
 		
-		//If possible, the index of the nearest PPill to MsPacMan is compute
+		//If possible, the index and the distance of the nearest PPill to MsPacMan is compute
 		int closestPPill = -1;
 		this.minPacmanDistancePPill = Double.MAX_VALUE;
 		for(int ppill: game.getPowerPillIndices()) {
@@ -47,6 +50,7 @@ public class GhostsInput extends Input {
 				closestPPill = ppill;
 			}
 		}
+		closestPPillMsPacMan = closestPPill;
 		
 		for (GHOST g : GHOST.values()) {
 			int pos = game.getGhostCurrentNodeIndex(g);
@@ -61,6 +65,13 @@ public class GhostsInput extends Input {
 			nearestChasingBlocked.put(g, GhostsTools.blocked(game, g, nearestChasing.get(g)));
 			nearestEdible.put(g, GhostsTools.getNearestEdible(game, g));
 			
+			HashMap<Integer, Integer> distancePPills = new HashMap<Integer, Integer>();
+			//Compute the distances between the ghost g to every remaining PPill
+			for(int ppill : game.getActivePowerPillsIndices()) {
+				distancePPills.put(ppill, game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), ppill, game.getGhostLastMoveMade(g)));
+			}
+			distanceGhostsPPills.put(g, distancePPills);
+			
 			HashMap<GHOST, Integer> distances = new HashMap<GHOST, Integer>();
 			//Compute the distances between ghosts
 			for(GHOST g2 : GHOST.values()) {
@@ -74,32 +85,37 @@ public class GhostsInput extends Input {
 		}
 	}
 
-	//Indicates if the given ghost is alive
+	//Indicate if the given ghost is alive
 	public boolean isAlive(GHOST g) {
 		return alive.get(g);
 	}
 	
-	//Indicates if the given ghost is edible
+	//Indicate if the given ghost is edible
 	public boolean edible(GHOST g) {
 		return edible.get(g);
 	}
 	
-	//Gets the distance from MsPacMan to the closest PPill to her
+	//Indicate the closest PPill to MsPacMan
+	public int getClosestPPillMsPacMan() {
+		return closestPPillMsPacMan;	
+	}
+	
+	//Get the distance from MsPacMan to the closest PPill to her
 	public double getMinPacmanDistancePPill() {
 		return minPacmanDistancePPill;
 	}
 
-	//Indicates if MsPacMan is far from the closest PPill to her
+	//Indicate if MsPacMan is far from the closest PPill to her
 	public boolean msPacManFarFromPPill() {
 		return minPacmanDistancePPill > TH_PACMAN_PPILL;
 	}
 	
-	//Returns the nearest chasing ghost to the given one
+	//Return the nearest chasing ghost to the given one
 	public GHOST getNearestChasing(GHOST g) {
 		return nearestChasing.get(g);
 	}
 	
-	//Checks if there are chasing ghost near the given ghost
+	//Check if there are chasing ghost near the given ghost
 	public boolean chasingClose(GHOST g) {
 		
 		//Check if any of the distances between g and the chasing ghosts is smaller than the threshold
@@ -110,34 +126,38 @@ public class GhostsInput extends Input {
 		return false;
 	}
 	
-	//Indicates if there are any edible ghosts near to the given ghost
+	//Indicate if there are any edible ghosts near to the given ghost
 	public boolean ediblesClose(GHOST g) {
 		//Check if any of the distances between g and the other ghost is smaller than the threshold
 		return distanceBetweenGhosts.get(g).get(nearestEdible.get(g)) <= TH_EDIBLE;
-		
 	}
 	
-	//Gets the length of the shortest path from the given ghost to MsPacMan
+	//Get the length of the shortest path from the given ghost to MsPacMan
 	public int getDistToMsPacMan(GHOST g) {
 		return pacmanDist.get(g);
 	}
 	
-	//Gets the length of the shortest path from the given ghost to MsPacMans next junction
+	//Get the length of the shortest path from the given ghost to MsPacMans next junction
 	public int getDistToMsPacManNextJunction(GHOST g) {
 		return pacmanJunctDist.get(g);
 	}
 	
-	//Indicates if the given PPill is covered by a ghost
+	//Indicate if the given PPill is covered by a ghost
 	public boolean ppillCovered(int PPill) {
 		return true; //TODO ibon
 	}
+
+	//Get the distance from the given ghost to the given PPill
+	public int ppillDistance(GHOST g, int ppill) {
+		return distanceGhostsPPills.get(g).get(ppill);
+	}
 	
-	//Gets the distance from the given ghost to the nearest PPill to him
-	public int ppillDistance(GHOST g) {
+	//Get the distance from the given ghost to the nearest PPill to him
+	public int closestPPillDistance(GHOST g) {
 		return ppillDist.get(g);
 	}
 	
-	//Checks if the given ghost is the nearest one to MsPacMan
+	//Check if the given ghost is the nearest one to MsPacMan
 	public boolean isNearestEdible(GHOST g) {
 		//If the given ghost is not edible, it can't be the nearest edible one to MsPacMan
 		if(!edible.get(g)) return false;
@@ -149,13 +169,18 @@ public class GhostsInput extends Input {
 		return true;
 	}
 	
-	//Indicates if the nearest chasing ghost to the given ghost is blocked
+	//Indicate if the nearest chasing ghost to the given ghost is blocked
 	public boolean nearestChasingBlocked(GHOST g) {
 		return nearestChasingBlocked.get(g);
 	}
 	
-	//Indicates if there are any edible none covered ghost near the given ghost
+	//Indicate if there are any edible none covered ghost near the given ghost
 	public boolean ediblesNotCoveredClose(GHOST g) {
 		return true; //TODO yikang
+	}
+	
+	//Indicate if a ghost is in danger (close to MsPacMan)
+	public boolean danger(GHOST g) {
+		return pacmanDist.get(g) <= TH_DANGER;
 	}
 }

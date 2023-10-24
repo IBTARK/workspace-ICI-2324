@@ -7,13 +7,13 @@ import pacman.game.Constants.GHOST;
 
 //Higher state "Perseguir"
 
-//Transition from "Separarse de otro fantasma" to "Perseguir directamente"
-public class PTSepararseFantasmaPerseguirDirecto implements Transition {
+//Transition from "Perseguir directamente" to "Evitar PPill"
+public class PTPerseguirDirectoEvitarPPill implements Transition {
 	
 	//Owner of the FMS
 	private GHOST ghost;
 	
-	public PTSepararseFantasmaPerseguirDirecto(GHOST g) {
+	public PTPerseguirDirectoEvitarPPill(GHOST g) {
 		ghost = g;
 	} 
 
@@ -21,12 +21,12 @@ public class PTSepararseFantasmaPerseguirDirecto implements Transition {
 	//Evaluate if the transition can be made
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
-		
-		return !gin.chasingClose(ghost) && gin.getDistToMsPacMan(ghost) < gin.getDistToMsPacManNextJunction(ghost);
+	
+		return !gin.chasingClose(ghost) && gin.msPacManFarFromPPill() && gin.ppillDistance(ghost, gin.getClosestPPillMsPacMan()) > gin.getMinPacmanDistancePPill();
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Perseguir: SepararseDeOtroFantasma -> PerseguirDirectamente \n");
+		return String.format("Perseguir: PerseguirDirectamente -> EvitarPPill \n");
 	}
 }
