@@ -1,19 +1,21 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions;
 
+import java.util.Random;
+
 import es.ucm.fdi.ici.Action;
-import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-public class ActHuirDirectamente implements Action {
+//Action to maintain distance to MsPacMan (the movement is made randomly, to introduce a random factor)
+public class ActMantenerDistancias implements Action {
 	//Owner of the FMS
 	private GHOST ghost;
 	
-	public ActHuirDirectamente(GHOST g) {
+	public ActMantenerDistancias(GHOST g) {
 		ghost = g;
 	}
-	
+
 	@Override
 	//Execute the action, returning the necessary movement
 	public MOVE execute(Game game) {
@@ -21,15 +23,13 @@ public class ActHuirDirectamente implements Action {
 		if (!game.doesGhostRequireAction(ghost))
 			return  MOVE.NEUTRAL;
 		
-		int pos = game.getGhostCurrentNodeIndex(ghost);
-		MOVE lastMove = game.getGhostLastMoveMade(ghost);
-		
-		//Get the movement that makes the ghost move towards MsPacMan
-		return game.getNextMoveAwayFromTarget(pos, game.getPacmanCurrentNodeIndex(), lastMove, DM.PATH);
+		//Get a random movement
+		MOVE[] moves = game.getPossibleMoves(game.getGhostCurrentNodeIndex(ghost), game.getGhostLastMoveMade(ghost));
+		return moves[(new Random()).nextInt(moves.length)];
 	}
-	
+
 	@Override
 	public String getActionId() {
-		return "Huir directamente";
+		return null;
 	}
 }

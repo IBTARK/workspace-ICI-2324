@@ -26,32 +26,43 @@ public class GhostsTools {
 		return closestPPill;
 	}
 	
-	
+	//Nearest chasing ghost to the given one
 	public static GHOST getNearestChasing(Game game, GHOST ghost) {
 		GHOST nearest = null;
 		int minDist = Integer.MAX_VALUE;
+		
+		//Find the nearest chasing ghost 
 		for (GHOST g : GHOST.values()) {
-			int dist = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(ghost), 
-													game.getGhostCurrentNodeIndex(g), 
-													game.getGhostLastMoveMade(ghost));
-			if (!g.equals(ghost) && !game.isGhostEdible(g) && dist >= 0 && minDist > dist) {
-				minDist = dist;
-				nearest = g;
+			//If the ghost is not on the lair
+			if(game.getGhostLairTime(g) <= 0) {
+				int dist = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(ghost), 
+						game.getGhostCurrentNodeIndex(g), 
+						game.getGhostLastMoveMade(ghost));
+				if (!g.equals(ghost) && !game.isGhostEdible(g) && minDist > dist) {
+					minDist = dist;
+					nearest = g;
+				}
 			}
 		}
 		return nearest;
 	}
 	
+	//Nearest edible ghost to the given one
 	public static GHOST getNearestEdible(Game game, GHOST ghost) {
 		GHOST nearest = null;
 		int minDist = Integer.MAX_VALUE;
+		
+		//Find the nearest edible ghost
 		for (GHOST g : GHOST.values()) {
-			int dist = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(ghost), 
-													game.getGhostCurrentNodeIndex(g), 
-													game.getGhostLastMoveMade(ghost));
-			if (!g.equals(ghost) && game.isGhostEdible(g) && dist >= 0 && minDist > dist) {
-				minDist = dist;
-				nearest = g;
+			//If the ghost is not on the lair
+			if(game.getGhostLairTime(g) <= 0) {
+				int dist = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(ghost), 
+						game.getGhostCurrentNodeIndex(g), 
+						game.getGhostLastMoveMade(ghost));
+				if (!g.equals(ghost) && game.isGhostEdible(g) && dist >= 0 && minDist > dist) {
+					minDist = dist;
+					nearest = g;
+				}
 			}
 		}
 		return nearest;
@@ -73,5 +84,32 @@ public class GhostsTools {
 			if (game.getPacmanCurrentNodeIndex() == node)
 				return true;
 		return false;
+	}
+	
+	//Nearest chasing not blocked ghost to the given one (CAREFUL: it can return null)
+	public static GHOST getNearestChasingNotBlocked(Game game, GHOST ghost) {
+		GHOST nearest = null;
+		int minDist = Integer.MAX_VALUE;
+		
+		//Find the nearest chasing ghost 
+		for (GHOST g : GHOST.values()) {
+			//If the ghost is not on the lair
+			if(game.getGhostLairTime(g) <= 0) {
+				//Index of the given ghost
+				int pos = game.getGhostCurrentNodeIndex(ghost);
+				//Index of the other ghost
+				int pos2 = game.getGhostCurrentNodeIndex(g);
+				//Last movement of the given ghost
+				MOVE lastMove = game.getGhostLastMoveMade(ghost);
+				
+				int dist = game.getShortestPathDistance(pos, pos2, lastMove);
+				
+				if (!g.equals(ghost) && !game.isGhostEdible(g) && !blocked(game, ghost, g) && minDist > dist) {
+					minDist = dist;
+					nearest = g;
+				}
+			}
+		}
+		return nearest;
 	}
 }

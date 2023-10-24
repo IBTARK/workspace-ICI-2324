@@ -2,19 +2,21 @@ package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions;
 
 import es.ucm.fdi.ici.Action;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.GhostsTools;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.MsPacManTools;
+import pacman.game.Game;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
-import pacman.game.Game;
 
-public class ActFlanquear implements Action {
+//Action to go towards the nearest chasing not blocked ghost
+public class ActIrAChasing implements Action {
+	
 	//Owner of the FMS
 	private GHOST ghost;
 	
-	public ActFlanquear(GHOST g) {
+	public ActIrAChasing(GHOST g) {
 		ghost = g;
 	}
-	
 
 	@Override
 	//Execute the action, returning the necessary movement
@@ -22,18 +24,19 @@ public class ActFlanquear implements Action {
 		//If the ghost does not require an action
 		if (!game.doesGhostRequireAction(ghost))
 			return  MOVE.NEUTRAL;
-		
+		//Position of the ghost 
 		int pos = game.getGhostCurrentNodeIndex(ghost);
+		//Closest chasing not blocked ghost to "ghost"
+		GHOST nearestChasingNotBlocked = GhostsTools.getNearestChasingNotBlocked(game, ghost);
+		//Last movement made by the ghost
 		MOVE lastMove = game.getGhostLastMoveMade(ghost);
+				
 		
-		//Get the movement that makes the ghost move towards MsPacMans Next Junction
-		return game.getNextMoveTowardsTarget(pos, 
-				GhostsTools.nextJunction(game, game.getPacmanCurrentNodeIndex(),game.getPacmanLastMoveMade()), 
-				lastMove, DM.PATH);
+		return game.getNextMoveTowardsTarget(pos, game.getGhostCurrentNodeIndex(nearestChasingNotBlocked), lastMove, DM.PATH);
 	}
 	
 	@Override
 	public String getActionId() {
-		return "Flanquear ";
+		return "Evitar Power Pill";
 	}
 }

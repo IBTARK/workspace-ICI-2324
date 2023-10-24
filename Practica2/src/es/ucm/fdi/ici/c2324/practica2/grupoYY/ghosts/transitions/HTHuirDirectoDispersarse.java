@@ -22,7 +22,7 @@ public class HTHuirDirectoDispersarse implements Transition {
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
 		
-		return !gin.isNearestEdible(ghost) && gin.ediblesClose(ghost) && (!gin.chasingClose(ghost) || gin.nearestChasingBlocked(ghost));
+		return !gin.isNearestEdible(ghost) && gin.ediblesClose(ghost) && !gin.isNearestchasingNotBlockedClose(ghost);
 	}
 
 	@Override

@@ -22,7 +22,7 @@ public class PTPerseguirDirectoEvitarPPill implements Transition {
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
 	
-		return !gin.chasingClose(ghost) && gin.msPacManFarFromPPill() && gin.ppillDistance(ghost, gin.getClosestPPillMsPacMan()) > gin.getMinPacmanDistancePPill();
+		return !gin.chasingClose(ghost) && gin.msPacManFarFromPPill() && gin.getClosestPPillMsPacMan() != -1 && gin.ppillDistance(ghost, gin.getClosestPPillMsPacMan()) > gin.getMinPacmanDistancePPill();
 	}
 
 	@Override

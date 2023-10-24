@@ -7,13 +7,13 @@ import pacman.game.Constants.GHOST;
 
 //Higher state "Huir"
 
-//Transition from "Huir directamente" to "Ir a compañero chasing"
-public class HTHuirDirectoIrAChasing implements Transition {
+//Transition from "Ir a compañero chasing" to "Huir directamente"
+public class HTIrAChasingHuirDirecto implements Transition {
 	
 	//Owner of the FSM
 	private GHOST ghost;
 	
-	public HTHuirDirectoIrAChasing(GHOST g) {
+	public HTIrAChasingHuirDirecto(GHOST g) {
 		ghost = g;
 	} 
 
@@ -22,11 +22,11 @@ public class HTHuirDirectoIrAChasing implements Transition {
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
 		
-		return gin.isNearestchasingNotBlockedClose(ghost);
+		return gin.getDistanceBetweenGhosts(ghost, gin.getNearestChasing(ghost)) == 0;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Huir: HuirDirectamente -> IrACompañeroChasing \n");
+		return String.format("Huir: IrACompañeroChasing -> HuirDirectamente \n");
 	}
 }

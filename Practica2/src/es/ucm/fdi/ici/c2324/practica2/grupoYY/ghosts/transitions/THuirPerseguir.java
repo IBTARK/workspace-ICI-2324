@@ -5,28 +5,26 @@ import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.GhostsInput;
 import es.ucm.fdi.ici.fsm.Transition;
 import pacman.game.Constants.GHOST;
 
-//Higher state "Huir"
-
-//Transition from "Huir directamente" to "Ir a compañero chasing"
-public class HTHuirDirectoIrAChasing implements Transition {
+//Transition from "Huir" to "Perseguir"
+public class THuirPerseguir implements Transition {
 	
-	//Owner of the FSM
+	//Owner of the FMS
 	private GHOST ghost;
 	
-	public HTHuirDirectoIrAChasing(GHOST g) {
+	public THuirPerseguir(GHOST g) {
 		ghost = g;
-	} 
+	}
 
 	@Override
 	//Evaluate if the transition can be made
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
 		
-		return gin.isNearestchasingNotBlockedClose(ghost);
+		return !gin.edible(ghost) && gin.isAlive(ghost);
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Huir: HuirDirectamente -> IrACompañeroChasing \n");
+		return String.format("Huir -> Perseguir \n");
 	}
 }
