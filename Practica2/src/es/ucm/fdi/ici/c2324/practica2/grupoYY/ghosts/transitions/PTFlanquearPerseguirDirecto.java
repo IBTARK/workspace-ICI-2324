@@ -8,12 +8,12 @@ import pacman.game.Constants.GHOST;
 //Higher state "Perseguir"
 
 //Transition from "Flanquear" to "Perseguir directamente"
-public class PTFlanquearPerseguirDireccto implements Transition {
+public class PTFlanquearPerseguirDirecto implements Transition {
 	
 	//Owner of the FMS
 	private GHOST ghost;
 	
-	public PTFlanquearPerseguirDireccto(GHOST g) {
+	public PTFlanquearPerseguirDirecto(GHOST g) {
 		ghost = g;
 	} 
 
