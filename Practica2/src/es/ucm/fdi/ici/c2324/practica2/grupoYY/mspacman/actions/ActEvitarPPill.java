@@ -28,8 +28,8 @@ public class ActEvitarPPill implements Action {
 			int[] p = game.getShortestPath(pos, nextJunc, move);
 			//Check if there isn't a PPill in the path p
 			if(!MsPacManTools.blockedByClosestPPill(game, p)) {
-				//Choose the movement that maximizes the distance to the PPill
-				if(nextMove == null || game.getShortestPathDistance(pos, closestPill, move) > distance) {
+				//Choose the movement that minimizes the distance to the Pill
+				if(nextMove == null || game.getShortestPathDistance(pos, closestPill, move) < distance) {
 					nextMove = move;
 					distance = game.getShortestPathDistance(pos, closestPill, move);
 				}
