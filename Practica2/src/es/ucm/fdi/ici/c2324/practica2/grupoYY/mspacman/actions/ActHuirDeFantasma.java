@@ -1,8 +1,10 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import es.ucm.fdi.ici.Action;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.MsPacManTools;
-import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
@@ -22,13 +24,64 @@ public class ActHuirDeFantasma implements Action {
 		if (!game.isJunction(pos))
 			return game.getPossibleMoves(pos, lastMove)[0];
 		
-		//TODO
-		
 		//Nearest (and only) chasing ghost to pacman
 		GHOST nearestChasing = MsPacManTools.getNearestChasing(game, pos, lastMove);
+		int ghostIndex = game.getGhostCurrentNodeIndex(nearestChasing);
+		MOVE ghostMove = game.getGhostLastMoveMade(nearestChasing);
+		int[] ghostPath = game.getShortestPath(ghostIndex, pos, ghostMove);
 		
+		// Nearest edible ghost index
+		int nearestEdibleGhostIndex = game.getGhostCurrentNodeIndex(MsPacManTools.getNearestEdible(game, pos, lastMove));
+		
+		// Nearest PPill index
+		int nearestPPill = MsPacManTools.closestPPill(game);
+		
+		/*
+		 * BFS (only one junction)
+		 * Analyzing the score we would get with each move (prioritizing moves with longer distance)
+		 * and if that move is available to be made (we would 100% not die performing that move).
+		 */
+		int[] ap = game.getActivePillsIndices();
+		List<Integer> activePills = new ArrayList<Integer>(ap.length);
+		for (int i : ap)
+		    activePills.add(i);
+		
+		MOVE nextMove = lastMove, onlyMove;
+		int auxScore, maxScore = 0, curNode, distance;
+		boolean availableMove;
+		
+		for(MOVE move: game.getPossibleMoves(pos, lastMove)) {
+			// Readying the variables for each possible move
+			onlyMove = move;
+			curNode = game.getNeighbour(pos, onlyMove);
+			availableMove = true;
+			auxScore = 0; distance = 0;
+			
+			// Following the path until it reaches a junction or it becomes unavailable.
+			while(!game.isJunction(curNode) && availableMove) {
+				//Check if the ghost is in the index and going on a different direction as mspacman
+				if((curNode == ghostIndex) && (onlyMove != ghostMove)) 
+					availableMove = false;
+				//Check if we can eat an edibleGhost
+				if(nearestEdibleGhostIndex == curNode)
+					auxScore += 15;
+				//Check if the current node is a pill (add score)
+				if(activePills.contains(curNode)) 
+					auxScore++;
+				distance++;
+			}
+			// In case of having reached a junction, check if the ghost can reach that junction before us
+			if(availableMove && (game.getShortestPathDistance(ghostIndex, curNode, ghostMove) <= distance))
+				availableMove = false;
+			
+			// Update de maxScore and nextMove
+			if(availableMove && auxScore > maxScore) {
+				maxScore = auxScore;
+				nextMove = move;
+			}
+		}
 		//Choose the best available move.
-		return MOVE.NEUTRAL;
+		return nextMove;
 	}
 
 	@Override
