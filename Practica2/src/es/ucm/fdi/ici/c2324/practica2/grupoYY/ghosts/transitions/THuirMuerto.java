@@ -4,29 +4,26 @@ import es.ucm.fdi.ici.Input;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.GhostsInput;
 import es.ucm.fdi.ici.fsm.Transition;
 import pacman.game.Constants.GHOST;
-
-//Higher state "Huir"
-
-//Transition from "Dispersarse" to "Mantener distancias"
-public class HTDispersarseMantenerDistancias implements Transition {
-	
+/*
+ * Transition from "Huir" to "Muerto"
+ */
+public class THuirMuerto implements Transition {
 	//Owner of the FMS
 	private GHOST ghost;
 	
-	public HTDispersarseMantenerDistancias(GHOST g) {
+	public THuirMuerto(GHOST g) {
 		ghost = g;
-	} 
-
+	}
 	@Override
 	//Evaluate if the transition can be made
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
 		
-		return !gin.ediblesClose(ghost) && !gin.danger(ghost) && !gin.isNearestEdible(ghost);
+		return !gin.isAlive(ghost);
 	}
-
+	
 	@Override
 	public String toString() {
-		return String.format("Huir: Dispersarse -> Mantener Distancias \n");
+		return String.format("Perseguir -> Huir \n");
 	}
 }

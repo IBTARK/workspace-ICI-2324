@@ -9,6 +9,8 @@ import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActEvitarPPill;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActPerseguirDirectamente;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.HTHuirDirectoDispersarse;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.HTHuirDirectoIrAChasing;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.HTMantenerDistanciasDispersarse;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.HTDispersarseMantenerDistancias;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTEvitarPPillPerseguirDirecto;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTFlanquearPerseguirDirecto;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTFlanquearSepararseFantasma;
@@ -16,7 +18,10 @@ import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTPerseguirDire
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTPerseguirDirectoEvitarPPill;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTPerseguirDirectoIrAEdible;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTSepararseFantasmaPerseguirDirecto;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTSepararseFantasmaFlanquear;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTPerseguirDirectoFlanquear;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.TPerseguirHuir;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.THuirMuerto;
 import es.ucm.fdi.ici.fsm.CompoundState;
 import es.ucm.fdi.ici.fsm.FSM;
 import es.ucm.fdi.ici.fsm.SimpleState;
@@ -51,8 +56,8 @@ public class Ghosts extends GhostController {
 			SimpleState hStateMantenerDistancias = null;//TODO
 			Transition tranH1 = new HTHuirDirectoDispersarse(ghost);
 			Transition tranH2 = null;	//TODO
-			Transition tranH3 = null;	//TODO
-			Transition tranH4 = null;	//TODO
+			Transition tranH3 = new HTMantenerDistanciasDispersarse(ghost);
+			Transition tranH4 = new HTDispersarseMantenerDistancias(ghost);
 			Transition tranH5 = new HTHuirDirectoIrAChasing(ghost);
 			Transition tranH6 = null;	//TODO
 			cfsmHuir.add(hStateHuirDirectamente, tranH1, hStateDispersarse);
@@ -74,7 +79,7 @@ public class Ghosts extends GhostController {
 			SimpleState pStateIrAEdible = null; 			//TODO
 			Transition tranP1 = new PTSepararseFantasmaPerseguirDirecto(ghost);
 			Transition tranP2 = null;	//TODO
-			Transition tranP3 = null;	//TODO
+			Transition tranP3 = new PTPerseguirDirectoFlanquear(ghost);
 			Transition tranP4 = new PTFlanquearPerseguirDirecto(ghost);
 			Transition tranP5 = new PTPerseguirDirectoCubrirPPill(ghost);
 			Transition tranP6 = null;	//TODO
@@ -82,7 +87,7 @@ public class Ghosts extends GhostController {
 			Transition tranP8 = new PTPerseguirDirectoEvitarPPill(ghost);
 			Transition tranP9 = new PTPerseguirDirectoIrAEdible(ghost);
 			Transition tranP10 = null;	//TODO
-			Transition tranP11 = null;	//TODO
+			Transition tranP11 = new PTSepararseFantasmaFlanquear(ghost);
 			Transition tranP12 = new PTFlanquearSepararseFantasma(ghost);
 			cfsmPerseguir.add(pStateSeperarseDeFantasma, tranP1, pStatePerseguirDirectamente);
 			cfsmPerseguir.add(pStatePerseguirDirectamente, tranP2, pStateSeperarseDeFantasma);
@@ -104,7 +109,7 @@ public class Ghosts extends GhostController {
 
 			Transition tran1 = new TPerseguirHuir(ghost);
 			Transition tran2 = null;	//TODO
-			Transition tran3 = null;	//TODO
+			Transition tran3 = new THuirMuerto(ghost);
 			Transition tran4 = null;	//TODO
 
 			fsm.add(compoundPerseguir, tran1, compoundHuir);
