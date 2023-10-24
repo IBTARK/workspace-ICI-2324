@@ -29,7 +29,7 @@ public class ActCubrirPPill implements Action {
 		//Last movement made by the ghost
 		MOVE lastMove = game.getGhostLastMoveMade(ghost);
 		
-		//If there are PPills left move towards the closest one, if not TODO
+		//If there are PPills left move towards the closest one
 		return game.getNextMoveTowardsTarget(pos, closestPPill, lastMove, DM.PATH);
 	}
 
