@@ -14,7 +14,9 @@ import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActKamikazeAPill;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.HTHuirFantasmaHuirVarios;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.HTHuirHaciaPPillRodearAPPill;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.HTHuirVariosHuirFantasma;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.HTHuirVariosHuirHaciaPPill;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.HTRodearAPPillHuirVarios;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.HTRodearPPillHuirHaciaPPill;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.PTFlanquearPerseguir;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.PTPerseguirFlanquear;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.THuirPerseguir;
@@ -57,11 +59,11 @@ public class MsPacMan extends PacmanController {
     	Transition tranH1 = new HTHuirFantasmaHuirVarios();
     	Transition tranH2 = new HTHuirVariosHuirFantasma();
     	Transition tranH3 = null; //TODO
-    	Transition tranH4 = null; //TODO
+    	Transition tranH4 = new HTHuirVariosHuirHaciaPPill();
     	Transition tranH5 = null; //TODO
     	Transition tranH6 = new HTRodearAPPillHuirVarios();
     	Transition tranH7 = new HTHuirHaciaPPillRodearAPPill();
-    	Transition tranH8 = null; //TODO
+    	Transition tranH8 = new HTRodearPPillHuirHaciaPPill();
     	cfsmHuir.add(hStateHuirDeUnFantasma, tranH1, hStateHuirDeVariosFantasmas);
     	cfsmHuir.add(hStateHuirDeVariosFantasmas, tranH2, hStateHuirDeUnFantasma);
     	cfsmHuir.add(hStateHuirDeUnFantasma, tranH3, hStateHaciaPPill);
