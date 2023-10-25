@@ -28,7 +28,8 @@ public class ActHuirVariosFantasmas implements Action {
 		
 		//Get next move away from ghosts in this junction
 		for(MOVE move: game.getPossibleMoves(pos, lastMove)) {
-			int nextJunc = MsPacManTools.nextJunction(game, pos, move);
+			
+			int nextJunc = MsPacManTools.nextJunction(game, game.getNeighbour(pos, move), move);
 			//Nearest chasing ghost to the next junction
 			nearestGhost = MsPacManTools.getNearestChasing(game, nextJunc, move);
 			//Position of the ghost
