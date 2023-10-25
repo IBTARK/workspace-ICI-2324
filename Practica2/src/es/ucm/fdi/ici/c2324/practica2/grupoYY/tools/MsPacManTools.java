@@ -71,9 +71,9 @@ public class MsPacManTools {
 		GHOST nearest = null;
 		int minDist = Integer.MAX_VALUE;
 		for (GHOST g : GHOST.values()) {
-			if(game.getGhostLairTime(g) <= 0) {
+			if(game.getGhostLairTime(g) <= 0 && game.isGhostEdible(g)) {
 				int dist = game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(g), lastMove);
-				if (dist >= 0 && minDist > dist) {
+				if (minDist > dist) {
 					minDist = dist;
 					nearest = g;
 				}
@@ -122,12 +122,12 @@ public class MsPacManTools {
 		int aux = Integer.MAX_VALUE, dist = Integer.MAX_VALUE;
 		
 		for (GHOST g : GHOST.values()) {
-			if(!game.isGhostEdible(g))
-				aux = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), 
-				 							   	   pos, game.getGhostLastMoveMade(g));
-			if (dist > aux) {
-				dist = aux;
-				nearest = g;
+			if(game.getGhostLairTime(g) <= 0 && !game.isGhostEdible(g)) {
+				aux = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), pos, game.getGhostLastMoveMade(g));
+				if (dist > aux) {
+					dist = aux;
+					nearest = g;
+				}
 			}
 		}
 		return nearest;

@@ -29,8 +29,13 @@ public class ActHuirDeFantasma implements Action {
 		int ghostIndex = game.getGhostCurrentNodeIndex(nearestChasing);
 		MOVE ghostMove = game.getGhostLastMoveMade(nearestChasing);
 		
+		//Nearest edible ghost and his index
+		GHOST nearestEdibleGhost = MsPacManTools.getNearestEdible(game, pos, lastMove);
 		// Nearest edible ghost index
-		int nearestEdibleGhostIndex = game.getGhostCurrentNodeIndex(MsPacManTools.getNearestEdible(game, pos, lastMove));
+		Integer nearestEdibleGhostIndex;
+		
+		if(nearestEdibleGhost == null) nearestEdibleGhostIndex = null;
+		else nearestEdibleGhostIndex = game.getGhostCurrentNodeIndex(MsPacManTools.getNearestEdible(game, pos, lastMove));
 		
 		// Nearest PPill index
 		int nearestPPill = MsPacManTools.closestPPill(game);
@@ -63,7 +68,7 @@ public class ActHuirDeFantasma implements Action {
 				if((curNode == ghostIndex) && (onlyMove != ghostMove)) 
 					availableMove = false;
 				//Check if we can eat an edibleGhost
-				if(nearestEdibleGhostIndex == curNode)
+				if(nearestEdibleGhostIndex != null && nearestEdibleGhostIndex == curNode)
 					auxScore += 15;
 				//Check if the current node is a pill (add score)
 				if(activePills.contains(curNode)) 

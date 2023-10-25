@@ -147,9 +147,11 @@ public class MsPacMan extends PacmanController {
     	
     	JFrame frame = new JFrame();
     	JPanel main = new JPanel();
-    	main.setLayout(new BorderLayout());
-    	main.add(observer.getAsPanel(true, null), BorderLayout.CENTER);
-    	main.add(neutralObserver.getAsPanel(true, null), BorderLayout.SOUTH);
+    	//main.setLayout(new BorderLayout());
+    	main.add(observer.getAsPanel(true, null));//, BorderLayout.CENTER);
+    	main.add(huirObserver.getAsPanel(true, null));//, BorderLayout.CENTER);
+    	main.add(neutralObserver.getAsPanel(true, null));//, BorderLayout.CENTER);
+    	main.add(perseguirObserver.getAsPanel(true, null));//, BorderLayout.CENTER);
     	frame.getContentPane().add(main);
     	frame.pack();
     	frame.setVisible(true);
