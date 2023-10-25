@@ -142,7 +142,7 @@ public class MsPacMan extends PacmanController {
     	fsm.add(stateKamikazePill, tran9, compoundHuir);
     	fsm.add(compoundHuir, tran10, stateKamikazePill);
 
-    	fsm.ready(compoundNeutral);
+    	fsm.ready(compoundHuir);
     	
     	
     	JFrame frame = new JFrame();
