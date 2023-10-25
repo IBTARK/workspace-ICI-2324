@@ -60,7 +60,7 @@ public class GhostsInput extends Input {
 		//If possible, the index and the distance of the nearest PPill to MsPacMan is compute
 		int closestPPill = -1;
 		this.minPacmanDistancePPill = Integer.MAX_VALUE;
-		for(int ppill: game.getActivePillsIndices()) {
+		for(int ppill: game.getActivePowerPillsIndices()) {
 			int distance = game.getShortestPathDistance(pacman, ppill, game.getPacmanLastMoveMade());
 			if (distance < minPacmanDistancePPill) {
 				minPacmanDistancePPill = distance;
