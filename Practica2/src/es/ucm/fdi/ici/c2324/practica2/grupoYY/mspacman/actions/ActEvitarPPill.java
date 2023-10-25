@@ -23,7 +23,7 @@ public class ActEvitarPPill implements Action {
 		int distance = Integer.MAX_VALUE;
 		//Choose the move that makes MsPacMan stay as far as possible from his closest PPill
 		for(MOVE move: game.getPossibleMoves(pos, lastMove)) {
-			int nextJunc = MsPacManTools.nextJunction(game, pos, move);
+			int nextJunc = MsPacManTools.nextJunction(game, game.getNeighbour(pos, move), move);
 			//Path from the current position of MsPacMan to MsPacMans next junction
 			int[] p = game.getShortestPath(pos, nextJunc, move);
 			//Check if there isn't a PPill in the path p

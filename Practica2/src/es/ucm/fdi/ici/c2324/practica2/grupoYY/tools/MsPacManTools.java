@@ -14,7 +14,7 @@ public class MsPacManTools {
 
 	public static List<Integer[]> possiblePaths(Game game, int orig, int dest, MOVE lastMove) {
 		List<Integer[]> paths = new ArrayList<>();
-		int maxDist = game.getShortestPathDistance(orig, dest, lastMove) * 2;
+		int maxDist = game.getShortestPathDistance(orig, dest, lastMove) * 3 / 2;
 		
 		//Búsqueda de caminos en anchura con poda
 		Queue<ArrayList<Integer>> queue = new LinkedList<>();

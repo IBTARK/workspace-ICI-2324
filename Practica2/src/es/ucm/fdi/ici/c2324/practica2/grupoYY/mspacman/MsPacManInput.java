@@ -11,7 +11,7 @@ import pacman.game.Game;
 public class MsPacManInput extends Input {
 	
 	// Thresholds
-	private static final int TH_CHASING_GHOST = 100; 
+	private static final int TH_CHASING_GHOST = 1000; 
 	private static final int TH_EDIBLE_GHOST = 60;
 	private static final int TH_PPILL = 50;
 	private static final int TH_FEWPILLS = 20;
@@ -60,11 +60,16 @@ public class MsPacManInput extends Input {
 		
 		
 		ppillAccessible = false;
-		if (!MsPacManTools.blocked(game, ArrayUtils.toObject(game.getShortestPath(pos, ppill, lastMove)))) ppillAccessible = true;
-		else for (Integer[] path : MsPacManTools.possiblePaths(game, pos, ppill, lastMove))
-				ppillAccessible |= !MsPacManTools.blocked(game, path);
-		
-		ppillClose = TH_PPILL > game.getShortestPathDistance(pos, ppill, lastMove);
+		ppillClose = false;
+		nearestPPillBlocked = false;
+		if (ppill >= 0) {
+			if (!MsPacManTools.blocked(game, ArrayUtils.toObject(game.getShortestPath(pos, ppill, lastMove)))) ppillAccessible = true;
+			else for (Integer[] path : MsPacManTools.possiblePaths(game, pos, ppill, lastMove))
+					ppillAccessible |= !MsPacManTools.blocked(game, path);
+			
+			ppillClose = TH_PPILL > game.getShortestPathDistance(pos, ppill, lastMove);
+			nearestPPillBlocked = MsPacManTools.blocked(game, ArrayUtils.toObject(game.getShortestPath(pos, ppill, lastMove)));
+		}
 		
 		//Nearest edible ghost to MsPacMan
 		GHOST nearest = MsPacManTools.getNearestEdible(game, pos, lastMove); //CAREFUL, can return null
@@ -76,7 +81,6 @@ public class MsPacManInput extends Input {
 		
 		fewPills = game.getNumberOfActivePills() <= TH_FEWPILLS;
 		
-		nearestPPillBlocked = MsPacManTools.blocked(game, ArrayUtils.toObject(game.getShortestPath(pos, ppill, lastMove)));
 	}
 	
 	public int dangerLevel() {

@@ -21,7 +21,7 @@ public class HTIrAChasingHuirDirecto implements Transition {
 	//Evaluate if the transition can be made
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
-		GHOST nearest = gin.getNearestChasing(ghost);
+		GHOST nearest = gin.getNearestChasingNotBlocked(ghost);
 		
 		return nearest == null || gin.getDistanceBetweenGhosts(ghost, nearest) == 0;
 	}
