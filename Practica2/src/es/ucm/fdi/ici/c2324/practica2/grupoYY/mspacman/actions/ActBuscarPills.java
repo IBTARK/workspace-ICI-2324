@@ -2,7 +2,6 @@ package es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions;
 
 import es.ucm.fdi.ici.Action;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.MsPacManTools;
-import pacman.game.Constants.DM;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
@@ -28,7 +27,7 @@ public class ActBuscarPills implements Action {
 		}
 		// ------------------------------------------------------------------
 		
-		return game.getNextMoveTowardsTarget(pos, pill, lastMove, DM.PATH);
+		return MsPacManTools.goTo(game, pos, pill, lastMove);
 	}
 
 	@Override

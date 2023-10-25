@@ -2,10 +2,9 @@ package es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions;
 
 import es.ucm.fdi.ici.Action;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.MsPacManTools;
-import pacman.game.Game;
-import pacman.game.Constants.MOVE;
-import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
+import pacman.game.Constants.MOVE;
+import pacman.game.Game;
 
 //Action to chase the closest ghost
 public class ActPerseguirFantasma implements Action{
@@ -30,7 +29,7 @@ public class ActPerseguirFantasma implements Action{
 		}
 		// ------------------------------------------------------------------
 		//Move to chase the nearest edible ghost reducing the path distance
-		return game.getNextMoveTowardsTarget(pos, game.getGhostCurrentNodeIndex(nearestEdible), lastMove, DM.PATH);
+		return MsPacManTools.goTo(game, pos, game.getGhostCurrentNodeIndex(nearestEdible), lastMove);
 	}
 
 	@Override
