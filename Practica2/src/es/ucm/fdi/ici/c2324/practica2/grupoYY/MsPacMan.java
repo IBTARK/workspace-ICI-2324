@@ -1,7 +1,5 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY;
 
-import java.awt.BorderLayout;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -15,6 +13,7 @@ import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActHuirHaciaPPill
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActHuirRodeandoPPill;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActHuirVariosFantasmas;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActKamikazeAPill;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActKamikazeFantasma;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActPerseguirFantasma;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.HTHuirFantasmaHuirVarios;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.transitions.HTHuirHaciaPPillHuirVarios;
@@ -116,7 +115,7 @@ public class MsPacMan extends PacmanController {
     	CompoundState compoundNeutral = new CompoundState("Neutral", cfsmNeutral);
     	
     	//Kamikaze fantasma state
-    	SimpleState stateKamikazeFant = new SimpleState("Kamikaze a fantasma", new ActKamikazeAPill());
+    	SimpleState stateKamikazeFant = new SimpleState("Kamikaze a fantasma", new ActKamikazeFantasma());
     	//Kamikaze pill state
     	SimpleState stateKamikazePill = new SimpleState("Kamikaze a pills", new ActKamikazeAPill());
     	

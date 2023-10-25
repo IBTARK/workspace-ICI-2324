@@ -60,7 +60,11 @@ public class ActHuirVariosFantasmas implements Action {
 				bestMove = m;
 			}
 		}
-		
+		// FOR DEBUG --------------------------------------------------------
+		if(MsPacManTools.debug()) {
+			System.out.println(getActionId());
+		}
+		// ------------------------------------------------------------------
 		return bestMove;
 	}
 	

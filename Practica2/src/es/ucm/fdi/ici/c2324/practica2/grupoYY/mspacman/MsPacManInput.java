@@ -15,6 +15,7 @@ public class MsPacManInput extends Input {
 	private static final int TH_EDIBLE_GHOST = 300;
 	private static final int TH_PPILL = 50;
 	private static final int TH_FEWPILLS = 20;
+	private static final int TH_COMBO = 500;
 	
 	private int dangerLevel;
 	private int closestPPill;
@@ -54,7 +55,7 @@ public class MsPacManInput extends Input {
 		
 		closestPPill = MsPacManTools.closestPPill(game);
 		// El numero que devuelde getNumGhostEaten() no esta definido ...
-		combo = game.getNumGhostsEaten() >= 2; 
+		combo = game.getGhostCurrentEdibleScore() >= TH_COMBO; 
 		levelUp = game.getCurrentLevelTime() == 0;
 		
 		int pos = game.getPacmanCurrentNodeIndex(), ppill = MsPacManTools.closestPPill(game);
