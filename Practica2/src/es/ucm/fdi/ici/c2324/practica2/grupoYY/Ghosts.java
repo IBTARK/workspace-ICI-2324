@@ -1,51 +1,51 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY;
 
-import java.awt.Dimension;
+import java.awt.BorderLayout;
 import java.util.EnumMap;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.GhostsCoordination;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.GhostsInput;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActCubrirPPill;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActDispersarse;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActEvitarPPill;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActPerseguirDirectamente;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActSepararseFantasma;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActFlanquear;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActHuirDirectamente;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActIrAChasing;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActMuerto;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActIrAEdible;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActCubrirPPill;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActMantenerDistancias;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActFlanquear;
-
-
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.HTIrAChasingHuirDirecto;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActMuerto;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActPerseguirDirectamente;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions.ActSepararseFantasma;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.HTDispersarseHuirDirecto;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.HTDispersarseMantenerDistancias;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.HTHuirDirectoDispersarse;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.HTHuirDirectoIrAChasing;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.HTIrAChasingHuirDirecto;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.HTMantenerDistanciasDispersarse;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTCubrirPPillPerseguirDirecto;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.HTDispersarseMantenerDistancias;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTEvitarPPillPerseguirDirecto;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTFlanquearPerseguirDirecto;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTFlanquearSepararseFantasma;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTIrAEdiblePerseguirDirecto;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTPerseguirDirectoCubrirPPill;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTPerseguirDirectoEvitarPPill;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTPerseguirDirectoFlanquear;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTPerseguirDirectoIrAEdible;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTPerseguirDirectoSepararseFantasma;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTSepararseFantasmaPerseguirDirecto;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTSepararseFantasmaFlanquear;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTPerseguirDirectoFlanquear;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.TPerseguirHuir;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.PTSepararseFantasmaPerseguirDirecto;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.THuirMuerto;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.TMuertoPerseguir;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.THuirPerseguir;
-
-
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.TMuertoPerseguir;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions.TPerseguirHuir;
 import es.ucm.fdi.ici.fsm.CompoundState;
 import es.ucm.fdi.ici.fsm.FSM;
 import es.ucm.fdi.ici.fsm.SimpleState;
 import es.ucm.fdi.ici.fsm.Transition;
+import es.ucm.fdi.ici.fsm.observers.ConsoleFSMObserver;
 import es.ucm.fdi.ici.fsm.observers.GraphFSMObserver;
 import pacman.controllers.GhostController;
 import pacman.game.Constants.GHOST;
@@ -66,7 +66,7 @@ public class Ghosts extends GhostController {
 		for(GHOST ghost: GHOST.values()) {
 			FSM fsm = new FSM(ghost.name());
 			
-			//fsm.addObserver(new ConsoleFSMObserver(ghost.name()));
+			fsm.addObserver(new ConsoleFSMObserver(ghost.name()));
 			GraphFSMObserver graphObserver = new GraphFSMObserver(ghost.name());
 			fsm.addObserver(graphObserver);
 			
@@ -142,7 +142,16 @@ public class Ghosts extends GhostController {
 			
 			fsm.ready(stateMuerto);
 			
-			graphObserver.showInFrame(new Dimension(300,200));
+			//obsHuir.showInFrame(new Dimension(300,200));
+			JFrame frame = new JFrame();
+	    	JPanel main = new JPanel();
+	    	main.setLayout(new BorderLayout());
+	    	main.add(graphObserver.getAsPanel(true, null), BorderLayout.CENTER);
+	    	main.add(obsHuir.getAsPanel(true, null), BorderLayout.EAST);
+	    	main.add(obsPerseguir.getAsPanel(true, null), BorderLayout.WEST);
+	    	frame.getContentPane().add(main);
+	    	frame.pack();
+	    	frame.setVisible(true);
 			
 			fsms.put(ghost, fsm);
 		}
