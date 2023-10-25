@@ -33,8 +33,8 @@ public class ActHuirDeFantasma implements Action {
 		int nearestEdibleGhostIndex = game.getGhostCurrentNodeIndex(MsPacManTools.getNearestEdible(game, pos, lastMove));
 		
 		// Nearest PPill index
-		// TODO annadir que el bucle ignore el camino con PPill a no ser que sea estrictamente necesario
 		int nearestPPill = MsPacManTools.closestPPill(game);
+		boolean caminoPPill = false, auxPPill;
 		
 		/*
 		 * BFS (only one junction)
@@ -47,18 +47,18 @@ public class ActHuirDeFantasma implements Action {
 		    activePills.add(i);
 		
 		MOVE nextMove = lastMove, onlyMove;
-		int auxScore, maxScore = 0, curNode, distance;
+		int auxScore, maxScore = -1, curNode, distance;
 		boolean availableMove;
 		
 		for(MOVE move: game.getPossibleMoves(pos, lastMove)) {
 			// Readying the variables for each possible move
 			onlyMove = move;
 			curNode = game.getNeighbour(pos, onlyMove);
-			availableMove = true;
+			availableMove = true; auxPPill = false;
 			auxScore = 0; distance = 0;
 			
-			// Following the path until it reaches a junction or it becomes unavailable.
-			while(!game.isJunction(curNode) && availableMove) {
+			// Following the path until it reaches a junction (or a PPill) or it becomes unavailable.
+			while(!game.isJunction(curNode) && availableMove && (curNode != nearestPPill)) {
 				//Check if the ghost is in the index and going on a different direction as mspacman
 				if((curNode == ghostIndex) && (onlyMove != ghostMove)) 
 					availableMove = false;
@@ -75,6 +75,7 @@ public class ActHuirDeFantasma implements Action {
 				curNode = game.getNeighbour(curNode, onlyMove);
 			}
 			// In case of having reached a junction, check if the ghost can reach that junction before us
+			// Version 2: in case we have encountered a PPill in the path, we will also execute this
 			if(availableMove && (game.getShortestPathDistance(ghostIndex, curNode, ghostMove) <= distance)) {
 				// We have to calculate the move the ghost does arriving at the junction.
 				int[] ghostPath = game.getShortestPath(ghostIndex, curNode, ghostMove);
@@ -87,13 +88,35 @@ public class ActHuirDeFantasma implements Action {
 					availableMove = false;
 				}
 			}
+			// Check if the path is available and mspacman will go to the PPill.
+			if(availableMove && curNode == nearestPPill)
+				auxPPill = true;
 			
 			// Update de maxScore and nextMove
-			if(availableMove && auxScore > maxScore) {
+			// Conditions for the if:
+			// We need to have an availableMove
+			// AND we need:
+			// 				EITHER a maximum score and not PPill
+			//				OR we have encountered a PPill and we have not yet found another availableMove
+			//				OR nextMove is a move that will take a PPill (and we have found another availableMove)	
+			if(availableMove && 
+					(	(auxScore > maxScore && !auxPPill)
+						|| (auxPPill && maxScore==-1)
+						|| (caminoPPill)
+					)) {
 				maxScore = auxScore;
 				nextMove = move;
+				// caminoPPill will store if we have chosen a move that will eat a PPill.
+				caminoPPill = auxPPill;
 			}
 		}
+		
+		// Once we have finished this loop we will have the best next junction move (in case there's any)
+		// If every single move previously had a score of 0 (that means there were no pills or ghosts to eat)...
+		// ...  we need to chose the move that will take us closer to the pills.
+		// nextMove = auxScore == 0 ? nextMoveTowardsPills : nextMove;
+		// If we were to take the move towards the nearest pill, we could chose the path where we take a PPill.
+		
 		//Choose the best available move.
 		return nextMove;
 	}
