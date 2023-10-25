@@ -45,7 +45,6 @@ import es.ucm.fdi.ici.fsm.CompoundState;
 import es.ucm.fdi.ici.fsm.FSM;
 import es.ucm.fdi.ici.fsm.SimpleState;
 import es.ucm.fdi.ici.fsm.Transition;
-import es.ucm.fdi.ici.fsm.observers.ConsoleFSMObserver;
 import es.ucm.fdi.ici.fsm.observers.GraphFSMObserver;
 import pacman.controllers.GhostController;
 import pacman.game.Constants.GHOST;
@@ -66,7 +65,7 @@ public class Ghosts extends GhostController {
 		for(GHOST ghost: GHOST.values()) {
 			FSM fsm = new FSM(ghost.name());
 			
-			fsm.addObserver(new ConsoleFSMObserver(ghost.name()));
+			//fsm.addObserver(new ConsoleFSMObserver(ghost.name()));
 			GraphFSMObserver graphObserver = new GraphFSMObserver(ghost.name());
 			fsm.addObserver(graphObserver);
 			
