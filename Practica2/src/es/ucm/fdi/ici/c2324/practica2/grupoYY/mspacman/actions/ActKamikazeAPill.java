@@ -21,7 +21,11 @@ public class ActKamikazeAPill implements Action {
 		
 		//Get the closest pill to MsPacMan
 		int pill = MsPacManTools.closestPill(game);
-		
+		// FOR DEBUG --------------------------------------------------------
+		if(MsPacManTools.debug()) {
+			System.out.println(getActionId());
+		}
+		// ------------------------------------------------------------------
 		//Returns the movement that makes MsPacMan move toward the pill
 		return game.getNextMoveTowardsTarget(pos, pill, lastMove, DM.PATH);
 	}

@@ -11,6 +11,12 @@ import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
 public class MsPacManTools {
+	
+	// FOR DEBUG -------------------------------------------
+	public static boolean debug() {
+		return true;
+	}
+	// ----------------------------------------------------
 
 	public static List<Integer[]> possiblePaths(Game game, int orig, int dest, MOVE lastMove) {
 		List<Integer[]> paths = new ArrayList<>();

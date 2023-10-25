@@ -24,7 +24,11 @@ public class ActFlanquearFantasma implements Action {
 		GHOST ghost = MsPacManTools.getNearestEdible(game, pos, lastMove);
 		//Get the junction that the nearest edible ghost is moving towards 
 		int junction = MsPacManTools.nextJunction(game, game.getGhostCurrentNodeIndex(ghost), game.getGhostLastMoveMade(ghost));
-		
+		// FOR DEBUG --------------------------------------------------------
+		if(MsPacManTools.debug()) {
+			System.out.println(getActionId());
+		}
+		// ------------------------------------------------------------------
 		return game.getApproximateNextMoveTowardsTarget(pos, junction, lastMove, DM.PATH);
 	}
 

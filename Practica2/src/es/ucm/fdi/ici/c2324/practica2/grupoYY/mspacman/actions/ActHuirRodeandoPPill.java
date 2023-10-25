@@ -26,7 +26,11 @@ public class ActHuirRodeandoPPill implements Action {
 		for (Integer [] p : MsPacManTools.possiblePaths(game, pos, ppill, lastMove))
 			if (!MsPacManTools.blocked(game, p) && (path == null || path.length > p.length))
 				path = p;
-		
+		// FOR DEBUG --------------------------------------------------------
+		if(MsPacManTools.debug()) {
+			System.out.println(getActionId());
+		}
+		// ------------------------------------------------------------------
 		return MsPacManTools.movesInPath(game, path).get(0);
 	}
 

@@ -40,7 +40,11 @@ public class ActHuirVariosFantasmas implements Action {
 				distance2pcm = aux;
 			}
 		}
-		
+		// FOR DEBUG --------------------------------------------------------
+		if(MsPacManTools.debug()) {
+			System.out.println(getActionId());
+		}
+		// ------------------------------------------------------------------
 		//Returns the movement that increments the distance to the ghosts
 		return nextMove;
 	}
