@@ -8,7 +8,7 @@ public class GhostsTools {
 	
 	// FOR DEBUG -----------------------------------------------------------
 	public static boolean debug() {
-		return true;
+		return false;
 	}
 	// ---------------------------------------------------------------------
 
