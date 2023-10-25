@@ -1,7 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions;
 
 import es.ucm.fdi.ici.Action;
-import pacman.game.Constants.DM;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.GhostsTools;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
@@ -25,9 +25,13 @@ public class ActPerseguirDirectamente implements Action {
 		
 		int pos = game.getGhostCurrentNodeIndex(ghost);
 		MOVE lastMove = game.getGhostLastMoveMade(ghost);
-		
+		// FOR DEBUG ---------------------------------------------------------------
+		if(GhostsTools.debug() && ghost == GHOST.SUE) {
+			System.out.println("SUE: " + getActionId());
+		}
+		// -------------------------------------------------------------------------
 		//Get the movement that makes the ghost move towards MsPacMan
-		return game.getNextMoveTowardsTarget(pos, game.getPacmanCurrentNodeIndex(), lastMove, DM.PATH);
+		return GhostsTools.goTo(game, pos, game.getPacmanCurrentNodeIndex(), lastMove);
 	}
 
 	@Override

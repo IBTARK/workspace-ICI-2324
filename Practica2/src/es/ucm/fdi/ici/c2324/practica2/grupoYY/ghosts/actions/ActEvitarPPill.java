@@ -1,6 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions;
 
 import es.ucm.fdi.ici.Action;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.GhostsTools;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.MsPacManTools;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
@@ -29,7 +30,11 @@ public class ActEvitarPPill implements Action {
 		
 		//Get the closest PPill
 		int ppill = MsPacManTools.closestPPill(game);
-		
+		// FOR DEBUG ---------------------------------------------------------------
+		if(GhostsTools.debug() && ghost == GHOST.SUE) {
+			System.out.println("SUE: " + getActionId());
+		}
+		// -------------------------------------------------------------------------
 		//Get the movement that makes the ghost move away from the closest PPill to him
 		return game.getNextMoveAwayFromTarget(pos, ppill, lastMove, DM.PATH);
 	}

@@ -29,13 +29,17 @@ public class ActIrAChasing implements Action {
 		GHOST nearestChasingNotBlocked = GhostsTools.getNearestChasingNotBlocked(game, ghost);
 		//Last movement made by the ghost
 		MOVE lastMove = game.getGhostLastMoveMade(ghost);
-				
+		// FOR DEBUG ---------------------------------------------------------------
+		if(GhostsTools.debug() && ghost == GHOST.SUE) {
+			System.out.println("SUE: " + getActionId());
+		}
+		// -------------------------------------------------------------------------
 		
-		return game.getNextMoveTowardsTarget(pos, game.getGhostCurrentNodeIndex(nearestChasingNotBlocked), lastMove, DM.PATH);
+		return GhostsTools.goTo(game, pos, game.getGhostCurrentNodeIndex(nearestChasingNotBlocked), lastMove);
 	}
 	
 	@Override
 	public String getActionId() {
-		return "Evitar Power Pill";
+		return "Ir a Chasing";
 	}
 }

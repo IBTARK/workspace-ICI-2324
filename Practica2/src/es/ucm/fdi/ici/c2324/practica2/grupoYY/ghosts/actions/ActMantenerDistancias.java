@@ -3,6 +3,7 @@ package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions;
 import java.util.Random;
 
 import es.ucm.fdi.ici.Action;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.GhostsTools;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
@@ -25,11 +26,16 @@ public class ActMantenerDistancias implements Action {
 		
 		//Get a random movement
 		MOVE[] moves = game.getPossibleMoves(game.getGhostCurrentNodeIndex(ghost), game.getGhostLastMoveMade(ghost));
+		// FOR DEBUG ---------------------------------------------------------------
+		if(GhostsTools.debug() && ghost == GHOST.SUE) {
+			System.out.println("SUE: " + getActionId());
+		}
+		// -------------------------------------------------------------------------
 		return moves[(new Random()).nextInt(moves.length)];
 	}
 
 	@Override
 	public String getActionId() {
-		return null;
+		return "Mantener Distancias";
 	}
 }

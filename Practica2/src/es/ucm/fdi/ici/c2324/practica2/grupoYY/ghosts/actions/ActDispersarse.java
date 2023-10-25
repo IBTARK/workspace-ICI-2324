@@ -43,7 +43,11 @@ public class ActDispersarse implements Action {
 				move = m;
 			}
 		}
-		
+		// FOR DEBUG ---------------------------------------------------------------
+		if(GhostsTools.debug() && ghost == GHOST.SUE) {
+			System.out.println("SUE: " + getActionId());
+		}
+		// -------------------------------------------------------------------------
 		//It there is no edible ghost to cover, the ghost moves towards MsPacMan
 		return move == null ? toPacman : move;
 	}

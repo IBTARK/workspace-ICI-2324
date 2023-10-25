@@ -2,6 +2,7 @@ package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions;
 
 import es.ucm.fdi.ici.Action;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.GhostsCoordination;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.GhostsTools;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
@@ -38,9 +39,13 @@ public class ActIrAEdible implements Action {
 					nearest = posAux;
 				}
 			}
-		
+		// FOR DEBUG ---------------------------------------------------------------
+		if(GhostsTools.debug() && ghost == GHOST.SUE) {
+			System.out.println("SUE: " + getActionId());
+		}
+		// -------------------------------------------------------------------------
 		//Get the movement that makes the ghost move towards the one to cover
-		return game.getApproximateNextMoveTowardsTarget(pos, nearest, lastMove, DM.PATH);
+		return GhostsTools.goTo(game, pos, nearest, lastMove);
 	}
 
 	@Override

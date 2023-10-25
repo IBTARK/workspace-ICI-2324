@@ -25,11 +25,15 @@ public class ActFlanquear implements Action {
 		
 		int pos = game.getGhostCurrentNodeIndex(ghost);
 		MOVE lastMove = game.getGhostLastMoveMade(ghost);
-		
+		// FOR DEBUG ---------------------------------------------------------------
+		if(GhostsTools.debug() && ghost == GHOST.SUE) {
+			System.out.println("SUE: " + getActionId());
+		}
+		// -------------------------------------------------------------------------
 		//Get the movement that makes the ghost move towards MsPacMans Next Junction
-		return game.getNextMoveTowardsTarget(pos, 
+		return GhostsTools.goTo(game, pos, 
 				GhostsTools.nextJunction(game, game.getPacmanCurrentNodeIndex(),game.getPacmanLastMoveMade()), 
-				lastMove, DM.PATH);
+				lastMove);
 	}
 	
 	@Override
