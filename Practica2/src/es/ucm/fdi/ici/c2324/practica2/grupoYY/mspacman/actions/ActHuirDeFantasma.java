@@ -39,7 +39,6 @@ public class ActHuirDeFantasma implements Action {
 		
 		// Nearest PPill index
 		int nearestPPill = MsPacManTools.closestPPill(game);
-		boolean caminoPPill = false, auxPPill;
 		
 		/*
 		 * BFS (only one junction)
@@ -59,7 +58,7 @@ public class ActHuirDeFantasma implements Action {
 			// Readying the variables for each possible move
 			onlyMove = move;
 			curNode = game.getNeighbour(pos, onlyMove);
-			availableMove = true; auxPPill = false;
+			availableMove = true;
 			auxScore = 0; distance = 0;
 			
 			// Following the path until it reaches a junction (or a PPill) or it becomes unavailable.
@@ -95,7 +94,7 @@ public class ActHuirDeFantasma implements Action {
 			}
 			// Check if the path is available and mspacman will go to the PPill.
 			if(availableMove && curNode == nearestPPill)
-				auxPPill = true;
+				auxScore += 5;
 			
 			// Update de maxScore and nextMove
 			// Conditions for the if:
@@ -104,15 +103,9 @@ public class ActHuirDeFantasma implements Action {
 			// 				EITHER a maximum score and not PPill
 			//				OR we have encountered a PPill and we have not yet found another availableMove
 			//				OR nextMove is a move that will take a PPill (and we have found another availableMove)	
-			if(availableMove && 
-					(	(auxScore > maxScore && !auxPPill)
-						|| (auxPPill && maxScore==-1)
-						|| (caminoPPill)
-					)) {
+			if(availableMove && auxScore > maxScore) {
 				maxScore = auxScore;
 				nextMove = move;
-				// caminoPPill will store if we have chosen a move that will eat a PPill.
-				caminoPPill = auxPPill;
 			}
 		}
 		
