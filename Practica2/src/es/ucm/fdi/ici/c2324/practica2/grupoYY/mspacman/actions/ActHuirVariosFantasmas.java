@@ -31,13 +31,27 @@ public class ActHuirVariosFantasmas implements Action {
 		
 		for(MOVE m : game.getPossibleMoves(pos, lastMove)) {
 			int nextPos = game.getNeighbour(pos, m), dists = 0;
+			int nextJunction = MsPacManTools.nextJunction(game, nextPos, m);
+			
+			GHOST closestGhostJunction = MsPacManTools.getNearestChasing(game, nextJunction, m);
+			
+			//int distBtwNextJuntNextPos = game.getShortestPathDistance(nextPos, nextJunction);
+			
 			for(GHOST g : GHOST.values()) {
 				if(!game.isGhostEdible(g)) {
+					//Actual distances
 					if(g == closestGhost) {
-						dists += 10 * game.getShortestPathDistance(closestGhostIndex, nextPos, closestGhostLastMove);
+						dists += 10 * game.getShortestPathDistance(closestGhostIndex, nextPos, closestGhostLastMove); 
 					}
 					else {
 						dists += game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), nextPos, game.getGhostLastMoveMade(g));
+					}
+					//Future distances
+					if(g == closestGhostJunction) {
+						dists += 10 * game.getShortestPathDistance(game.getGhostCurrentNodeIndex(closestGhostJunction), nextJunction);
+					}
+					else {
+						dists += game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), nextPos);
 					}
 				}
 			}
