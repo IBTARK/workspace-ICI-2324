@@ -5,6 +5,12 @@ import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
 public class GhostsTools {
+	
+	// FOR DEBUG -----------------------------------------------------------
+	public static boolean debug() {
+		return true;
+	}
+	// ---------------------------------------------------------------------
 
 	//Get the closest PPill to the given ghost
 	public static int getClosestPPill(Game game, GHOST ghost) {
