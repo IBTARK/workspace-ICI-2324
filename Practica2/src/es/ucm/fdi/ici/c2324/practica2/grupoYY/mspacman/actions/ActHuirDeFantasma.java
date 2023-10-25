@@ -116,11 +116,7 @@ public class ActHuirDeFantasma implements Action {
 		// If we were to take the move towards the nearest pill, we could chose the path where we take a PPill.
 		
 		//Choose the best available move.
-		// FOR DEBUG --------------------------------------------------------
-		if(MsPacManTools.debug()) {
-			System.out.println(getActionId());
-		}
-		// ------------------------------------------------------------------
+		
 		return nextMove;
 	}
 

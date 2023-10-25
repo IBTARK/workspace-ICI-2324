@@ -25,11 +25,7 @@ public class ActHuirHaciaPPill implements Action{
 		
 		//Move to reduce the distance to the nearest Power Pill
 		
-		// FOR DEBUG --------------------------------------------------------
-		if(MsPacManTools.debug()) {
-			System.out.println(getActionId());
-		}
-		// ------------------------------------------------------------------
+		
 		return MsPacManTools.goTo(game, pos, nearestPPill, lastMove);
 	}
 

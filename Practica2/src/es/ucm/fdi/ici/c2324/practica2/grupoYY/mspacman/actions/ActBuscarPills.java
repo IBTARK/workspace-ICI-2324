@@ -21,11 +21,6 @@ public class ActBuscarPills implements Action {
 		//Get the closest pill to MsPacMan
 		int pill = MsPacManTools.closestPill(game);
 		
-		// FOR DEBUG --------------------------------------------------------
-		if(MsPacManTools.debug()) {
-			System.out.println(getActionId());
-		}
-		// ------------------------------------------------------------------
 		
 		return MsPacManTools.goTo(game, pos, pill, lastMove);
 	}

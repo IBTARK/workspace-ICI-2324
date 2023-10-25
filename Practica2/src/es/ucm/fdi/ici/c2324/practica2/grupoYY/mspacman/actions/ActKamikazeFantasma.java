@@ -22,11 +22,7 @@ public class ActKamikazeFantasma implements Action {
 		//Get the nearest edible ghost
 		GHOST ghost = MsPacManTools.getNearestEdible(game, pos, lastMove);
 		int ghostIndex = game.getGhostCurrentNodeIndex(ghost);
-		// FOR DEBUG --------------------------------------------------------
-		if(MsPacManTools.debug()) {
-			System.out.println(getActionId());
-		}
-		// ------------------------------------------------------------------
+		
 		//Movement that makes MsPacMan move towards the closest edible ghost
 		return MsPacManTools.goTo(game, pos, ghostIndex, lastMove);
 	}

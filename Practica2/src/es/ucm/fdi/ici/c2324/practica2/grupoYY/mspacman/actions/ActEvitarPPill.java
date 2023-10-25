@@ -35,11 +35,7 @@ public class ActEvitarPPill implements Action {
 				}
 			}
 		}
-		// FOR DEBUG --------------------------------------------------------
-		if(MsPacManTools.debug()) {
-			System.out.println(getActionId());
-		}
-		// ------------------------------------------------------------------
+		
 		return nextMove;
 	}
 	

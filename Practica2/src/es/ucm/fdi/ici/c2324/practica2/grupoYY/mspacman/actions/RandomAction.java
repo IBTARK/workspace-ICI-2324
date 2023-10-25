@@ -18,11 +18,7 @@ public class RandomAction implements Action {
 	
 	@Override
 	public MOVE execute(Game game) {
-		// FOR DEBUG --------------------------------------------------------
-		if(MsPacManTools.debug()) {
-			System.out.println(getActionId());
-		}
-		// ------------------------------------------------------------------
+	
 		return allMoves[rnd.nextInt(allMoves.length)];
 	}
 
