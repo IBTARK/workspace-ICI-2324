@@ -19,35 +19,35 @@ public class ActHuirVariosFantasmas implements Action {
 		if (!game.isJunction(pos))
 			return game.getPossibleMoves(pos, lastMove)[0];
 		
-		MOVE nextMove = lastMove;
-		GHOST nearestGhost = MsPacManTools.getNearestChasing(game, pos, lastMove);
-		//Get the index of the nearest ghost to MsPacMan
-		int ghostIndex = game.getGhostCurrentNodeIndex(nearestGhost);
-		//Get the distance form the nearest ghost to MsPacMan
-		int distance2pcm = game.getShortestPathDistance(ghostIndex, pos, game.getGhostLastMoveMade(nearestGhost));
+		//Closest ghost to MsPacMan
+		GHOST closestGhost =  MsPacManTools.getNearestChasing(game, pos, lastMove);
+		//Index and last movement of the closest ghost
+		int closestGhostIndex = game.getGhostCurrentNodeIndex(closestGhost);
+		MOVE closestGhostLastMove = game.getGhostLastMoveMade(closestGhost);
 		
-		//Get next move away from ghosts in this junction
-		for(MOVE move: game.getPossibleMoves(pos, lastMove)) {
-			
-			int nextJunc = MsPacManTools.nextJunction(game, game.getNeighbour(pos, move), move);
-			//Nearest chasing ghost to the next junction
-			nearestGhost = MsPacManTools.getNearestChasing(game, nextJunc, move);
-			//Position of the ghost
-			ghostIndex = game.getGhostCurrentNodeIndex(nearestGhost);
-			int aux = game.getShortestPathDistance(ghostIndex, nextJunc, game.getGhostLastMoveMade(nearestGhost));
-			//If the distance from the ghost to the next junction is greater than the distance to MsPacMan, the first movement is saved
-			if(aux > distance2pcm) {
-				nextMove = move;
-				distance2pcm = aux;
+		
+		int maxDists = -1;
+		MOVE bestMove = null;
+		
+		for(MOVE m : game.getPossibleMoves(pos, lastMove)) {
+			int nextPos = game.getNeighbour(pos, m), dists = 0;
+			for(GHOST g : GHOST.values()) {
+				if(!game.isGhostEdible(g)) {
+					if(g == closestGhost) {
+						dists += 10 * game.getShortestPathDistance(closestGhostIndex, nextPos, closestGhostLastMove);
+					}
+					else {
+						dists += game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), nextPos, game.getGhostLastMoveMade(g));
+					}
+				}
+			}
+			if(dists > maxDists) {
+				maxDists = dists;
+				bestMove = m;
 			}
 		}
-		// FOR DEBUG --------------------------------------------------------
-		if(MsPacManTools.debug()) {
-			System.out.println(getActionId());
-		}
-		// ------------------------------------------------------------------
-		//Returns the movement that increments the distance to the ghosts
-		return nextMove;
+		
+		return bestMove;
 	}
 	
 	@Override
