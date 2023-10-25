@@ -24,6 +24,6 @@ public class THuirMuerto implements Transition {
 	
 	@Override
 	public String toString() {
-		return String.format("Perseguir -> Huir \n");
+		return String.format("Huir -> Muerto \n");
 	}
 }

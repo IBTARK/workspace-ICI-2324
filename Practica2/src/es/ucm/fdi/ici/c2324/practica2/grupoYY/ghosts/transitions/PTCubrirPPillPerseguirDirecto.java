@@ -27,6 +27,6 @@ public class PTCubrirPPillPerseguirDirecto  implements Transition {
 
 	@Override
 	public String toString() {
-		return String.format("Perseguir: PerseguirDirectamente -> EvitarPPill \n");
+		return String.format("Perseguir: CubrirPPill -> PerseguirDirectamente \n");
 	}
 }

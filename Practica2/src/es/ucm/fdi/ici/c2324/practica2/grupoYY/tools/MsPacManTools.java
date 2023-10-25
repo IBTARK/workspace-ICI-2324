@@ -66,10 +66,12 @@ public class MsPacManTools {
 		GHOST nearest = null;
 		int minDist = Integer.MAX_VALUE;
 		for (GHOST g : GHOST.values()) {
-			int dist = game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(g), lastMove);
-			if (dist >= 0 && minDist > dist) {
-				minDist = dist;
-				nearest = g;
+			if(game.getGhostLairTime(g) <= 0) {
+				int dist = game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(g), lastMove);
+				if (dist >= 0 && minDist > dist) {
+					minDist = dist;
+					nearest = g;
+				}
 			}
 		}
 		return nearest;

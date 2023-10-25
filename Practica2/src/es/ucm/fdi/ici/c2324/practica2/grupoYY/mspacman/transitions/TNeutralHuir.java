@@ -17,6 +17,6 @@ public class TNeutralHuir implements Transition {
 
 	@Override
 	public String toString() {
-		return String.format("Neutral -> Huir Transition \n");
+		return String.format("Neutral -> Huir \n");
 	}
 }

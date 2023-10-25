@@ -64,11 +64,13 @@ public class MsPacManInput extends Input {
 		
 		ppillClose = TH_PPILL > game.getShortestPathDistance(pos, ppill, lastMove);
 		
-		GHOST nearest = MsPacManTools.getNearestEdible(game, pos, lastMove);
-		nearestEdibleDist = game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearest), lastMove);
+		//Nearest edible ghost to MsPacMan
+		GHOST nearest = MsPacManTools.getNearestEdible(game, pos, lastMove); //CAREFUL, can return null
+		nearestEdibleDist = nearest == null ? Integer.MAX_VALUE : game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearest), lastMove);
 		
-		int edibleJunction = MsPacManTools.nextJunction(game, game.getGhostCurrentNodeIndex(nearest), game.getGhostLastMoveMade(nearest));
-		nearestEdibleNextJunctionDist = game.getShortestPathDistance(pos, edibleJunction, lastMove);
+		//Next junction of the edible ghost, it can be null if there is no edible ghost
+		Integer edibleJunction = nearest == null ? null : MsPacManTools.nextJunction(game, game.getGhostCurrentNodeIndex(nearest), game.getGhostLastMoveMade(nearest));
+		nearestEdibleNextJunctionDist = nearest == null ? Integer.MAX_VALUE : game.getShortestPathDistance(pos, edibleJunction, lastMove);
 		
 		fewPills = game.getNumberOfActivePills() <= TH_FEWPILLS;
 		
