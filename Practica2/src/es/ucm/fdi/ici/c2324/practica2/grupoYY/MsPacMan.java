@@ -11,6 +11,7 @@ import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActBuscarPills;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActEvitarPPill;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActFlanquearFantasma;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActHuirDeFantasma;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActHuirHaciaPPill;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActHuirRodeandoPPill;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActHuirVariosFantasmas;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActKamikazeAPill;
@@ -66,7 +67,7 @@ public class MsPacMan extends PacmanController {
     	cfsmHuir.addObserver(huirObserver);
     	SimpleState hStateHuirDeUnFantasma = new SimpleState("Huir de un fantasma", new ActHuirDeFantasma());
     	SimpleState hStateHuirDeVariosFantasmas = new SimpleState("Huir de varios fantasmas", new ActHuirVariosFantasmas());
-    	SimpleState hStateHaciaPPill = new SimpleState("Huir hacia PPill", null);
+    	SimpleState hStateHaciaPPill = new SimpleState("Huir hacia PPill", new ActHuirHaciaPPill());
     	SimpleState hStateHuirRodeandoHaciaPPill = new SimpleState("Huir rodeando hacia PPill", new ActHuirRodeandoPPill());
     	Transition tranH1 = new HTHuirFantasmaHuirVarios();
     	Transition tranH2 = new HTHuirVariosHuirFantasma();
@@ -94,9 +95,9 @@ public class MsPacMan extends PacmanController {
     	SimpleState pStateFlanquearFantasma = new SimpleState("Flanquear fantasma", new ActFlanquearFantasma());
     	Transition tranP1 = new PTPerseguirFlanquear();
     	Transition tranP2 = new PTFlanquearPerseguir();
-    	cfsmHuir.add(pStatePerseguirFantasma, tranP1, pStateFlanquearFantasma);
-    	cfsmHuir.add(pStateFlanquearFantasma, tranP2, pStatePerseguirFantasma);
-    	cfsmHuir.ready(pStatePerseguirFantasma);
+    	cfsmPerseguir.add(pStatePerseguirFantasma, tranP1, pStateFlanquearFantasma);
+    	cfsmPerseguir.add(pStateFlanquearFantasma, tranP2, pStatePerseguirFantasma);
+    	cfsmPerseguir.ready(pStatePerseguirFantasma);
     	
     	//Neutral FSM
     	FSM cfsmNeutral = new FSM("Neutral");
@@ -106,9 +107,9 @@ public class MsPacMan extends PacmanController {
     	SimpleState nStateEvitarPPill = new SimpleState("Evitar PPill", new ActEvitarPPill());
     	Transition tranN1 = new NTBuscarPillsEvitarPPill();
     	Transition tranN2 = new NTEvitarPPillBuscarPills();
-    	cfsmHuir.add(nStateBuscarPills, tranN1, nStateEvitarPPill);
-    	cfsmHuir.add(nStateEvitarPPill, tranN2, nStateBuscarPills);
-    	cfsmHuir.ready(nStateBuscarPills);
+    	cfsmNeutral.add(nStateBuscarPills, tranN1, nStateEvitarPPill);
+    	cfsmNeutral.add(nStateEvitarPPill, tranN2, nStateBuscarPills);
+    	cfsmNeutral.ready(nStateBuscarPills);
     	
     	CompoundState compoundHuir = new CompoundState("Huir", cfsmHuir);
     	CompoundState compoundPerseguir = new CompoundState("Perseguir", cfsmPerseguir);

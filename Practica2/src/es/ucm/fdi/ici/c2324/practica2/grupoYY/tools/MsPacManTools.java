@@ -24,11 +24,10 @@ public class MsPacManTools {
 		
 		while (!queue.isEmpty()) {
 			ArrayList<Integer> act = queue.remove();
-			for (int n : game.getNeighbouringNodes(orig, lastMove)) {
+			for (int n : game.getNeighbouringNodes(act.get(act.size()-1), game.getMoveToMakeToReachDirectNeighbour(act.get(act.size()-2), act.get(act.size()-1)))) {
 				act.add(n);
-				if (n == dest) paths.add((Integer[]) act.toArray());
-				else if (maxDist > act.size() + game.getShortestPathDistance(act.get(act.size()-1), dest, 
-								   				game.getMoveToMakeToReachDirectNeighbour(act.get(act.size()-2), act.get(act.size()-1)))) 
+				if (n == dest) paths.add(act.toArray(new Integer[act.size()]));
+				else if (act.size() <= 2 || maxDist > act.size() + game.getShortestPathDistance(act.get(act.size()-1), dest, game.getMoveToMakeToReachDirectNeighbour(act.get(act.size()-2), act.get(act.size()-1)))) 
 					queue.add(new ArrayList<Integer>(act));
 				act.remove(act.size()-1);
 			}

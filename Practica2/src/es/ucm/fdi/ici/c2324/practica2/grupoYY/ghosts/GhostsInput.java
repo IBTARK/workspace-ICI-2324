@@ -17,17 +17,17 @@ public class GhostsInput extends Input {
 	private static final int TH_EDIBLE = 30;
 	private static final int TH_DANGER = 30;
 
-	private Map<GHOST, Boolean> alive = new HashMap<>(); //Map indicating if the ghosts are alive or not
-	private Map<GHOST, Boolean> edible = new HashMap<>(); //Map indicating if the ghosts are edible or not
-	private Map<GHOST, GHOST> nearestChasing = new HashMap<>(); //Map indicating for every ghost the nearest chasing ghost to him
-	private Map<GHOST, GHOST> nearestEdible = new HashMap<>(); //Map indicating for every  ghost the nearest edible ghost to him
-	private Map<GHOST, Integer> pacmanDist = new HashMap<>(); //Map indicating for every ghost the distance from him to MsPacMan
-	private Map<GHOST, Integer> pacmanJunctDist = new HashMap<>(); //Map indicating for every ghost the distance from him to MsPacMans next junction
-	private Map<GHOST, Integer> ppillDist = new HashMap<>(); //Map indicating for every ghost the distance from him to MsPacMans closest PPill
-	private Map<GHOST, GHOST> nearestChasingNotBlocked = new HashMap<>(); //Map indicating for every ghost the nearest chasing not blocked ghost to him
-	private Map<GHOST, Boolean> nearestChasingBlocked = new HashMap<>(); //Map indicating for every ghost if the nearest ghost to him is blocked 
-	private Map<GHOST, Map<GHOST, Integer>> distanceBetweenGhosts = new HashMap<>(); //Map of distances between ghosts
-	private Map<GHOST, Map<Integer, Integer>> distanceGhostsPPills = new HashMap<>(); //Map of the distances of the ghost to every PPill remaining
+	private Map<GHOST, Boolean> alive; //Map indicating if the ghosts are alive or not
+	private Map<GHOST, Boolean> edible; //Map indicating if the ghosts are edible or not
+	private Map<GHOST, GHOST> nearestChasing; //Map indicating for every ghost the nearest chasing ghost to him
+	private Map<GHOST, GHOST> nearestEdible; //Map indicating for every  ghost the nearest edible ghost to him
+	private Map<GHOST, Integer> pacmanDist; //Map indicating for every ghost the distance from him to MsPacMan
+	private Map<GHOST, Integer> pacmanJunctDist; //Map indicating for every ghost the distance from him to MsPacMans next junction
+	private Map<GHOST, Integer> ppillDist; //Map indicating for every ghost the distance from him to MsPacMans closest PPill
+	private Map<GHOST, GHOST> nearestChasingNotBlocked; //Map indicating for every ghost the nearest chasing not blocked ghost to him
+	private Map<GHOST, Boolean> nearestChasingBlocked; //Map indicating for every ghost if the nearest ghost to him is blocked 
+	private Map<GHOST, Map<GHOST, Integer>> distanceBetweenGhosts; //Map of distances between ghosts
+	private Map<GHOST, Map<Integer, Integer>> distanceGhostsPPills; //Map of the distances of the ghost to every PPill remaining
 	private GHOST closestEdibleGhostMsPacMan; //Ghost MsPacMan is closest to
 	private int minPacmanDistancePPill; //Distance from MsPacMan to the nearest PPill to her
 	private int closestPPillMsPacMan; //PPill MsPacMan is closest to
@@ -41,7 +41,18 @@ public class GhostsInput extends Input {
 
 	@Override
 	public void parseInput() {
-		coord.update(game);
+		alive = new HashMap<>(); //Map indicating if the ghosts are alive or not
+		edible = new HashMap<>(); //Map indicating if the ghosts are edible or not
+		nearestChasing = new HashMap<>(); //Map indicating for every ghost the nearest chasing ghost to him
+		nearestEdible = new HashMap<>(); //Map indicating for every  ghost the nearest edible ghost to him
+		pacmanDist = new HashMap<>(); //Map indicating for every ghost the distance from him to MsPacMan
+		pacmanJunctDist = new HashMap<>(); //Map indicating for every ghost the distance from him to MsPacMans next junction
+		ppillDist = new HashMap<>(); //Map indicating for every ghost the distance from him to MsPacMans closest PPill
+		nearestChasingNotBlocked = new HashMap<>(); //Map indicating for every ghost the nearest chasing not blocked ghost to him
+		nearestChasingBlocked = new HashMap<>(); //Map indicating for every ghost if the nearest ghost to him is blocked 
+		distanceBetweenGhosts = new HashMap<>(); //Map of distances between ghosts
+		distanceGhostsPPills = new HashMap<>(); //Map of the distances of the ghost to every PPill remaining
+		
 		
 		int pacman = game.getPacmanCurrentNodeIndex();
 		int pacmanNextJunction = GhostsTools.nextJunction(game, pacman, game.getPacmanLastMoveMade());
@@ -78,7 +89,8 @@ public class GhostsInput extends Input {
 			HashMap<Integer, Integer> distancePPills = new HashMap<Integer, Integer>();
 			//Compute the distances between the ghost g to every remaining PPill
 			for(int ppill : game.getActivePowerPillsIndices()) {
-				distancePPills.put(ppill, game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), ppill, game.getGhostLastMoveMade(g)));
+				if(alive.get(g)) distancePPills.put(ppill, game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), ppill, game.getGhostLastMoveMade(g)));
+				else distancePPills.put(ppill, Integer.MAX_VALUE);
 			}
 			distanceGhostsPPills.put(g, distancePPills);
 			
@@ -87,16 +99,18 @@ public class GhostsInput extends Input {
 			for(GHOST g2 : GHOST.values()) {
 				if(g2 != g) {
 					//Distance from g to g2 taking into consideration the last move made by g
-					if(game.getGhostLairTime(g) <= 0)distances.put(g2, game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), game.getGhostCurrentNodeIndex(g2), game.getGhostLastMoveMade(g)));
+					if(alive.get(g) && game.getGhostLairTime(g2) <= 0)distances.put(g2, game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), game.getGhostCurrentNodeIndex(g2), game.getGhostLastMoveMade(g)));
 					else distances.put(g2, Integer.MAX_VALUE); //If g2 is in the lair, the distance is the maximum possible
 				}
 			}
 			distanceBetweenGhosts.put(g, distances);
 			
-			int closestGhostAux = game.getShortestPathDistance(pacman, pos, game.getPacmanLastMoveMade());
-			if (game.isGhostEdible(g) && closestGhostAux < distClosestGhost) {
-				distClosestGhost = closestGhostAux;
-				closestEdibleGhostMsPacMan = g;
+			if(alive.get(g)) {
+				int closestGhostAux = game.getShortestPathDistance(pacman, pos, game.getPacmanLastMoveMade());
+				if (game.isGhostEdible(g) && closestGhostAux < distClosestGhost) {
+					distClosestGhost = closestGhostAux;
+					closestEdibleGhostMsPacMan = g;
+				}
 			}
 		}
 	}

@@ -157,6 +157,7 @@ public class Ghosts extends GhostController {
 	public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue) {
 		EnumMap<GHOST,MOVE> result = new EnumMap<GHOST,MOVE>(GHOST.class);
 		
+		coord.update(game);
 		GhostsInput in = new GhostsInput(game, coord);
 		
 		for(GHOST ghost: GHOST.values())

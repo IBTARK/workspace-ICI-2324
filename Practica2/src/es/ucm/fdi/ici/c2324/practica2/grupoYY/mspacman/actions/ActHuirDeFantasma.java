@@ -81,7 +81,7 @@ public class ActHuirDeFantasma implements Action {
 				int[] ghostPath = game.getShortestPath(ghostIndex, curNode, ghostMove);
 				// The last ghost move (ghostPath[length-1] to ghostPath[length-2]) or ghostMove arriving at the junction.
 				MOVE ghostArrivingMove = ghostPath.length > 1 ? 
-								game.getMoveToMakeToReachDirectNeighbour(ghostPath[ghostPath.length-1], ghostPath[ghostPath.length-2]) : 
+								game.getMoveToMakeToReachDirectNeighbour(ghostPath[ghostPath.length-2], ghostPath[ghostPath.length-1]) : 
 								ghostMove;
 				// If ghostArrivingMove is different from our onlyMove (arriving move at the junction) then the ghost can get us.
 				if(ghostArrivingMove != onlyMove) {
