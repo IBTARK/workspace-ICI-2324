@@ -11,9 +11,9 @@ import pacman.game.Game;
 public class MsPacManInput extends Input {
 	
 	// Thresholds
-	private static final int TH_CHASING_GHOST =50; 
-	private static final int TH_EDIBLE_GHOST = 120;
-	private static final int TH_PPILL = 30;
+	private static final int TH_CHASING_GHOST = 70; 
+	private static final int TH_EDIBLE_GHOST = 300;
+	private static final int TH_PPILL = 50;
 	private static final int TH_FEWPILLS = 20;
 	
 	private int dangerLevel;
@@ -25,8 +25,9 @@ public class MsPacManInput extends Input {
 	private boolean combo;
 	private boolean fewPills;
 	private boolean nearestPPillBlocked;
-	private int nearestEdibleDist;
-	private int nearestEdibleNextJunctionDist;
+	private int nearestEdibleDist; //Distance from MsPacMan to the nearest edible ghost to her
+	private int nearestEdibleNextJunctionDist; //Distance from MsPacMan to the next junction of the nearest edible ghosts to her
+	private int distOfNearestEdibleToHisNextJunction; //Distance of MsPacMans nearest edible ghost to his next junction
 
 	public MsPacManInput(Game game) {
 		super(game);
@@ -80,6 +81,8 @@ public class MsPacManInput extends Input {
 		Integer edibleJunction = nearest == null ? null : MsPacManTools.nextJunction(game, game.getGhostCurrentNodeIndex(nearest), game.getGhostLastMoveMade(nearest));
 		nearestEdibleNextJunctionDist = nearest == null ? Integer.MAX_VALUE : game.getShortestPathDistance(pos, edibleJunction, lastMove);
 		
+		distOfNearestEdibleToHisNextJunction = nearest == null ? Integer.MAX_VALUE : game.getShortestPathDistance(game.getGhostCurrentNodeIndex(nearest), edibleJunction, game.getGhostLastMoveMade(nearest));
+		
 		fewPills = game.getNumberOfActivePills() <= TH_FEWPILLS;
 		
 	}
@@ -130,5 +133,9 @@ public class MsPacManInput extends Input {
 	
 	public int nearestEdibleNextJunctionDistance() {
 		return nearestEdibleNextJunctionDist;
+	}
+	
+	public int distOfNearestEdibleToHisNextJunction() {
+		return distOfNearestEdibleToHisNextJunction;
 	}
 }

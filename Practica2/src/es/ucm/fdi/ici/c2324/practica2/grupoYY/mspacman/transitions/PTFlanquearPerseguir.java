@@ -14,7 +14,7 @@ public class PTFlanquearPerseguir implements Transition {
 	public boolean evaluate(Input in) {
 		MsPacManInput pcin = (MsPacManInput) in;
 		
-		return pcin.getNearestEdibleDistance() <= pcin.nearestEdibleNextJunctionDistance();
+		return pcin.nearestEdibleNextJunctionDistance() >= pcin.distOfNearestEdibleToHisNextJunction();
 	}
 
 	@Override
