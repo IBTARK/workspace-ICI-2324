@@ -11,12 +11,12 @@ import pacman.game.Game;
 public class MsPacManInput extends Input {
 	
 	// Thresholds
-	private static final int TH_CHASING_GHOST = 50; 
+	private static final int TH_CHASING_GHOST = 100; 
 	private static final int TH_EDIBLE_GHOST = 60;
 	private static final int TH_PPILL = 50;
 	private static final int TH_FEWPILLS = 20;
 	
-	private int dangerLevel = 0;
+	private int dangerLevel;
 	private int closestPPill;
 	private boolean levelUp;
 	private boolean ppillAccessible;
@@ -34,18 +34,20 @@ public class MsPacManInput extends Input {
 
 	@Override
 	public void parseInput() {
+		dangerLevel = 0;
 		for (GHOST g : GHOST.values()) {
-			if (!game.isGhostEdible(g)
-				&& TH_CHASING_GHOST > game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), 
-											 					game.getPacmanCurrentNodeIndex(), 
-											 					game.getGhostLastMoveMade(g)))
-				dangerLevel++;
-			if (game.isGhostEdible(g)
-				&& TH_EDIBLE_GHOST > game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), 
-											 				   game.getPacmanCurrentNodeIndex(), 
-											 				   game.getGhostLastMoveMade(g)))
-				attack = true;
-				
+			if (game.getGhostLairTime(g) <= 0) {
+				if (!game.isGhostEdible(g)
+					&& TH_CHASING_GHOST > game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), 
+												 					game.getPacmanCurrentNodeIndex(), 
+												 					game.getGhostLastMoveMade(g)))
+					dangerLevel++;
+				if (game.isGhostEdible(g)
+					&& TH_EDIBLE_GHOST > game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), 
+												 				   game.getPacmanCurrentNodeIndex(), 
+												 				   game.getGhostLastMoveMade(g)))
+					attack = true;
+			}
 		}
 		
 		closestPPill = MsPacManTools.closestPPill(game);

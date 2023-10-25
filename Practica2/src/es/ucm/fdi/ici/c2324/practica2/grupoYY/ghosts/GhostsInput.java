@@ -169,7 +169,7 @@ public class GhostsInput extends Input {
 	//Indicate if there are any edible ghosts near to the given ghost
 	public boolean ediblesClose(GHOST g) {
 		//Check if any of the distances between g and the other ghost is smaller than the threshold
-		return distanceBetweenGhosts.get(g).get(nearestEdible.get(g)) <= TH_EDIBLE;
+		return nearestEdible.get(g) != null && distanceBetweenGhosts.get(g).get(nearestEdible.get(g)) <= TH_EDIBLE;
 	}
 	
 	//Get the length of the shortest path from the given ghost to MsPacMan

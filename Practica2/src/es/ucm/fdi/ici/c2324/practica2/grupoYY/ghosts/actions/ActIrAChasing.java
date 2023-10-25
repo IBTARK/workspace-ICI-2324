@@ -2,11 +2,10 @@ package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions;
 
 import es.ucm.fdi.ici.Action;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.GhostsTools;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.MsPacManTools;
-import pacman.game.Game;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
+import pacman.game.Game;
 
 //Action to go towards the nearest chasing not blocked ghost
 public class ActIrAChasing implements Action {

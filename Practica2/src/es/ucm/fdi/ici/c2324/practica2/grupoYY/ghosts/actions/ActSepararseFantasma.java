@@ -1,7 +1,6 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions;
 
 import es.ucm.fdi.ici.Action;
-import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
