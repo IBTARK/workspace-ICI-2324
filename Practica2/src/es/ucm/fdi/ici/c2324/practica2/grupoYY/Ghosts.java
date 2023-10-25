@@ -66,7 +66,7 @@ public class Ghosts extends GhostController {
 		for(GHOST ghost: GHOST.values()) {
 			FSM fsm = new FSM(ghost.name());
 			
-			fsm.addObserver(new ConsoleFSMObserver(ghost.name()));
+			//fsm.addObserver(new ConsoleFSMObserver(ghost.name()));
 			GraphFSMObserver graphObserver = new GraphFSMObserver(ghost.name());
 			fsm.addObserver(graphObserver);
 			

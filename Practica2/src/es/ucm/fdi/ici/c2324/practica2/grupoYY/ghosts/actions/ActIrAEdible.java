@@ -45,7 +45,7 @@ public class ActIrAEdible implements Action {
 		}
 		// -------------------------------------------------------------------------
 		//Get the movement that makes the ghost move towards the one to cover
-		return game.getApproximateNextMoveTowardsTarget(pos, nearest, lastMove, DM.PATH);
+		return GhostsTools.goTo(game, pos, nearest, lastMove);
 	}
 
 	@Override

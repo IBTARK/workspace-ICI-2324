@@ -31,9 +31,9 @@ public class ActFlanquear implements Action {
 		}
 		// -------------------------------------------------------------------------
 		//Get the movement that makes the ghost move towards MsPacMans Next Junction
-		return game.getNextMoveTowardsTarget(pos, 
+		return GhostsTools.goTo(game, pos, 
 				GhostsTools.nextJunction(game, game.getPacmanCurrentNodeIndex(),game.getPacmanLastMoveMade()), 
-				lastMove, DM.PATH);
+				lastMove);
 	}
 	
 	@Override

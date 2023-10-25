@@ -36,7 +36,7 @@ public class ActCubrirPPill implements Action {
 		// -------------------------------------------------------------------------
 		
 		//If there are PPills left move towards the closest one
-		return game.getNextMoveTowardsTarget(pos, closestPPill, lastMove, DM.PATH);
+		return GhostsTools.goTo(game, pos, closestPPill, lastMove);
 	}
 
 	@Override

@@ -8,7 +8,7 @@ public class GhostsTools {
 	
 	// FOR DEBUG -----------------------------------------------------------
 	public static boolean debug() {
-		return false;
+		return true;
 	}
 	// ---------------------------------------------------------------------
 
@@ -117,5 +117,18 @@ public class GhostsTools {
 			}
 		}
 		return nearest;
+	}
+	
+	public static MOVE goTo(Game game, int pos, int dest, MOVE lastMove) {
+		int distMin = Integer.MAX_VALUE;
+		MOVE bestMove = null;
+		for (MOVE m : game.getPossibleMoves(pos, lastMove)) {
+			int dist = game.getShortestPathDistance(game.getNeighbour(pos, m), dest, m);
+			if (dist < distMin) {
+				distMin = dist;
+				bestMove = m;
+			}
+		}
+		return bestMove;
 	}
 }

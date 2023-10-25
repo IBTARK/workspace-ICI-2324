@@ -35,7 +35,7 @@ public class ActIrAChasing implements Action {
 		}
 		// -------------------------------------------------------------------------
 		
-		return game.getNextMoveTowardsTarget(pos, game.getGhostCurrentNodeIndex(nearestChasingNotBlocked), lastMove, DM.PATH);
+		return GhostsTools.goTo(game, pos, game.getGhostCurrentNodeIndex(nearestChasingNotBlocked), lastMove);
 	}
 	
 	@Override
