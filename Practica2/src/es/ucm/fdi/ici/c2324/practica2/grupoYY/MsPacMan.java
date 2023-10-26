@@ -1,8 +1,5 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 import es.ucm.fdi.ici.Input;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.MsPacManInput;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.mspacman.actions.ActBuscarPills;
@@ -40,8 +37,6 @@ import es.ucm.fdi.ici.fsm.CompoundState;
 import es.ucm.fdi.ici.fsm.FSM;
 import es.ucm.fdi.ici.fsm.SimpleState;
 import es.ucm.fdi.ici.fsm.Transition;
-import es.ucm.fdi.ici.fsm.observers.ConsoleFSMObserver;
-import es.ucm.fdi.ici.fsm.observers.GraphFSMObserver;
 import pacman.controllers.PacmanController;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
@@ -59,13 +54,13 @@ public class MsPacMan extends PacmanController {
     	fsm = new FSM("MsPacMan");
     	
     	//fsm.addObserver(new ConsoleFSMObserver("MsPacMan"));
-    	GraphFSMObserver observer = new GraphFSMObserver(fsm.toString());
-    	fsm.addObserver(observer);
+//    	GraphFSMObserver observer = new GraphFSMObserver(fsm.toString());
+//    	fsm.addObserver(observer);
     	
     	//Huir FSM
     	FSM cfsmHuir = new FSM("Huir");
-    	GraphFSMObserver huirObserver = new GraphFSMObserver(cfsmHuir.toString());
-    	cfsmHuir.addObserver(huirObserver);
+//    	GraphFSMObserver huirObserver = new GraphFSMObserver(cfsmHuir.toString());
+//    	cfsmHuir.addObserver(huirObserver);
     	SimpleState hStateHuirDeUnFantasma = new SimpleState("Huir de un fantasma", new ActHuirDeFantasma());
     	SimpleState hStateHuirDeVariosFantasmas = new SimpleState("Huir de varios fantasmas", new ActHuirVariosFantasmas());
     	SimpleState hStateHaciaPPill = new SimpleState("Huir hacia PPill", new ActHuirHaciaPPill());
@@ -90,8 +85,8 @@ public class MsPacMan extends PacmanController {
     	
     	//Perseguir FSM
     	FSM cfsmPerseguir = new FSM("Perseguir");
-    	GraphFSMObserver perseguirObserver = new GraphFSMObserver(cfsmPerseguir.toString());
-    	cfsmPerseguir.addObserver(perseguirObserver);
+//    	GraphFSMObserver perseguirObserver = new GraphFSMObserver(cfsmPerseguir.toString());
+//    	cfsmPerseguir.addObserver(perseguirObserver);
     	SimpleState pStatePerseguirFantasma = new SimpleState("Perseguir fantasma", new ActPerseguirFantasma()); 
     	SimpleState pStateFlanquearFantasma = new SimpleState("Flanquear fantasma", new ActFlanquearFantasma());
     	Transition tranP1 = new PTPerseguirFlanquear();
@@ -102,8 +97,8 @@ public class MsPacMan extends PacmanController {
     	
     	//Neutral FSM
     	FSM cfsmNeutral = new FSM("Neutral");
-    	GraphFSMObserver neutralObserver = new GraphFSMObserver(cfsmNeutral.toString());
-    	cfsmNeutral.addObserver(neutralObserver);
+//    	GraphFSMObserver neutralObserver = new GraphFSMObserver(cfsmNeutral.toString());
+//    	cfsmNeutral.addObserver(neutralObserver);
     	SimpleState nStateBuscarPills = new SimpleState("Buscar pills", new ActBuscarPills());
     	SimpleState nStateEvitarPPill = new SimpleState("Evitar PPill", new ActEvitarPPill());
     	Transition tranN1 = new NTBuscarPillsEvitarPPill();
@@ -146,16 +141,16 @@ public class MsPacMan extends PacmanController {
     	fsm.ready(compoundHuir);
     	
     	
-    	JFrame frame = new JFrame();
-    	JPanel main = new JPanel();
-    	//main.setLayout(new BorderLayout());
-    	main.add(observer.getAsPanel(true, null));//, BorderLayout.CENTER);
-    	main.add(huirObserver.getAsPanel(true, null));//, BorderLayout.CENTER);
-    	main.add(neutralObserver.getAsPanel(true, null));//, BorderLayout.CENTER);
-    	main.add(perseguirObserver.getAsPanel(true, null));//, BorderLayout.CENTER);
-    	frame.getContentPane().add(main);
-    	frame.pack();
-    	frame.setVisible(true);
+//    	JFrame frame = new JFrame();
+//    	JPanel main = new JPanel();
+//    	//main.setLayout(new BorderLayout());
+//    	main.add(observer.getAsPanel(true, null));//, BorderLayout.CENTER);
+//    	main.add(huirObserver.getAsPanel(true, null));//, BorderLayout.CENTER);
+//    	main.add(neutralObserver.getAsPanel(true, null));//, BorderLayout.CENTER);
+//    	main.add(perseguirObserver.getAsPanel(true, null));//, BorderLayout.CENTER);
+//    	frame.getContentPane().add(main);
+//    	frame.pack();
+//    	frame.setVisible(true);
     	
 	}
 	

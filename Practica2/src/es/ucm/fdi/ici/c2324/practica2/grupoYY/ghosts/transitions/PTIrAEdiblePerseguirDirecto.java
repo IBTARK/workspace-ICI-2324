@@ -24,8 +24,13 @@ public class PTIrAEdiblePerseguirDirecto implements Transition {
 	//Evaluate if the transition can be made
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
+		
+		GHOST covered = null;
+		for (GHOST g : GHOST.values())
+			if (coord.whoCoversEdible(g) == ghost)
+				covered = g;
 	
-		boolean eval = !gin.ediblesClose(ghost);
+		boolean eval = !gin.isEdibleClose(ghost, covered);
 		
 		if (eval) coordinate();
 		return eval;

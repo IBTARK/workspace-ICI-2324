@@ -16,9 +16,9 @@ public class ExecutorTest {
         PacmanController pacMan = new MsPacMan();
         GhostController ghosts = new Ghosts();
         
-        //for (int i = 0; i < 10; i++)
-	        //System.out.println( 
-	            executor.runGame(pacMan, ghosts, 10); //last parameter defines speed
-	        //);     
+        for (int i = 0; i < 10; i++)
+	        System.out.println( 
+	            executor.runGame(pacMan, ghosts, 1) //last parameter defines speed
+	        );     
     }
 }

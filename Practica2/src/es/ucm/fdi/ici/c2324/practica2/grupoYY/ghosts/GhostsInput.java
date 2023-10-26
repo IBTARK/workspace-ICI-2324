@@ -252,4 +252,8 @@ public class GhostsInput extends Input {
 	public int numPPills() {
 		return numPPills;
 	}
+	
+	public boolean isEdibleClose(GHOST g1, GHOST g2) {
+		return distanceBetweenGhosts.get(g1).get(g2) >= 0 && distanceBetweenGhosts.get(g1).get(g2) <= TH_EDIBLE;
+	}
 }
