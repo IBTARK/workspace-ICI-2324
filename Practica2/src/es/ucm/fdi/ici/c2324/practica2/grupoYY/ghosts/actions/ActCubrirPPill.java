@@ -2,10 +2,9 @@ package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions;
 
 import es.ucm.fdi.ici.Action;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.GhostsTools;
-import pacman.game.Game;
-import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
+import pacman.game.Game;
 
 //Action of covering the closest PPill (always has to remain at least 1 PPill to enter this action, is ensured in the transition)
 public class ActCubrirPPill implements Action {
