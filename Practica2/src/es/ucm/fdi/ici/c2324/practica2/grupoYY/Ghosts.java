@@ -103,12 +103,12 @@ public class Ghosts extends GhostController {
 			Transition tranP2 = new PTPerseguirDirectoSepararseFantasma(ghost);
 			Transition tranP3 = new PTPerseguirDirectoFlanquear(ghost);
 			Transition tranP4 = new PTFlanquearPerseguirDirecto(ghost);
-			Transition tranP5 = new PTPerseguirDirectoCubrirPPill(ghost);
-			Transition tranP6 = new PTCubrirPPillPerseguirDirecto(ghost);
+			Transition tranP5 = new PTPerseguirDirectoCubrirPPill(ghost, coord);
+			Transition tranP6 = new PTCubrirPPillPerseguirDirecto(ghost, coord);
 			Transition tranP7 = new PTEvitarPPillPerseguirDirecto(ghost);
 			Transition tranP8 = new PTPerseguirDirectoEvitarPPill(ghost);
-			Transition tranP9 = new PTPerseguirDirectoIrAEdible(ghost);
-			Transition tranP10 = new PTIrAEdiblePerseguirDirecto(ghost);
+			Transition tranP9 = new PTPerseguirDirectoIrAEdible(ghost, coord);
+			Transition tranP10 = new PTIrAEdiblePerseguirDirecto(ghost, coord);
 			Transition tranP11 = new PTSepararseFantasmaFlanquear(ghost);
 			Transition tranP12 = new PTFlanquearSepararseFantasma(ghost);
 			cfsmPerseguir.add(pStateSeperarseDeFantasma, tranP1, pStatePerseguirDirectamente);
@@ -129,7 +129,7 @@ public class Ghosts extends GhostController {
 			CompoundState compoundPerseguir = new CompoundState("Perseguir", cfsmPerseguir);
 			SimpleState stateMuerto = new SimpleState(new ActMuerto(ghost));
 
-			Transition tran1 = new TPerseguirHuir(ghost);
+			Transition tran1 = new TPerseguirHuir(ghost, coord);
 			Transition tran2 = new THuirPerseguir(ghost);
 			Transition tran3 = new THuirMuerto(ghost);
 			Transition tran4 = new TMuertoPerseguir(ghost);

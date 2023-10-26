@@ -14,7 +14,6 @@ public class GhostsCoordination {
 	private Map<GHOST, GHOST> coveringEdible = new HashMap<>();	//For every ghost, contains the one protecting it (if exists)
 	private Map<Integer, GHOST> coveringPPill = new HashMap<>();//For every ppill, contains the ghost protecting it (if exists)
 	private List<Entry<GHOST, Integer>> flankAttacks = new LinkedList<>();
-	private GHOST directAttacker = null;
 	
 	public void update(Game game) {
 		Map<Integer, GHOST> newCoveringPPill = new HashMap<>();
@@ -57,15 +56,5 @@ public class GhostsCoordination {
 		for (Integer pp : coveringPPill.keySet())
 			if (ghost == coveringPPill.get(pp))
 				coveringPPill.remove(pp);
-	}
-	
-	public GHOST whoIsDirectAttacker() {
-		return directAttacker;
-	}
-	
-	public void directAttack(GHOST g) {
-		if (directAttacker != null)
-			throw new RuntimeException("Te pasaste atacando weon");
-		directAttacker = g;
 	}
 }
