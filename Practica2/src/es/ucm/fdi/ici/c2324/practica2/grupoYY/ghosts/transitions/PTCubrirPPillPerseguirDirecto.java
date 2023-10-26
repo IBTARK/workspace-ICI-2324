@@ -25,7 +25,7 @@ public class PTCubrirPPillPerseguirDirecto  implements Transition {
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
 	
-		boolean eval = gin.closestPPillDistance(ghost) == 0;
+		boolean eval = gin.closestPPillDistance(ghost) == 0 || !gin.isPPillClose(ghost);
 		
 		if (eval) coordinate();
 		return eval;

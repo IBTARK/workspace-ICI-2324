@@ -14,8 +14,8 @@ public class GhostsInput extends Input {
 	//Thresholds
 	private static final int TH_PACMAN_PPILL = 120;
 	private static final int TH_CHASING = 50;
-	private static final int TH_EDIBLE = 100;
-	private static final int TH_DANGER = 150;
+	private static final int TH_EDIBLE = 120;
+	private static final int TH_DANGER = 120;
 
 	private Map<GHOST, Boolean> alive; //Map indicating if the ghosts are alive or not
 	private Map<GHOST, Boolean> edible; //Map indicating if the ghosts are edible or not
@@ -255,5 +255,9 @@ public class GhostsInput extends Input {
 	
 	public boolean isEdibleClose(GHOST g1, GHOST g2) {
 		return distanceBetweenGhosts.get(g1).get(g2) >= 0 && distanceBetweenGhosts.get(g1).get(g2) <= TH_EDIBLE;
+	}
+	
+	public boolean isPPillClose(GHOST g) {
+		return ppillDist.get(g) > TH_PACMAN_PPILL;
 	}
 }
