@@ -1,6 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions;
 
 import es.ucm.fdi.ici.Input;
+import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.GhostsCoordination;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.GhostsInput;
 import es.ucm.fdi.ici.fsm.Transition;
 import pacman.game.Constants.GHOST;
@@ -12,9 +13,11 @@ public class PTCubrirPPillPerseguirDirecto  implements Transition {
 	
 	//Owner of the FMS
 	private GHOST ghost;
+	private GhostsCoordination coord;
 	
-	public PTCubrirPPillPerseguirDirecto(GHOST g) {
+	public PTCubrirPPillPerseguirDirecto(GHOST g, GhostsCoordination coord) {
 		ghost = g;
+		this.coord = coord;
 	} 
 
 	@Override
@@ -22,11 +25,18 @@ public class PTCubrirPPillPerseguirDirecto  implements Transition {
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
 	
-		return gin.closestPPillDistance(ghost) == 0;
+		boolean eval = gin.closestPPillDistance(ghost) == 0;
+		
+		if (eval) coordinate();
+		return eval;
 	}
 
 	@Override
 	public String toString() {
 		return String.format("Perseguir: CubrirPPill -> PerseguirDirectamente \n");
+	}
+	
+	private void coordinate() {
+		coord.uncoverPPill(ghost);
 	}
 }

@@ -225,14 +225,22 @@ public class GhostsInput extends Input {
 		return nearestChasingBlocked.get(g);
 	}
 	
+	public GHOST getClosestEdibleNotCovered(GHOST g) {
+		int distMin = Integer.MAX_VALUE;
+		GHOST target = null;
+		for(GHOST g2 : GHOST.values())
+			if(g != g2 && edible.get(g2) && coord.whoCoversEdible(g2) == null && distanceBetweenGhosts.get(g).get(g2) < distMin) {
+				target = g2;
+				distMin = distanceBetweenGhosts.get(g).get(g2);
+			}
+		return target;
+	}
+	
 	//Indicate if there are any edible none covered ghost near the given ghost
 	public boolean ediblesNotCoveredClose(GHOST g) {
+		GHOST target = getClosestEdibleNotCovered(g);
 		
-		for(GHOST g2 : GHOST.values()) {
-			if(g != g2 && edible.get(g2) && distanceBetweenGhosts.get(g).get(g2) <= TH_EDIBLE && coord.whoCoversEdible(g2) == null) return true;
-		}
-		
-		return false;
+		return target != null && distanceBetweenGhosts.get(g).get(target) <= TH_EDIBLE;
 	}
 	
 	//Indicate if a ghost is in danger (close to MsPacMan)
