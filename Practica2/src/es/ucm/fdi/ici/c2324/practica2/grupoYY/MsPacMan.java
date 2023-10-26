@@ -40,6 +40,7 @@ import es.ucm.fdi.ici.fsm.CompoundState;
 import es.ucm.fdi.ici.fsm.FSM;
 import es.ucm.fdi.ici.fsm.SimpleState;
 import es.ucm.fdi.ici.fsm.Transition;
+import es.ucm.fdi.ici.fsm.observers.ConsoleFSMObserver;
 import es.ucm.fdi.ici.fsm.observers.GraphFSMObserver;
 import pacman.controllers.PacmanController;
 import pacman.game.Constants.MOVE;
@@ -57,6 +58,7 @@ public class MsPacMan extends PacmanController {
 		
     	fsm = new FSM("MsPacMan");
     	
+    	//fsm.addObserver(new ConsoleFSMObserver("MsPacMan"));
     	GraphFSMObserver observer = new GraphFSMObserver(fsm.toString());
     	fsm.addObserver(observer);
     	

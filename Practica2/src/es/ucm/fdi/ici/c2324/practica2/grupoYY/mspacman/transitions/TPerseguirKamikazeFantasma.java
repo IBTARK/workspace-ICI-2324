@@ -12,7 +12,7 @@ public class TPerseguirKamikazeFantasma implements Transition {
 	public boolean evaluate(Input in) {
 		MsPacManInput pcin = (MsPacManInput) in;
 		
-		return pcin.combo() && pcin.attack();
+		return pcin.combo() && pcin.attackClose();
 	}
 
 	@Override

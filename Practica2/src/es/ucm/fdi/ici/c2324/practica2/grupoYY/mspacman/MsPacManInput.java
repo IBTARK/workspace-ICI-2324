@@ -13,6 +13,7 @@ public class MsPacManInput extends Input {
 	// Thresholds
 	private static final int TH_CHASING_GHOST = 80; 
 	private static final int TH_EDIBLE_GHOST = 370;
+	private static final int TH_EDIBLE_GHOST_CLOSE = 170;
 	private static final int TH_PPILL = 100;
 	private static final int TH_FEWPILLS = 20;
 	private static final int TH_COMBO = 500;
@@ -23,6 +24,7 @@ public class MsPacManInput extends Input {
 	private boolean ppillAccessible;
 	private boolean ppillClose;
 	private boolean attack;
+	private boolean attackClose;
 	private boolean combo;
 	private boolean fewPills;
 	private boolean nearestPPillBlocked;
@@ -50,6 +52,11 @@ public class MsPacManInput extends Input {
 												 				   game.getPacmanCurrentNodeIndex(), 
 												 				   game.getGhostLastMoveMade(g)))
 					attack = true;
+				if(game.isGhostEdible(g)
+					&& TH_EDIBLE_GHOST_CLOSE > game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), 
+												 				   game.getPacmanCurrentNodeIndex(), 
+												 				   game.getGhostLastMoveMade(g)))
+					attackClose = true;
 			}
 		}
 		
@@ -106,6 +113,10 @@ public class MsPacManInput extends Input {
 	
 	public boolean attack() {
 		return attack;
+	}
+	
+	public boolean attackClose() {
+		return attackClose;
 	}
 	
 	public int getClosestPPill() {
