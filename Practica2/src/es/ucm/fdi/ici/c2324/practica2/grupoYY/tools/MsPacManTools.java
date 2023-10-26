@@ -93,11 +93,25 @@ public class MsPacManTools {
 		return moves;
 	}
 	
+
 	//Checks if there is a ghost in the given path coming 
 	public static boolean blocked(Game game, Integer[] path) {
+		boolean firstJuncitonChecked = false;
+		int numNodes = 0;
+		
 		for(int node : path) {
-			for(GHOST g :  GHOST.values())
-				if(game.getGhostCurrentNodeIndex(g) == node) return true;
+			for(GHOST g :  GHOST.values()) {
+				int ghostPos = game.getGhostCurrentNodeIndex(g);
+				MOVE ghostLastMove = game.getGhostLastMoveMade(g);
+				
+				//The ghost is in the path
+				if(ghostPos == node) return true;
+				//The ghost can reach faster the first junction in the path
+				if(!firstJuncitonChecked && game.isJunction(node) 
+						&& game.getShortestPathDistance(ghostPos, node, ghostLastMove) < numNodes) return true;
+			}
+			if(!firstJuncitonChecked && game.isJunction(node)) firstJuncitonChecked = true;
+			numNodes++;
 		}
 		return false;
 	}

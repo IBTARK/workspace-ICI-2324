@@ -5,11 +5,19 @@ import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.MsPacManTools;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-//Action to avoid PPills
+/**
+ * Action to avoid PPills
+ */
 public class ActEvitarPPill implements Action {
 
-	@Override
-	//Execute the action, returning the necessary movement
+
+	/**
+	 * Gets the best movement to avoid the closest PPill to MsPacMan. Does it by analyzing every possible movement and 
+	 * choosing the one that maximizes the distance from MsPacMan to her closest PPill
+	 * 
+	 * @param game 
+	 * @return the best movement to avoid the closest PPill
+	 */
 	public MOVE execute(Game game) {
 		int pos = game.getPacmanCurrentNodeIndex();
 		MOVE lastMove = game.getPacmanLastMoveMade();

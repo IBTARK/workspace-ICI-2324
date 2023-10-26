@@ -9,11 +9,19 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-//Action to run away from the ghosts
+/**
+ * Action to run away from the chasing ghosts
+ */
 public class ActHuirDeFantasma implements Action {
 
 	@Override
-	//Execute the action, returning the necessary movement
+	/**
+	 * Gets the best movement for MsPacMan to run away from the chasing ghosts. Does it by analyzing every possible movement and 
+	 * assigning them an score. The best movement is the one with highest score
+	 * 
+	 * @param game 
+	 * @return the best movement for MsPacMan to run away from the ghosts
+	 */
 	public MOVE execute(Game game) {
 		//MsPacMans current position
 		int pos = game.getPacmanCurrentNodeIndex();
