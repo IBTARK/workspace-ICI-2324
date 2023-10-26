@@ -1,10 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import pacman.game.Constants.GHOST;
 import pacman.game.Game;
@@ -13,14 +10,6 @@ public class GhostsCoordination {
 
 	private Map<GHOST, GHOST> coveringEdible = new HashMap<>();	//For every ghost, contains the one protecting it (if exists)
 	private Map<Integer, GHOST> coveringPPill = new HashMap<>();//For every ppill, contains the ghost protecting it (if exists)
-	private List<Entry<GHOST, Integer>> flankAttacks = new LinkedList<>();
-	
-	public void update(Game game) {
-		Map<Integer, GHOST> newCoveringPPill = new HashMap<>();
-		for (int pp : game.getActivePowerPillsIndices())
-			newCoveringPPill.put(pp, coveringPPill.get(pp));
-		coveringPPill = newCoveringPPill;
-	}
 	
 	//Returns which ghost covers the edible one, if none null
 	public GHOST whoCoversEdible(GHOST edible) {
