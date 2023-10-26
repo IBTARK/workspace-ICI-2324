@@ -3,6 +3,7 @@ package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions;
 import es.ucm.fdi.ici.Action;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.GhostsCoordination;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.GhostsTools;
+import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
@@ -28,11 +29,16 @@ public class ActIrAEdible implements Action {
 		int pos = game.getGhostCurrentNodeIndex(ghost);
 		MOVE lastMove = game.getGhostLastMoveMade(ghost);
 		
-		int nearest = -1;
+		int nearest = -1,  minDist = Integer.MAX_VALUE;
 		for (GHOST g : GHOST.values())
-			if (coord.whoCoversEdible(g) == ghost)
-				nearest = game.getGhostCurrentNodeIndex(g);
-
+			if (game.isGhostEdible(g) && coord.whoCoversEdible(g) == null) {
+				int posAux = game.getGhostCurrentNodeIndex(g);
+				int dist = game.getShortestPathDistance(pos, posAux, lastMove);
+				if (dist < minDist) {
+					minDist = dist;
+					nearest = posAux;
+				}
+			}
 		// FOR DEBUG ---------------------------------------------------------------
 		if(GhostsTools.debug() && ghost == GHOST.SUE) {
 			System.out.println("SUE: " + getActionId());

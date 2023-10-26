@@ -96,19 +96,19 @@ public class Ghosts extends GhostController {
 			SimpleState pStatePerseguirDirectamente = new SimpleState(new ActPerseguirDirectamente(ghost));
 			SimpleState pStateSeperarseDeFantasma = new SimpleState(new ActSepararseFantasma(ghost));
 			SimpleState pStateFlanquear = new SimpleState(new ActFlanquear(ghost));
-			SimpleState pStateCubrirPPill = new SimpleState(new ActCubrirPPill(ghost, coord)); 			
+			SimpleState pStateCubrirPPill = new SimpleState(new ActCubrirPPill(ghost)); 			
 			SimpleState pStateEvitarPPill = new SimpleState(new ActEvitarPPill(ghost));
 			SimpleState pStateIrAEdible = new SimpleState(new ActIrAEdible(ghost, coord));
 			Transition tranP1 = new PTSepararseFantasmaPerseguirDirecto(ghost);
 			Transition tranP2 = new PTPerseguirDirectoSepararseFantasma(ghost);
 			Transition tranP3 = new PTPerseguirDirectoFlanquear(ghost);
 			Transition tranP4 = new PTFlanquearPerseguirDirecto(ghost);
-			Transition tranP5 = new PTPerseguirDirectoCubrirPPill(ghost, coord);
-			Transition tranP6 = new PTCubrirPPillPerseguirDirecto(ghost, coord);
+			Transition tranP5 = new PTPerseguirDirectoCubrirPPill(ghost);
+			Transition tranP6 = new PTCubrirPPillPerseguirDirecto(ghost);
 			Transition tranP7 = new PTEvitarPPillPerseguirDirecto(ghost);
 			Transition tranP8 = new PTPerseguirDirectoEvitarPPill(ghost);
-			Transition tranP9 = new PTPerseguirDirectoIrAEdible(ghost, coord);
-			Transition tranP10 = new PTIrAEdiblePerseguirDirecto(ghost, coord);
+			Transition tranP9 = new PTPerseguirDirectoIrAEdible(ghost);
+			Transition tranP10 = new PTIrAEdiblePerseguirDirecto(ghost);
 			Transition tranP11 = new PTSepararseFantasmaFlanquear(ghost);
 			Transition tranP12 = new PTFlanquearSepararseFantasma(ghost);
 			cfsmPerseguir.add(pStateSeperarseDeFantasma, tranP1, pStatePerseguirDirectamente);
@@ -129,7 +129,7 @@ public class Ghosts extends GhostController {
 			CompoundState compoundPerseguir = new CompoundState("Perseguir", cfsmPerseguir);
 			SimpleState stateMuerto = new SimpleState(new ActMuerto(ghost));
 
-			Transition tran1 = new TPerseguirHuir(ghost, coord);
+			Transition tran1 = new TPerseguirHuir(ghost);
 			Transition tran2 = new THuirPerseguir(ghost);
 			Transition tran3 = new THuirMuerto(ghost);
 			Transition tran4 = new TMuertoPerseguir(ghost);
@@ -165,6 +165,7 @@ public class Ghosts extends GhostController {
 	public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue) {
 		EnumMap<GHOST,MOVE> result = new EnumMap<GHOST,MOVE>(GHOST.class);
 		
+		coord.update(game);
 		GhostsInput in = new GhostsInput(game, coord);
 		
 		for(GHOST ghost: GHOST.values())

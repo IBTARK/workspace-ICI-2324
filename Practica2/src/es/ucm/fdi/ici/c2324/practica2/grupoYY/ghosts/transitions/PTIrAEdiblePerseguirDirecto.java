@@ -1,7 +1,6 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.transitions;
 
 import es.ucm.fdi.ici.Input;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.GhostsCoordination;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.GhostsInput;
 import es.ucm.fdi.ici.fsm.Transition;
 import pacman.game.Constants.GHOST;
@@ -13,35 +12,21 @@ public class PTIrAEdiblePerseguirDirecto implements Transition {
 	
 	//Owner of the FMS
 	private GHOST ghost;
-	GhostsCoordination coord;
 	
-	public PTIrAEdiblePerseguirDirecto(GHOST g, GhostsCoordination coord) {
+	public PTIrAEdiblePerseguirDirecto(GHOST g) {
 		ghost = g;
-		this.coord = coord;
 	} 
 
 	@Override
 	//Evaluate if the transition can be made
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
-		
-		GHOST covered = null;
-		for (GHOST g : GHOST.values())
-			if (coord.whoCoversEdible(g) == ghost)
-				covered = g;
 	
-		boolean eval = !gin.isEdibleClose(ghost, covered);
-		
-		if (eval) coordinate();
-		return eval;
+		return !gin.ediblesClose(ghost);
 	}
 
 	@Override
 	public String toString() {
 		return String.format("Perseguir: IrACompañeroEdible -> PerseguirDirectamente\n");
-	}
-	
-	private void coordinate() {
-		coord.uncoverEdible(ghost);
 	}
 }

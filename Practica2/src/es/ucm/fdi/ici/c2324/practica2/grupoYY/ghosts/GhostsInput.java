@@ -12,10 +12,10 @@ import pacman.game.Game;
 public class GhostsInput extends Input {
 	
 	//Thresholds
-	private static final int TH_PACMAN_PPILL = 120;
-	private static final int TH_CHASING = 50;
-	private static final int TH_EDIBLE = 120;
-	private static final int TH_DANGER = 120;
+	private static final int TH_PACMAN_PPILL = 30;
+	private static final int TH_CHASING = 30;
+	private static final int TH_EDIBLE = 30;
+	private static final int TH_DANGER = 30;
 
 	private Map<GHOST, Boolean> alive; //Map indicating if the ghosts are alive or not
 	private Map<GHOST, Boolean> edible; //Map indicating if the ghosts are edible or not
@@ -225,22 +225,14 @@ public class GhostsInput extends Input {
 		return nearestChasingBlocked.get(g);
 	}
 	
-	public GHOST getClosestEdibleNotCovered(GHOST g) {
-		int distMin = Integer.MAX_VALUE;
-		GHOST target = null;
-		for(GHOST g2 : GHOST.values())
-			if(g != g2 && edible.get(g2) && coord.whoCoversEdible(g2) == null && distanceBetweenGhosts.get(g).get(g2) < distMin) {
-				target = g2;
-				distMin = distanceBetweenGhosts.get(g).get(g2);
-			}
-		return target;
-	}
-	
 	//Indicate if there are any edible none covered ghost near the given ghost
 	public boolean ediblesNotCoveredClose(GHOST g) {
-		GHOST target = getClosestEdibleNotCovered(g);
 		
-		return target != null && distanceBetweenGhosts.get(g).get(target) <= TH_EDIBLE;
+		for(GHOST g2 : GHOST.values()) {
+			if(g != g2 && edible.get(g2) && distanceBetweenGhosts.get(g).get(g2) <= TH_EDIBLE && coord.whoCoversEdible(g2) == null) return true;
+		}
+		
+		return false;
 	}
 	
 	//Indicate if a ghost is in danger (close to MsPacMan)
@@ -251,13 +243,5 @@ public class GhostsInput extends Input {
 	//Indicate the number of remaining PPills
 	public int numPPills() {
 		return numPPills;
-	}
-	
-	public boolean isEdibleClose(GHOST g1, GHOST g2) {
-		return distanceBetweenGhosts.get(g1).get(g2) >= 0 && distanceBetweenGhosts.get(g1).get(g2) <= TH_EDIBLE;
-	}
-	
-	public boolean isPPillClose(GHOST g) {
-		return ppillDist.get(g) > TH_PACMAN_PPILL;
 	}
 }

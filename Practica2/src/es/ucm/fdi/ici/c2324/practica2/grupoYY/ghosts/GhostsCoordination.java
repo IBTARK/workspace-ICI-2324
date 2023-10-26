@@ -3,54 +3,54 @@ package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts;
 import java.util.HashMap;
 import java.util.Map;
 
+import pacman.game.Game;
 import pacman.game.Constants.GHOST;
 
 public class GhostsCoordination {
 
-	private volatile Map<GHOST, GHOST> coveringEdible = new HashMap<>();	//For every ghost, contains the one protecting it (if exists)
-	private GHOST coveringPPill = null;
-	private Integer ppillCovered = -1;
+	private Map<GHOST, GHOST> coveringEdible = new HashMap<>();	//For every ghost, contains the one protecting it (if exists)
+	private Map<Integer, GHOST> coveringPPill = new HashMap<>();//For every ppill, contains the ghost protecting it (if exists)
+	
+	public void update(Game game) {
+		Map<Integer, GHOST> newCoveringPPill = new HashMap<>();
+		for (int pp : game.getActivePowerPillsIndices())
+			newCoveringPPill.put(pp, coveringPPill.get(pp));
+		coveringPPill = newCoveringPPill;
+	}
 	
 	//Returns which ghost covers the edible one, if none null
 	public GHOST whoCoversEdible(GHOST edible) {
-		GHOST aux;
-		synchronized (coveringEdible) {
-			aux = coveringEdible.get(edible);
-		}
-		return aux;
+		return coveringEdible.get(edible);
 	}
 	
 	public void coverEdible(GHOST edible, GHOST chasing) {
-		synchronized (coveringEdible) {
-			if (coveringEdible.containsKey(edible))
-				throw new RuntimeException("Te pasaste cubriendo weon");
-				
-			coveringEdible.put(edible, chasing);
-		}
+		if (coveringEdible.get(edible) != null)
+			throw new RuntimeException("Te pasaste cubriendo weon");
+			
+		coveringEdible.put(edible, chasing);
 	}
 	
 	public void uncoverEdible(GHOST chasing) {
-		synchronized (coveringEdible) {
-			for (GHOST g : GHOST.values())
-				if (chasing == coveringEdible.get(g))
-					coveringEdible.remove(g);
-		}
+		for (GHOST g : GHOST.values())
+			if (chasing == coveringEdible.get(g))
+				coveringEdible.remove(g);
 	}
 	
 	//Returns which ghost covers the ppill, if none null
-	synchronized public GHOST whoCoversPPill(Integer ppill) {
-		return coveringPPill;
+	public GHOST whoCoversPPill(Integer ppill) {
+		return coveringPPill.get(ppill);
 	}
 	
-	synchronized public void coverPPill(Integer ppill, GHOST chasing) {
-		if (ppill == ppillCovered && coveringPPill != null)
+	public void coverPPill(Integer ppill, GHOST chasing) {
+		if (coveringPPill.get(ppill) != null)
 			throw new RuntimeException("Te pasaste cubriendo weon");
-		ppillCovered = ppill;
-		coveringPPill = chasing;
+			
+		coveringPPill.put(ppill, chasing);
 	}
 	
-	synchronized public void uncoverPPill(GHOST ghost) {
-		ppillCovered = -1;
-		coveringPPill = null;
+	public void uncoverPPill(GHOST ghost) {
+		for (Integer pp : coveringPPill.keySet())
+			if (ghost == coveringPPill.get(pp))
+				coveringPPill.remove(pp);
 	}
 }
