@@ -5,11 +5,19 @@ import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.MsPacManTools;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-//Action to run away from the ghost circling the closest PPill
+/**
+ * Action to run away from the ghost circling the closest PPill
+ */
 public class ActHuirRodeandoPPill implements Action {
 	
 	@Override
-	//Execute the action, returning the necessary movement
+	/**
+	 * Gets the best movement for MsPacMan to get to the closest PPill to her by an indirect path (not the shortest path).
+	 * Does this by analyzing every possible path (except the shortest one), and choosing the one that is not blocked.
+	 * 
+	 * @param game 
+	 * @return the best movement for MsPacMan to run away from the ghosts and circle toward the PPill
+	 */
 	public MOVE execute(Game game) {
 		int pos = game.getPacmanCurrentNodeIndex();
 		MOVE lastMove = game.getPacmanLastMoveMade();

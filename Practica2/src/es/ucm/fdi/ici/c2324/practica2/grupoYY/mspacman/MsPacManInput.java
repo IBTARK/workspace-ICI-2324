@@ -31,7 +31,7 @@ public class MsPacManInput extends Input {
 	private int nearestEdibleDist; //Distance from MsPacMan to the nearest edible ghost to her
 	private int nearestEdibleNextJunctionDist; //Distance from MsPacMan to the next junction of the nearest edible ghosts to her
 	private int distOfNearestEdibleToHisNextJunction; //Distance of MsPacMans nearest edible ghost to his next junction
-
+	
 	public MsPacManInput(Game game) {
 		super(game);
 	}

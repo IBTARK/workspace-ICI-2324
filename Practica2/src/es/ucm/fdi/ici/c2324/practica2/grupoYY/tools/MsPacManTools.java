@@ -11,6 +11,7 @@ import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
 public class MsPacManTools {
+	private static final int TH_CHASING_GHOST = 80; 
 
 	public static List<Integer[]> possiblePaths(Game game, int orig, int dest, MOVE lastMove) {
 		List<Integer[]> paths = new ArrayList<>();
@@ -139,6 +140,18 @@ public class MsPacManTools {
 			}
 		}
 		return nearest;
+	}
+	
+	/**
+	 * Indicate if the ghost g is close to MsPacMan. It is close if the distance is <= than TH_CHASING_GHOST.
+	 * 
+	 * @param game
+	 * @param g ghost that might be close to MsPacMan
+	 * @return whether the ghost is close to MsPacMan or not
+	 */
+	public static boolean isGhostClose(Game game, GHOST g) {
+		if(game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(g)) <= TH_CHASING_GHOST) return true;
+		else return false;
 	}
 	
 	public static MOVE goTo(Game game, int pos, int dest, MOVE lastMove) {

@@ -6,11 +6,20 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-//Action to move away from several ghosts
+/**
+ * Action to move away from several ghosts
+ */
 public class ActHuirVariosFantasmas implements Action {
 	
 	@Override
-	//Execute the action, returning the necessary movement
+	/**
+	 * Gets the best movement for MsPacMan to run away from several chasing ghosts. This is done by analyzing every
+	 * possible movement and choosing the one that increments the most the distance to the ghost (prioritizing the closest 
+	 * one to MsPacMan).
+	 * 
+	 * @param game 
+	 * @return the best movement for MsPacMan to run away from several close ghosts.
+	 */
 	public MOVE execute(Game game) {
 		int pos = game.getPacmanCurrentNodeIndex();
 		MOVE lastMove = game.getPacmanLastMoveMade();
@@ -38,7 +47,7 @@ public class ActHuirVariosFantasmas implements Action {
 			//int distBtwNextJuntNextPos = game.getShortestPathDistance(nextPos, nextJunction);
 			
 			for(GHOST g : GHOST.values()) {
-				if(!game.isGhostEdible(g)) {
+				if(!game.isGhostEdible(g) && MsPacManTools.isGhostClose(game, g)) {
 					//Actual distances
 					if(g == closestGhost) {
 						dists += 10 * game.getShortestPathDistance(closestGhostIndex, nextPos, closestGhostLastMove); 
