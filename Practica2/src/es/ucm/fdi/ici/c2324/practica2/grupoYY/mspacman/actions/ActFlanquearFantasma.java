@@ -6,11 +6,19 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-//Action to flank the closest edible ghost
+/**
+ * Action to flank the closest edible ghost
+ */
 public class ActFlanquearFantasma implements Action {
 	
 	@Override
-	//Execute the action, returning the necessary movement
+	/**
+	 * Gets the best movement that MsPacMan has to execute to move towards the junction that the closest edible ghost
+	 * to her is moving to. This is done by making the first move of the shortest path from MsPacMan to her closest edible ghost.
+	 * 
+	 * @param game 
+	 * @return the best movement to move towards the next junction of the closest edible ghost to MsPacMan
+	 */
 	public MOVE execute(Game game) {
 		int pos = game.getPacmanCurrentNodeIndex();
 		MOVE lastMove = game.getPacmanLastMoveMade();

@@ -5,11 +5,22 @@ import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.MsPacManTools;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-//Action to move towards pills
+
+/**
+ * Action to move towards the pill
+ */
 public class ActBuscarPills implements Action {
 
 	@Override
-	//Execute the action, returning the necessary movement
+	/**
+	 * Returns the necessary movement to move towards the pills
+	 *
+	 * Gets the best movement to move towards the closest pill to MsPacMan. Does it by analyzing every possible movement and 
+	 * choosing the one that minimizes the distance from MsPacMan to her closest pill
+	 * 
+	 * @param game 
+	 * @return the best movement to move towards the closest pill
+	 */
 	public MOVE execute(Game game) {
 		int pos = game.getPacmanCurrentNodeIndex();
 		MOVE lastMove = game.getPacmanLastMoveMade();
