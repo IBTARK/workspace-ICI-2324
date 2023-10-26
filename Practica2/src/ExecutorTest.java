@@ -1,5 +1,5 @@
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.Ghosts;
-import es.ucm.fdi.ici.c2324.practica2.grupoYY.MsPacMan;
+import es.ucm.fdi.ici.c2324.practica2.grupo01.Ghosts;
+import es.ucm.fdi.ici.c2324.practica2.grupo01.MsPacMan;
 import pacman.Executor;
 import pacman.controllers.GhostController;
 import pacman.controllers.PacmanController;
