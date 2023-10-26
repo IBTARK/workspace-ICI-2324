@@ -22,7 +22,7 @@ public class PTIrAEdiblePerseguirDirecto implements Transition {
 	public boolean evaluate(Input in) {
 		GhostsInput gin = (GhostsInput) in;
 	
-		return !gin.chasingClose(ghost);
+		return !gin.ediblesClose(ghost);
 	}
 
 	@Override
