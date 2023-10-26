@@ -9,7 +9,6 @@ import es.ucm.fdi.ici.fsm.Transition;
  */
 public class THuirPerseguir implements Transition{
 
-	@Override
 	/**
 	 * Evaluates when to change from the state "Huir" to "Perseguir".
 	 * This happens when there are edible ghosts close and when there are not chasing ghosts close and when there are not

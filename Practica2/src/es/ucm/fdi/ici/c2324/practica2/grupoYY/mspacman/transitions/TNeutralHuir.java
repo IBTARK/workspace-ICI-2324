@@ -9,7 +9,6 @@ import es.ucm.fdi.ici.fsm.Transition;
  */
 public class TNeutralHuir implements Transition {
 
-	@Override
 	/**
 	 * Evaluates when to change from the state "Neutral" to "Huir".
 	 * This happens when there are chasing ghosts close to MsPacMan.

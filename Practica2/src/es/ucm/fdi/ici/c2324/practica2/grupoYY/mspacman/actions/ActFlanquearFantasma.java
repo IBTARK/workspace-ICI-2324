@@ -10,8 +10,7 @@ import pacman.game.Game;
  * Action to flank the closest edible ghost
  */
 public class ActFlanquearFantasma implements Action {
-	
-	@Override
+
 	/**
 	 * Gets the best movement that MsPacMan has to execute to move towards the junction that the closest edible ghost
 	 * to her is moving to. This is done by making the first move of the shortest path from MsPacMan to her closest edible ghost.

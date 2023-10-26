@@ -10,7 +10,6 @@ import es.ucm.fdi.ici.fsm.Transition;
  **/
 public class HTRodearPPillHuirHaciaPPill implements Transition {
 
-	@Override
 	/**
 	 * Evaluates when to change from the state "Huir rodeando hacia PPill" to "Huir hacia PPill".
 	 * This happens when there is a PPill close to MsPacMan or when the closest PPill to MsPacMan is not blocked.

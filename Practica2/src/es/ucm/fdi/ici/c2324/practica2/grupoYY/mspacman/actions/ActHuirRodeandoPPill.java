@@ -10,7 +10,6 @@ import pacman.game.Game;
  */
 public class ActHuirRodeandoPPill implements Action {
 	
-	@Override
 	/**
 	 * Gets the best movement for MsPacMan to get to the closest PPill to her by an indirect path (not the shortest path).
 	 * Does this by analyzing every possible path (except the shortest one), and choosing the one that is not blocked.

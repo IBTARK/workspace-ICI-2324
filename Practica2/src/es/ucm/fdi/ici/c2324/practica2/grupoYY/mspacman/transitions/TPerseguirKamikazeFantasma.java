@@ -9,7 +9,6 @@ import es.ucm.fdi.ici.fsm.Transition;
  */
 public class TPerseguirKamikazeFantasma implements Transition {
 
-	@Override
 	/**
 	 * Evaluates when to change from the state "Perseguir" to "Kamikaze a fantasma".
 	 * This happens when MsPacMan is on a combo or when there is an edible ghost close.

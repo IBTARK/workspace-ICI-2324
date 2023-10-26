@@ -15,7 +15,6 @@ public class RandomAction implements Action {
     private Random rnd = new Random();
     private MOVE[] allMoves = MOVE.values();
 	
-	@Override
 	/**
 	 * Gets a random move
 	 * 

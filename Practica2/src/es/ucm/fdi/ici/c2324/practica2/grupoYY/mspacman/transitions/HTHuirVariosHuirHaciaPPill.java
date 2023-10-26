@@ -10,7 +10,6 @@ import es.ucm.fdi.ici.fsm.Transition;
  */
 public class HTHuirVariosHuirHaciaPPill implements Transition {
 
-	@Override
 	/**
 	 * Evaluates when to change from the state "Huir de varios fantasmas" to "Huir hacia PPill.
 	 * This happens when there is a PPill close to MsPacMan and when the nearest PPill to MsPacMan is not blocked and when

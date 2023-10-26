@@ -9,7 +9,6 @@ import es.ucm.fdi.ici.fsm.Transition;
  */
 public class TPerseguirHuir implements Transition {
 
-	@Override
 	/**
 	 * Evaluates when to change from the state "Perseguir" to "Huir".
 	 * This happens when the there are chasing ghosts close to MsPacMan or when there MsPacMan is not on a combo and there are 

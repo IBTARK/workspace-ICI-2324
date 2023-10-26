@@ -9,7 +9,6 @@ import es.ucm.fdi.ici.fsm.Transition;
  */
 public class TPerseguirNeutral implements Transition{
 	
-	@Override
 	/**
 	 * Evaluates when to change from the state "Perseguir" to "Neutral".
 	 * This happens when the there are not ghost close to MsPacMan and when MsPacMan is not on a combo.

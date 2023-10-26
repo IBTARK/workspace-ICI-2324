@@ -9,7 +9,6 @@ import es.ucm.fdi.ici.fsm.Transition;
  */
 public class TKamikazePillHuir implements Transition {
 
-	@Override
 	/**
 	 * Evaluates when to change from the state "Kamikaze a pills" to "Huir".
 	 * This happens when MsPacMan changes of level.

@@ -9,7 +9,6 @@ import es.ucm.fdi.ici.fsm.Transition;
  */
 public class TNeutralPerseguir implements Transition {
 
-	@Override
 	/**
 	 * Evaluates when to change from the state "Neutral" to "Perseguir".
 	 * This happens when there are edible ghost close to MsPacMan and when there are not chasing ghost close to MsPacMan.

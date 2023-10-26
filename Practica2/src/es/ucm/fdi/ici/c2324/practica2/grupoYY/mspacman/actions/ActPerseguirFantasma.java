@@ -11,7 +11,6 @@ import pacman.game.Game;
  */
 public class ActPerseguirFantasma implements Action{
 	
-	@Override
 	/**
 	 * Gets the movement that gets MsPacMan closer to the closest pill to her.
 	 * 

@@ -11,7 +11,6 @@ import pacman.game.Game;
  */
 public class ActHuirVariosFantasmas implements Action {
 	
-	@Override
 	/**
 	 * Gets the best movement for MsPacMan to run away from several chasing ghosts. This is done by analyzing every
 	 * possible movement and choosing the one that increments the most the distance to the ghost (prioritizing the closest 

@@ -10,8 +10,6 @@ import es.ucm.fdi.ici.fsm.Transition;
  */
 public class NTBuscarPillsEvitarPPill implements Transition {
 
-
-	@Override
 	/**
 	 * Evaluates when to change from the state "Buscar pills" to "Evitar PPill".
 	 * This happens when there is a PPill close to MsPacMan.

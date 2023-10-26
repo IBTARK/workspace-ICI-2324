@@ -10,7 +10,6 @@ import es.ucm.fdi.ici.fsm.Transition;
  * */
 public class PTPerseguirFlanquear implements Transition {
 	
-	@Override
 	/**
 	 * Evaluates when to change from the state "Perseguir fantasma" to "Flanquear fantasma".
 	 * This happens when the distance to the next junction of the nearest edible ghost to MsPacMan is smaller than

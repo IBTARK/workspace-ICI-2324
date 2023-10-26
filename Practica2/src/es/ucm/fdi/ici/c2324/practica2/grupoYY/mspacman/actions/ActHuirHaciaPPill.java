@@ -10,7 +10,6 @@ import pacman.game.Game;
  */
 public class ActHuirHaciaPPill implements Action{
 
-	@Override
 	/**
 	 * Gets the best movement for MsPacMan to run away from the chasing ghosts towards the nearest PPill. 
 	 * Does it by choosing the movement that makes her get closer to the PPill.

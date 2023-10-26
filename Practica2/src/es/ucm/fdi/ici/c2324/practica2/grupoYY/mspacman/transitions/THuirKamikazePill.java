@@ -8,7 +8,7 @@ import es.ucm.fdi.ici.fsm.Transition;
  * Transition from "Huir" to "Kamikaze a pills"
  */
 public class THuirKamikazePill implements Transition{
-	@Override
+
 	/**
 	 * Evaluates when to change from the state "Huir" to "Kamikaze".
 	 * This happens when there are few pills remaining.

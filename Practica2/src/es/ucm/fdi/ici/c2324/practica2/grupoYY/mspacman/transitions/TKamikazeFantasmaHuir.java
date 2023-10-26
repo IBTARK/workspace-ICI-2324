@@ -9,7 +9,6 @@ import es.ucm.fdi.ici.fsm.Transition;
  */
 public class TKamikazeFantasmaHuir implements Transition {
 
-	@Override
 	/**
 	 * Evaluates when to change from the state "Kamikaze a fantasma" to "Huir".
 	 * This happens when are not edible ghosts close to MsPacMan.

@@ -9,7 +9,6 @@ import es.ucm.fdi.ici.fsm.Transition;
  */
 public class THuirNeutral implements Transition {
 
-	@Override
 	/**
 	 * Evaluates when to change from the state "Huir" to "Neutral".
 	 * This happens when the are not ghost close to MsPacMan and when there are not few pills left.
