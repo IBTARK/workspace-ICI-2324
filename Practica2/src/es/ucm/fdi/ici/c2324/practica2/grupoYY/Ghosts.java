@@ -96,7 +96,7 @@ public class Ghosts extends GhostController {
 			SimpleState pStatePerseguirDirectamente = new SimpleState(new ActPerseguirDirectamente(ghost));
 			SimpleState pStateSeperarseDeFantasma = new SimpleState(new ActSepararseFantasma(ghost));
 			SimpleState pStateFlanquear = new SimpleState(new ActFlanquear(ghost));
-			SimpleState pStateCubrirPPill = new SimpleState(new ActCubrirPPill(ghost)); 			
+			SimpleState pStateCubrirPPill = new SimpleState(new ActCubrirPPill(ghost, coord)); 			
 			SimpleState pStateEvitarPPill = new SimpleState(new ActEvitarPPill(ghost));
 			SimpleState pStateIrAEdible = new SimpleState(new ActIrAEdible(ghost, coord));
 			Transition tranP1 = new PTSepararseFantasmaPerseguirDirecto(ghost);
@@ -165,7 +165,6 @@ public class Ghosts extends GhostController {
 	public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue) {
 		EnumMap<GHOST,MOVE> result = new EnumMap<GHOST,MOVE>(GHOST.class);
 		
-		coord.update(game);
 		GhostsInput in = new GhostsInput(game, coord);
 		
 		for(GHOST ghost: GHOST.values())

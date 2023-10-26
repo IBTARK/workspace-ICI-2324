@@ -18,7 +18,7 @@ public class ExecutorTest {
         
         //for (int i = 0; i < 10; i++)
 	        //System.out.println( 
-	            executor.runGame(pacMan, ghosts, 70); //last parameter defines speed
+	            executor.runGame(pacMan, ghosts, 10); //last parameter defines speed
 	        //);     
     }
 }

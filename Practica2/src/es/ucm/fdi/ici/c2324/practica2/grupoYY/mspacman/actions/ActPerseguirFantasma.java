@@ -6,11 +6,18 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-//Action to chase the closest ghost
+/**
+ * Action to chase the closest ghost
+ */
 public class ActPerseguirFantasma implements Action{
 	
 	@Override
-	//Executes the action, returning the necessary movement
+	/**
+	 * Gets the movement that gets MsPacMan closer to the closest pill to her.
+	 * 
+	 * @param game 
+	 * @return the best movement for MsPacMan to get closer to the closest pill to her.
+	 */
 	public MOVE execute(Game game) {
 		//MsPacMans current position
 		int pos = game.getPacmanCurrentNodeIndex();

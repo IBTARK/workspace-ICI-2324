@@ -6,11 +6,18 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-//Action that always makes the movement that makes MsPacMan move towards the closest edible ghost
+/**
+ * Action that always makes the movement that makes MsPacMan move towards the closest edible ghost
+ */
 public class ActKamikazeFantasma implements Action {
 
 	@Override
-	//Execute the action, returning the necessary movement
+	/**
+	 * Gets the movement that gets MsPacMan closer to the closest edible ghost to her.
+	 * 
+	 * @param game 
+	 * @return the best movement for MsPacMan to get closer to the closest edible ghost to her.
+	 */
 	public MOVE execute(Game game) {
 		int pos = game.getPacmanCurrentNodeIndex();
 		MOVE lastMove = game.getPacmanLastMoveMade();
