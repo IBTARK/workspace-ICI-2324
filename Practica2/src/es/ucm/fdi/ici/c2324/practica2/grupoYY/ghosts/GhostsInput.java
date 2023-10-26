@@ -12,10 +12,10 @@ import pacman.game.Game;
 public class GhostsInput extends Input {
 	
 	//Thresholds
-	private static final int TH_PACMAN_PPILL = 30;
-	private static final int TH_CHASING = 30;
-	private static final int TH_EDIBLE = 30;
-	private static final int TH_DANGER = 30;
+	private static final int TH_PACMAN_PPILL = 120;
+	private static final int TH_CHASING = 50;
+	private static final int TH_EDIBLE = 120;
+	private static final int TH_DANGER = 120;
 
 	private Map<GHOST, Boolean> alive; //Map indicating if the ghosts are alive or not
 	private Map<GHOST, Boolean> edible; //Map indicating if the ghosts are edible or not

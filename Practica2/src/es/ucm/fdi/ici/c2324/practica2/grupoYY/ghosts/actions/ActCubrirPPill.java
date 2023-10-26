@@ -1,5 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica2.grupoYY.ghosts.actions;
 
+import java.util.Random;
+
 import es.ucm.fdi.ici.Action;
 import es.ucm.fdi.ici.c2324.practica2.grupoYY.tools.GhostsTools;
 import pacman.game.Game;
@@ -34,7 +36,9 @@ public class ActCubrirPPill implements Action {
 			System.out.println("SUE: " + getActionId());
 		}
 		// -------------------------------------------------------------------------
-		
+		if(closestPPill < 0) {
+			return game.getPossibleMoves(pos, lastMove)[new Random().nextInt(game.getPossibleMoves(pos, lastMove).length)];
+		}
 		//If there are PPills left move towards the closest one
 		return GhostsTools.goTo(game, pos, closestPPill, lastMove);
 	}
