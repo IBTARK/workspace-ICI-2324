@@ -56,6 +56,10 @@ public class Ghosts extends GhostController {
 	EnumMap<GHOST,FSM> fsms;
 	GhostsCoordination coord;
 	
+	public String getName() {
+		return "YI - DJ";
+	}
+	
 	public Ghosts()
 	{
 		setName("Ghosts XX");

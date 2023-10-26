@@ -48,6 +48,10 @@ public class MsPacMan extends PacmanController {
 
 	FSM fsm;
 	
+	public String getName() {
+		return "YI - DJ";
+	}
+	
 	public MsPacMan() {
 		setName("MsPacMan XX");
 		
