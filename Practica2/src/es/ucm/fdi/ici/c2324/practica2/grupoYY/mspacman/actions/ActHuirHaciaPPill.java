@@ -11,7 +11,13 @@ import pacman.game.Game;
 public class ActHuirHaciaPPill implements Action{
 
 	@Override
-	//Execute the action, returning the necessary movement
+	/**
+	 * Gets the best movement for MsPacMan to run away from the chasing ghosts towards the nearest PPill. 
+	 * Does it by choosing the movement that makes her get closer to the PPill.
+	 * 
+	 * @param game 
+	 * @return the best movement for MsPacMan to run away from the ghosts and moving toward the PPill
+	 */
 	public MOVE execute(Game game) {
 		//MsPacMans current position
 		int pos = game.getPacmanCurrentNodeIndex();
