@@ -11,9 +11,9 @@ import pacman.game.Game;
 public class MsPacManInput extends Input {
 	
 	// Thresholds
-	private static final int TH_CHASING_GHOST = 70; 
-	private static final int TH_EDIBLE_GHOST = 300;
-	private static final int TH_PPILL = 50;
+	private static final int TH_CHASING_GHOST = 80; 
+	private static final int TH_EDIBLE_GHOST = 370;
+	private static final int TH_PPILL = 100;
 	private static final int TH_FEWPILLS = 20;
 	private static final int TH_COMBO = 500;
 	
