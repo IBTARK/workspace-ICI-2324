@@ -1,4 +1,4 @@
-package es.ucm.fdi.ici.c2324.practica3.grupoYY.mspacman;
+package es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman;
 
 import java.io.File;
 import java.util.Collection;
@@ -16,9 +16,9 @@ import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.local.Equ
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.local.Interval;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.selection.SelectCases;
 import es.ucm.fdi.gaia.jcolibri.util.FileIO;
-import es.ucm.fdi.ici.c2324.practica3.grupoYY.CBRengine.Average;
-import es.ucm.fdi.ici.c2324.practica3.grupoYY.CBRengine.CachedLinearCaseBase;
-import es.ucm.fdi.ici.c2324.practica3.grupoYY.CBRengine.CustomPlainTextConnector;
+import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.Average;
+import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CachedLinearCaseBase;
+import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CustomPlainTextConnector;
 import pacman.game.Constants.MOVE;
 
 public class MsPacManCBRengine implements StandardCBRApplication {
@@ -32,7 +32,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	NNConfig simConfig;
 	
 	
-	final static String TEAM = "grupoYY";  //Cuidado!! poner el grupo aquí
+	final static String TEAM = "grupo01";  //Cuidado!! poner el grupo aquí
 	
 	
 	final static String CONNECTOR_FILE_PATH = "es/ucm/fdi/ici/c2324/practica3/"+TEAM+"/mspacman/plaintextconfig.xml";

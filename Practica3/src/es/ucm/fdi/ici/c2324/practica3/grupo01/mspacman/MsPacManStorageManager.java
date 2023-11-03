@@ -1,4 +1,4 @@
-package es.ucm.fdi.ici.c2324.practica3.grupoYY.mspacman;
+package es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman;
 
 import java.util.Vector;
 
