@@ -62,14 +62,24 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 		this.storageManager.setCaseBase(caseBase);
 		
 		simConfig = new NNConfig();
+		// TODO poner los pesos para hacer la funcion de similitud global
 		simConfig.setDescriptionSimFunction(new Average());
+		// Se mapea el score también ?
 		simConfig.addMapping(new Attribute("score",MsPacManDescription.class), new Interval(15000));
-		simConfig.addMapping(new Attribute("time",MsPacManDescription.class), new Interval(4000));
-		simConfig.addMapping(new Attribute("nearestPPill",MsPacManDescription.class), new Interval(650));
-		simConfig.addMapping(new Attribute("nearestGhost",MsPacManDescription.class), new Interval(650));
-		simConfig.addMapping(new Attribute("edibleGhost",MsPacManDescription.class), new Equal());
-		
+		// Cuanto menor sea la distancia path entre los casos
+		simConfig.addMapping(new Attribute("mspacman",MsPacManDescription.class), /* TODO */);
+		// Atributo enumerado -> equal
+		simConfig.addMapping(new Attribute("lastMove",MsPacManDescription.class), new Equal());
+		// Intervalos TODO ajustar el maximo del intervalo
+		simConfig.addMapping(new Attribute("nearestPPill",MsPacManDescription.class), new Interval(300));
+		simConfig.addMapping(new Attribute("nearestPill",MsPacManDescription.class), new Interval(300));
+		simConfig.addMapping(new Attribute("nearestChasingGhost1",MsPacManDescription.class), new Interval(300));
+		simConfig.addMapping(new Attribute("nearestChasingGhost2",MsPacManDescription.class), new Interval(300));
+		simConfig.addMapping(new Attribute("nearestEdibleGhost1",MsPacManDescription.class), new Interval(300));
+		simConfig.addMapping(new Attribute("nearestEdibleGhost2",MsPacManDescription.class), new Interval(300));
 	}
+	
+	// TODO SEGUIR HACIA ABAJO CHEQUEANDO
 
 	@Override
 	public CBRCaseBase preCycle() throws ExecutionException {
