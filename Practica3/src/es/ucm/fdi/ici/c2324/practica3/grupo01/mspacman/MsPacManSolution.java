@@ -8,15 +8,22 @@ public class MsPacManSolution implements CaseComponent {
 	Integer id;
 	MOVE action;
 	
+	//Getters
+	
 	public Integer getId() {
 		return id;
 	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	
 	public MOVE getAction() {
 		return action;
 	}
+	
+	//Setters
+	
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	
 	public void setAction(MOVE action) {
 		this.action = action;
 	}

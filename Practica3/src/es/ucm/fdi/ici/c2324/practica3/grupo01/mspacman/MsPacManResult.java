@@ -7,21 +7,34 @@ public class MsPacManResult implements CaseComponent {
 
 	Integer id;
 	Integer score;
+	Integer numReps;
+	
+	//Getters
 	
 	public Integer getId() {
 		return id;
 	}
+	
+	public Integer getScore() {
+		return score;
+	}
+	
+	public Integer getNumReps() {
+		return numReps;
+	}
 
+	//Setters
+	
 	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public Integer getScore() {
-		return score;
-	}
-
 	public void setScore(Integer score) {
 		this.score = score;
+	}
+	
+	public void setNumReps(Integer numReps) {
+		this.numReps = numReps;
 	}
 
 	@Override
@@ -31,7 +44,7 @@ public class MsPacManResult implements CaseComponent {
 	
 	@Override
 	public String toString() {
-		return "MsPacManResult [id=" + id + ", score=" + score + "]";
+		return "MsPacManResult [id = " + id + ", score = " + score + ", numReps = " + numReps + "]";
 	} 
 	
 	
