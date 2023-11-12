@@ -34,7 +34,7 @@ public class MsPacManInput extends CBRInput {
 	@Override
 	public void parseInput() {
 		time = game.getTotalTime();
-		lives = game.getScore();
+		lives = game.getPacmanNumberOfLivesRemaining();
 		
 		//Actual position of MsPacMan
 		int actPos = game.getPacmanCurrentNodeIndex();
@@ -91,6 +91,8 @@ public class MsPacManInput extends CBRInput {
 		vector.add(distTimeNearestEdible.get(1)); //Time
 		//The distance to the nearest PPill is computed
 		vector.add(computeDistanceNearestPPillToPos(game, nextPos, m));
+		//The distance to the nearest Pill is computed
+		vector.add(computeDistanceNearestPillToPos(game, nextPos, m));
 		
 		return vector;
 	}
@@ -157,6 +159,30 @@ public class MsPacManInput extends CBRInput {
 	}
 	
 	/**
+	 * Gets the nearest Pill to the index pos
+	 * 
+	 * @param game
+	 * @param pos
+	 * @param m movement to be made
+	 * @return the nearest Pill to pos. null if no Pill is close
+	 */
+	private Integer getNearestPillToPos(Game game, int pos, MOVE m) {
+		int nearestPillDistance = Integer.MAX_VALUE, distance;
+		Integer closestPill = null;
+		
+		//Check all the remaining power pills
+		for(int pill: game.getActivePillsIndices()) {
+			distance = game.getShortestPathDistance(pos, pill, m);
+			if(distance < nearestPillDistance) {
+				nearestPillDistance = distance;
+				closestPill = pill;
+			}	
+		}
+		
+		return closestPill;
+	}
+	
+	/**
 	 * Gets the distance to the nearest chasing ghost to MsPacMan supposing she is located in pos
 	 * 
 	 * @param g
@@ -195,7 +221,6 @@ public class MsPacManInput extends CBRInput {
 		return resul;
 	}
 	
-	
 	/**
 	 * Gets the distance to the nearest PPill to MsPacMan supposing she is located in pos
 	 * 
@@ -208,5 +233,19 @@ public class MsPacManInput extends CBRInput {
 		Integer nearestPPill = getNearestPPillToPos(game, pos, m);
 		
 		return nearestPPill != null ? game.getShortestPathDistance(pos, nearestPPill, m) : null;
+	}
+	
+	/**
+	 * Gets the distance to the nearest Pill to MsPacMan supposing she is located in pos
+	 * 
+	 * @param g
+	 * @param pos
+	 * @param m movement to be made
+	 * @return distance to the nearest Pill to pos. null if no Pill is close
+	 */
+	private Integer computeDistanceNearestPillToPos(Game g, int pos, MOVE m) {
+		Integer nearestPill = getNearestPillToPos(game, pos, m);
+		
+		return nearestPill != null ? game.getShortestPathDistance(pos, nearestPill, m) : null;
 	}
 }
