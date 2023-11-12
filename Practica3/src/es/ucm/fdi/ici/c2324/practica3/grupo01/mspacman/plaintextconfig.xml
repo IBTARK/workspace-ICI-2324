@@ -6,6 +6,7 @@
 		<Map>id</Map>
 		<Map>lives</Map>
 		<Map>time</Map>
+		<Map>score</Map>
 		<Map>upVector</Map>		
 		<Map>downVector</Map>		
 		<Map>leftVector</Map>		

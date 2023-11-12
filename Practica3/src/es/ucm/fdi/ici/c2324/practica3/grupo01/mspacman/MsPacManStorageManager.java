@@ -51,7 +51,8 @@ public class MsPacManStorageManager {
 		int resultValue = currentScore - oldScore;
 		
 		MsPacManResult result = (MsPacManResult)bCase.getResult();
-		result.setScore(resultValue);	
+		result.setScore(resultValue);
+		bCase.setResult(result);
 	}
 	
 	private void retainCase(CBRCase bCase)

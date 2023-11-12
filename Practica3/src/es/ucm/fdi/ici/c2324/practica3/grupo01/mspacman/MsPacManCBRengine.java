@@ -12,7 +12,6 @@ import es.ucm.fdi.gaia.jcolibri.exception.ExecutionException;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.RetrievalResult;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.NNConfig;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.NNScoringMethod;
-import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.local.Equal;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.local.Interval;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.selection.SelectCases;
 import es.ucm.fdi.gaia.jcolibri.util.FileIO;
@@ -65,10 +64,10 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 		simConfig.setDescriptionSimFunction(new Average());
 		simConfig.addMapping(new Attribute("score",MsPacManDescription.class), new Interval(15000));
 		simConfig.addMapping(new Attribute("time",MsPacManDescription.class), new Interval(4000));
-		simConfig.addMapping(new Attribute("nearestPPill",MsPacManDescription.class), new Interval(650));
-		simConfig.addMapping(new Attribute("nearestGhost",MsPacManDescription.class), new Interval(650));
-		simConfig.addMapping(new Attribute("edibleGhost",MsPacManDescription.class), new Equal());
-		
+		simConfig.addMapping(new Attribute("upVector",MsPacManDescription.class), new Interval(650));
+		simConfig.addMapping(new Attribute("downVector",MsPacManDescription.class), new Interval(650));
+		simConfig.addMapping(new Attribute("leftVector",MsPacManDescription.class), new Interval(650));
+		simConfig.addMapping(new Attribute("rightVector",MsPacManDescription.class), new Interval(650));
 	}
 
 	@Override
@@ -120,9 +119,6 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 		}
 		return action;
 	}
-	
-	
-	
 
 	/**
 	 * Creates a new case using the query as description, 
