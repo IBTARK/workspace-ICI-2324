@@ -17,6 +17,7 @@ public class MsPacManDescription implements CaseComponent {
 	private Integer time;
 	private Integer lives; //Remaining lives of MsPacMan
 	private Integer score;
+	private MOVE[] possibleMoves;
 	/*
 	 List for each possible movement with the next information:
 	 0: distance to the nearest chasing ghost
@@ -24,10 +25,10 @@ public class MsPacManDescription implements CaseComponent {
 	 2: remaining edible time of the nearest edible ghost
 	 3: distance to the nearest PPill
 	*/
-	DistanceVector up;  
-	DistanceVector down;
-	DistanceVector right;
-	DistanceVector left;
+	DistanceVector up = new DistanceVector(MOVE.UP);  
+	DistanceVector down = new DistanceVector(MOVE.DOWN);
+	DistanceVector right = new DistanceVector(MOVE.RIGHT);
+	DistanceVector left = new DistanceVector(MOVE.LEFT);
 	
 	//Getters
 	
@@ -62,15 +63,19 @@ public class MsPacManDescription implements CaseComponent {
 	public CaseComponent getLeftVector(){
 		return left;
 	}
+	
+	public MOVE[] getPossibleMoves(){
+		return possibleMoves;
+	}
 
 	//Setters
 	
 	public void setId(Integer id) {
 		this.id = id;
-		up.setId(MOVE.values().length * id + MOVE.UP.ordinal());
-		down.setId(MOVE.values().length * id + MOVE.DOWN.ordinal());
-		left.setId(MOVE.values().length * id + MOVE.LEFT.ordinal());
-		right.setId(MOVE.values().length * id + MOVE.RIGHT.ordinal());
+		up.setId(id);
+		down.setId(id);
+		left.setId(id);
+		right.setId(id);
 	}
 	
 	public void setTime(Integer time) {
@@ -100,6 +105,10 @@ public class MsPacManDescription implements CaseComponent {
 	public void setLeftVector(ArrayList<Integer> left){
 		this.left.setVector(left);
 	}
+	
+	public void setPossibleMoves(MOVE[] moves){
+		possibleMoves = moves;
+	}
 
 
 	@Override
@@ -118,6 +127,11 @@ public class MsPacManDescription implements CaseComponent {
 		
 		private Integer id;
 		private ArrayList<Integer> dist;
+		private MOVE move;
+		
+		DistanceVector(MOVE move) {
+			this.move = move;
+		}
 
 		@Override
 		public Attribute getIdAttribute() {
@@ -132,8 +146,12 @@ public class MsPacManDescription implements CaseComponent {
 			return dist;
 		}
 		
+		public MOVE getMove() {
+			return move;
+		}
+		
 		public void setId(Integer id) {
-			this.id = id;
+			this.id = MOVE.values().length * id + move.ordinal();
 		}
 		
 		public void setVector(ArrayList<Integer> dist) {
