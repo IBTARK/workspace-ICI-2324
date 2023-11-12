@@ -4,11 +4,12 @@
 	<DescriptionClassName>es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman.MsPacManDescription</DescriptionClassName>
 	<DescriptionMappings>
 		<Map>id</Map>
-		<Map>score</Map>
+		<Map>lives</Map>
 		<Map>time</Map>
-		<Map>nearestPPill</Map>		
-		<Map>nearestGhost</Map>		
-		<Map>edibleGhost</Map>		
+		<Map>upVector</Map>		
+		<Map>downVector</Map>		
+		<Map>leftVector</Map>		
+		<Map>rightVector</Map>		
 	</DescriptionMappings>
 	<SolutionClassName>es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman.MsPacManSolution</SolutionClassName>
 	<SolutionMappings>
@@ -19,5 +20,6 @@
 	<ResultMappings>
 		<Map>id</Map>
 		<Map>score</Map>
+		<Map>numReps</Map>
 	</ResultMappings>
 </TextFileConfiguration>
