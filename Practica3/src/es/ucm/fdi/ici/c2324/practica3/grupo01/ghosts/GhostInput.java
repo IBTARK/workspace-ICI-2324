@@ -1,231 +1,157 @@
 package es.ucm.fdi.ici.c2324.practica3.grupo01.ghosts;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRQuery;
 import es.ucm.fdi.ici.cbr.CBRInput;
 import pacman.game.Game;
+import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 
 public class GhostInput extends CBRInput {
+
+	GHOST type;
+	Integer mspacmanLives;
+	Integer score;
+	Integer time;
+	Boolean edible;
+	Integer edibleTime;
+	Integer mspacmanToPPill;		// MsPacMan's distance to its nearest PPill.
+	// 4 arrays, one for each move, each containing in order:
+	/* Integer mspacman; 			Distance to mspacman.
+	 * Integer nearestEdible;		Distance to nearest edible.
+	 * Integer nearestEdibleTime;	Remaining edible time of the nearest edible.
+	 * Integer nearestChasing;		Distance to nearest chasing ghost.
+	 */
+	ArrayList<Integer> UP;
+	ArrayList<Integer> RIGHT;
+	ArrayList<Integer> DOWN;
+	ArrayList<Integer> LEFT;
 	
-	public GhostInput(Game game, GHOST ghost) {
+	public GhostInput(Game game, GHOST g) {
 		super(game);
-		this.ghostType = ghost;
+		type = g;
 	}
-	private GHOST ghostType;
-	private Integer time;
-	private Integer lives; //Remaining lives of MsPacMan
-	/*
-	 List for each possible movement with the next information:
-	 0: distance to the nearest chasing ghost
-	 1: distance to the nearest edible ghost
-	 2: remaining edible time of the nearest edible ghost
-	 3: distance to the nearest PPill to mspacman
-	 4: distance to mspacman
-	*/
-	private ArrayList<Integer> up;  
-	private ArrayList<Integer> down;
-	private ArrayList<Integer> right;
-	private ArrayList<Integer> left;
-	
+
+	@Override
+	public void parseInput() {
+		if(type==null) return;
+		int ghost = game.getGhostCurrentNodeIndex(type);
+		int mspacman = game.getPacmanCurrentNodeIndex();
+		
+		this.mspacmanLives = game.getPacmanNumberOfLivesRemaining();
+		this.score = game.getScore();
+		this.time = game.getTotalTime();
+		this.edible = game.isGhostEdible(type);
+		this.edibleTime = edible ? game.getGhostEdibleTime(type) : Integer.MAX_VALUE;
+		computeMspacmanToPPill(game);
+		
+		initializeArrays();
+		ArrayList<Integer> auxList;
+		for(MOVE move: game.getPossibleMoves(ghost, game.getGhostLastMoveMade(type))) {
+			auxList = new ArrayList<Integer>(4);
+			// mspacman's distance from ghost
+			auxList.add(game.getShortestPathDistance(ghost, mspacman, move));
+			// this method adds to the move list nearestEdible, nearestEdibleTime, nearestChasing
+			computeNearestGhosts(game, move, auxList);
+			copyList(auxList, move);
+		}
+	}
+
+	private void computeMspacmanToPPill(Game game) {
+		this.mspacmanToPPill = Integer.MAX_VALUE;
+		for(int pos: game.getActivePowerPillsIndices()) {
+			int distance = (int)game.getDistance(game.getPacmanCurrentNodeIndex(), pos, DM.PATH);
+			if(distance < mspacmanToPPill)
+				mspacmanToPPill = distance;
+		}
+		
+	}
+
+	private void copyList(ArrayList<Integer> auxList, MOVE move) {
+		switch(move) {
+		case UP:
+			this.UP = new ArrayList<Integer>(auxList);
+			break;
+		case RIGHT:
+			this.RIGHT = new ArrayList<Integer>(auxList);
+			break;
+		case DOWN:
+			this.DOWN= new ArrayList<Integer>(auxList);
+			break;
+		case LEFT:
+			this.LEFT = new ArrayList<Integer>(auxList);
+			break;
+		case NEUTRAL:
+		default:
+		}
+	}
+
+	private void initializeArrays() {
+		int i;
+		this.UP = new ArrayList<Integer>(4);
+		this.RIGHT = new ArrayList<Integer>(4);
+		this.DOWN = new ArrayList<Integer>(4);
+		this.LEFT = new ArrayList<Integer>(4);
+		
+		for(i=0; i<4; i++) {
+			UP.add(i,Integer.MAX_VALUE);
+			RIGHT.add(i,Integer.MAX_VALUE);
+			DOWN.add(i,Integer.MAX_VALUE);
+			LEFT.add(i,Integer.MAX_VALUE);
+		}
+	}
+
 	@Override
 	public CBRQuery getQuery() {
 		GhostDescription description = new GhostDescription();
+		
+		description.setMspacmanLives(mspacmanLives);
+		description.setScore(score);
 		description.setTime(time);
-		description.setLives(lives);
-		description.setUp(up);
-		description.setDown(down);
-		description.setRight(right);
-		description.setLeft(left);
+		description.setType(type);
+		description.setEdible(edible);
+		description.setEdibleTime(edibleTime);
+		description.setMspacmanToPPill(mspacmanToPPill);
+		description.setUP(UP);
+		description.setRIGHT(RIGHT);
+		description.setDOWN(DOWN);
+		description.setLEFT(LEFT);
 		
 		CBRQuery query = new CBRQuery();
 		query.setDescription(description);
 		return query;
 	}
-
-	@Override
-	public void parseInput() {
-		time = game.getTotalTime();
-		lives = game.getPacmanNumberOfLivesRemaining();
-		
-		//Actual position of the ghost
-		int actPos = game.getGhostCurrentNodeIndex(ghostType);
-		//Last move made by MsPacMan
-		MOVE lastMove = game.getGhostLastMoveMade(ghostType);
-		//Possible moves of MsPacMan
-		ArrayList<MOVE> possibleMoves = new ArrayList<MOVE>(Arrays.asList(game.getPossibleMoves(actPos, lastMove)));
-		
-		//UP move is computed
-		if(possibleMoves.contains(MOVE.UP)) up = computeMovement(game, MOVE.UP);
-		else up = null;
-		
-		//DOWN move is computed
-		if(possibleMoves.contains(MOVE.DOWN)) down = computeMovement(game, MOVE.DOWN);
-		else down = null;
-		
-		//RIGHT move is computed
-		if(possibleMoves.contains(MOVE.RIGHT)) right = computeMovement(game, MOVE.RIGHT);
-		else right = null;
-		
-		//LEFT move is computed
-		if(possibleMoves.contains(MOVE.LEFT)) left = computeMovement(game, MOVE.LEFT);
-		else left = null;
-
-	}
 	
-	private ArrayList<Integer> computeMovement(Game game, MOVE m) {
-		//Actual position of MsPacMan
-		int actPos = game.getGhostCurrentNodeIndex(ghostType);
-		int actPacPos = game.getPacmanCurrentNodeIndex();
-		//Position of MsPacMan after making the move m
-		int nextPos = game.getNeighbour(actPos, m);
-		int nextPacPos = game.getNeighbour(actPacPos, game.getPacmanLastMoveMade());
-		//ArrayList to be returned
-		ArrayList<Integer> vector = new ArrayList<Integer>();
+	private void computeNearestGhosts(Game game, MOVE move, ArrayList<Integer> list) {
+		Integer nearestChasing = Integer.MAX_VALUE;
+		Integer nearestEdible = Integer.MAX_VALUE;
+		Integer nearestEdibleTime = Integer.MAX_VALUE;
 		
-		//The distance to the nearest chasing ghost is computed
-		vector.add(computeDistanceNearestChasingGhostToPos(game, nextPos, m));
-		//The distance to the nearest edible ghost and his remaining edible time is computed
-		ArrayList<Integer> distTimeNearestEdible = computeDistanceTimeNearestEdibleGhostToPos(game, nextPos, m);
-		vector.add(distTimeNearestEdible.get(0)); //Distance
-		vector.add(distTimeNearestEdible.get(1)); //Time
-		//The distance to the nearest PPill is computed
-		vector.add(computeDistanceNearestPPillToPos(game, nextPacPos, game.getPacmanLastMoveMade()));
-		//The distance to mspacman is computed
-		vector.add(computeDistanceMspacmanToPos(game, actPos, m));
-		
-		return vector;
-	}
-	
-	
-	/**
-	 * Gets the nearest ghost (edible or chasing) to the index pos
-	 * 
-	 * @param game
-	 * @param pos
-	 * @param edible Indicates if the nearest ghost to pos has to be edible or chasing (true = edible, false = chasing)
-	 * @return the nearest ghost (edible or chasing) to pos. null if no ghost is close
-	 */
-	private GHOST getNearestGhostToPos(Game game, int pos, MOVE m, boolean edible) {
-		int nearestGhostDistance = Integer.MAX_VALUE, distance;
-		GHOST nearest = null;
-		
-		//Check all the ghosts
 		for(GHOST g: GHOST.values()) {
-			//Only the ones determined by "edible"
-			if(game.isGhostEdible(g) == edible) {
-				//Position of the ghost g
-				int ghostPos = game.getGhostCurrentNodeIndex(g);
-				//Last movement of the ghost g
-				MOVE ghostLastMove = game.getGhostLastMoveMade(g);
-				
-				if(ghostPos != -1) 
-					if(edible) distance = game.getShortestPathDistance(pos, ghostPos, m);
-					else distance = game.getShortestPathDistance(ghostPos, pos, ghostLastMove);
-				else
-					distance = Integer.MAX_VALUE;
-				
-				if(distance < nearestGhostDistance){
-					nearestGhostDistance = distance;
-					nearest = g;
-				}
+			int pos = game.getGhostCurrentNodeIndex(g);
+			boolean edible = game.isGhostEdible(g);
+			
+			int distance;
+			if(pos != -1 && this.type!=g) 
+				distance = (int)game.getDistance(game.getGhostCurrentNodeIndex(type), pos, DM.PATH);
+			else
+				distance = Integer.MAX_VALUE;
+			
+			// nearestEdible y nearestEdibleTime
+			if(edible && distance < nearestEdible)
+			{
+				nearestEdible = distance;
+				nearestEdibleTime = game.getGhostEdibleTime(g);
+			}
+			// nearestChasing
+			else if(!edible && distance<nearestChasing) {
+				nearestChasing = distance;
 			}
 		}
-		
-		return nearest;
+		list.add(1, nearestEdible);
+		list.add(2, nearestEdibleTime);
+		list.add(3, nearestChasing);
 	}
-	
-	/**
-	 * Gets the nearest PPill to the index pos
-	 * 
-	 * @param game
-	 * @param pos
-	 * @param m movement to be made
-	 * @return the nearest PPill to pos. null if no PPill is close
-	 */
-	private Integer getNearestPPillToPos(Game game, int pos, MOVE m) {
-		int nearestPPillDistance = Integer.MAX_VALUE, distance;
-		Integer closestPPill = null;
-		
-		//Check all the remaining power pills
-		for(int pPill: game.getActivePowerPillsIndices()) {
-			distance = game.getShortestPathDistance(pos, pPill, m);
-			if(distance < nearestPPillDistance) {
-				nearestPPillDistance = distance;
-				closestPPill = pPill;
-			}	
-		}
-		
-		return closestPPill;
-	}
-	
-	/**
-	 * Gets the distance to the nearest chasing ghost to MsPacMan supposing she is located in pos
-	 * 
-	 * @param g
-	 * @param pos
-	 * @param m movement to be made
-	 * @return distance to the nearest chasing ghost to pos. null if no chasing ghost is close
-	 */
-	private Integer computeDistanceNearestChasingGhostToPos(Game g, int pos, MOVE m) {
-		GHOST nearestChasing = getNearestGhostToPos(game, pos, m, false);
-		
-		return nearestChasing != null ? game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearestChasing), m) : null;
-	}
-	
-	/**
-	 * Gets the distance to the nearest edible ghost to MsPacMan supposing she is located in pos. And also
-	 * gets the remaining edible time of that ghost
-	 * 
-	 * @param g
-	 * @param pos
-	 * @param m movement to be made
-	 * @return distance to the nearest edible ghost to pos and remaining edible time of that ghost. both null if no edible ghost is close
-	 */
-	private ArrayList<Integer> computeDistanceTimeNearestEdibleGhostToPos(Game g, int pos, MOVE m) {
-		ArrayList<Integer> resul = new ArrayList<Integer>();
-		GHOST nearestEdible = getNearestGhostToPos(game, pos, m, true);
-		
-		if(nearestEdible != null) {
-			resul.add(game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearestEdible), m));
-			resul.add(game.getGhostEdibleTime(nearestEdible));
-		}
-		else {
-			resul.add(null);
-			resul.add(null);
-		}
-		
-		return resul;
-	}
-	
-	/**
-	 * Gets the distance to the nearest PPill to MsPacMan supposing she is located in pos
-	 * 
-	 * @param g
-	 * @param pos
-	 * @param m movement to be made
-	 * @return distance to the nearest PPill to pos. null if no PPill is close
-	 */
-	private Integer computeDistanceNearestPPillToPos(Game g, int pos, MOVE m) {
-		Integer nearestPPill = getNearestPPillToPos(game, pos, m);
-		
-		return nearestPPill != null ? game.getShortestPathDistance(pos, nearestPPill, m) : null;
-	}
-	
-	/**
-	 * Gets the distance to mspacman from pos
-	 * @param g
-	 * @param pos
-	 * @param m
-	 * @return
-	 */
-	private Integer computeDistanceMspacmanToPos(Game g, int pos, MOVE m) {
-		int pacmanPos = g.getPacmanCurrentNodeIndex();
-		return game.getShortestPathDistance(pos, pacmanPos, m);
-	}
-	
-
 }
