@@ -103,8 +103,8 @@ public class GhostCBRengine implements StandardCBRApplication {
 		// Solucionado: hacemos atributos para cada uno de los elementos, como indicado en la linea previa.
 		
 		// lives, time, edibleTime (SOLO EDIBLE WEIGTHS), mspacmanToPPill y vectors (total de vectores, se divide para 4).
-		double edibleWeigths[] = { 0.05, 0.05, 0.05, 0.05, 0.8};
-		double chasingWeigths[] = { 0.05, 0.05, 0, 0.05, 0.85 };
+		double edibleWeigths[] = { 0.05, 0.05, 0.05, 0.05, 0.8/4};
+		double chasingWeigths[] = { 0.05, 0.05, 0, 0.05, 0.85/4 };
 		// mspacman, nearestEdible, nearestEdibleTime, nearestChasing
 		double vectorWeigths[] = { 0.40, 0.25, 0.1, 0.25 };
 		
@@ -322,7 +322,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 
 	private MOVE reuse(Collection<RetrievalResult> eval)
 	{
-		// TODO aplicar el documento de diseño al reuse.
+		// TODO aplicar el documento de diseï¿½o al reuse.
 		
 		// This simple implementation only uses 1NN
 		// Consider using kNNs with majority voting
