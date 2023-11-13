@@ -18,6 +18,7 @@ public class MsPacManInput extends CBRInput {
 
 	Integer time;
 	Integer lives; //Remaining lives of MsPacMan
+	ArrayList<MOVE> possibleMoves; //Possible moves of MsPacMan
 	/*
 	 List for each possible movement with the next information:
 	 0: distance to the nearest chasing ghost
@@ -31,6 +32,7 @@ public class MsPacManInput extends CBRInput {
 	ArrayList<Integer> left;
 	
 	
+	
 	@Override
 	public void parseInput() {
 		time = game.getTotalTime();
@@ -41,7 +43,8 @@ public class MsPacManInput extends CBRInput {
 		//Last move made by MsPacMan
 		MOVE lastMove = game.getPacmanLastMoveMade();
 		//Possible moves of MsPacMan
-		ArrayList<MOVE> possibleMoves = new ArrayList<MOVE>(Arrays.asList(game.getPossibleMoves(actPos, lastMove)));
+		possibleMoves = new ArrayList<MOVE>(Arrays.asList(game.getPossibleMoves(actPos, lastMove)));
+		
 		
 		//UP move is computed
 		if(possibleMoves.contains(MOVE.UP)) up = computeMovement(game, MOVE.UP);
@@ -65,6 +68,7 @@ public class MsPacManInput extends CBRInput {
 		MsPacManDescription description = new MsPacManDescription();
 		description.setTime(time);
 		description.setLives(lives);
+		description.setPossibleMoves((MOVE [])possibleMoves.toArray());
 		description.setUpVector(up);
 		description.setDownVector(down);
 		description.setRightVector(right);

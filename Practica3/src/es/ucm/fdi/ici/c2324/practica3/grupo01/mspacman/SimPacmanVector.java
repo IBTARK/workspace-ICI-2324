@@ -31,6 +31,7 @@ public class SimPacmanVector implements GlobalSimilarityFunction {
 		MsPacManDescription.DistanceVector vecCase = (MsPacManDescription.DistanceVector) componentOfCase;
 		MsPacManDescription.DistanceVector vecQuery = (MsPacManDescription.DistanceVector) componentOfQuery;
 		
+		//Check if the movement analyzed is valid for the case and the query
 		boolean vecInCase = new ArrayList<MOVE>(Arrays.asList(((MsPacManDescription)_case.getDescription()).getPossibleMoves())).contains(vecCase.getMove()),
 				vecInQuery = new ArrayList<MOVE>(Arrays.asList(((MsPacManDescription)_query.getDescription()).getPossibleMoves())).contains(vecCase.getMove());
 		

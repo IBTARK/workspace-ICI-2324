@@ -64,6 +64,13 @@ public class MsPacManDescription implements CaseComponent {
 		return left;
 	}
 	
+	public CaseComponent getVector(MOVE m) {
+		if(m == MOVE.UP) return up;
+		else if(m == MOVE.DOWN) return down;
+		else if(m == MOVE.LEFT) return left;
+		else return right;
+	}
+	
 	public MOVE[] getPossibleMoves(){
 		return possibleMoves;
 	}
