@@ -37,6 +37,18 @@ public class GhostResult implements CaseComponent {
 		this.numReps = numReps;
 	}
 	
+	public void initializeCounter() {
+		this.numReps = 1;
+	}
+	
+	public void incrementCounter() {
+		this.numReps += 1;
+	}
+
+	public void decrementCounter() {
+		this.numReps -= 1;
+	}
+	
 	@Override
 	public Attribute getIdAttribute() {
 		return new Attribute("id", GhostResult.class);
