@@ -20,6 +20,8 @@ import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CachedLinearCaseBase;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CustomPlainTextConnector;
 import pacman.game.Constants.MOVE;
 
+import java.util.ArrayList;
+
 public class MsPacManCBRengine implements StandardCBRApplication {
 
 	private String opponent;
@@ -31,12 +33,14 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	NNConfig simConfig;
 	
 	
-	final static String TEAM = "grupo01";  //Cuidado!! poner el grupo aquí
+	final static String TEAM = "grupo01"; 
 	
 	
 	final static String CONNECTOR_FILE_PATH = "es/ucm/fdi/ici/c2324/practica3/"+TEAM+"/mspacman/plaintextconfig.xml";
 	final static String CASE_BASE_PATH = "cbrdata"+File.separator+TEAM+File.separator+"mspacman"+File.separator;
-
+	
+	final static int NUM_NEIGHBORS = 5; //number of neighbors of the KNN
+	final static double MOST_SIM_VAL = 0.5; 
 	
 	public MsPacManCBRengine(MsPacManStorageManager storageManager)
 	{
@@ -94,30 +98,33 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 		
 	}
 
+	
 	private MOVE reuse(Collection<RetrievalResult> eval)
 	{
-		// This simple implementation only uses 1NN
-		// Consider using kNNs with majority voting
-		RetrievalResult first = SelectCases.selectTopKRR(eval, 1).iterator().next();
-		CBRCase mostSimilarCase = first.get_case();
-		double similarity = first.getEval();
-
-		MsPacManResult result = (MsPacManResult) mostSimilarCase.getResult();
-		MsPacManSolution solution = (MsPacManSolution) mostSimilarCase.getSolution();
-		
-		//Now compute a solution for the query
-		
-		//Here, it simply takes the action of the 1NN
-		MOVE action = solution.getAction();
-		
-		//But if not enough similarity or bad case, choose another move randomly
-		if((similarity<0.7)||(result.getScore()<100)) {
-			int index = (int)Math.floor(Math.random()*4);
-			if(MOVE.values()[index]==action) 
-				index= (index+1)%4;
-			action = MOVE.values()[index];
+		//NUM_NEIGHBORS-NN
+		ArrayList<RetrievalResult> neighbors = new ArrayList<>(SelectCases.selectTopKRR(eval, NUM_NEIGHBORS));
+	
+		//If the similarity of the most similar case is lower then MOST_SIM_VAL the solution is taken from the generic storage
+		if(neighbors.get(0).getEval() < MOST_SIM_VAL) return MOVE.NEUTRAL;//TODO coger de la genérica
+		else {
+			double maxReutVal = -1;
+			int reutCase = -1;
+			
+			for(int i = 0; i < NUM_NEIGHBORS; i++) {
+				RetrievalResult ret = neighbors.get(i);
+				MsPacManResult result = (MsPacManResult) ret.get_case().getResult();
+				double reutVal = ret.getEval() * Math.sqrt(result.getNumReps()) * result.getScore();
+				if(reutVal > maxReutVal) {
+					maxReutVal = reutVal;
+					reutCase = i;
+				}
+			}
+			
+			CBRCase chosenCase = neighbors.get(reutCase).get_case();
+			MsPacManSolution solution = (MsPacManSolution) chosenCase.getSolution();
+			
+			return solution.getAction();
 		}
-		return action;
 	}
 
 	/**
