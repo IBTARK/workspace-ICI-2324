@@ -1,5 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica3.grupo01.ghosts;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Vector;
 
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCase;
@@ -57,9 +59,16 @@ public class GhostStorageManager {
 		boolean edible = desc.getEdible();
 		GHOST type = desc.getType();
 		
-		if(edible) pendingEdibleCases += 1;
-		else pendingChasingCases += 1;
-		
+		// Ya explicado en el reuse y en el createNewCase:
+		// A esta función llegarán casos con id=-1
+		// Estos casos serán aquellos que tenian vecinos similares, por lo que no los tendremos en cuenta ... -
+		// ... a la hora del revise y el retain.
+		// No incrementamos ni decrementamos el contador de los pendingCases porque no lo vamos a guardar.
+		// De todas maneras, queremos guardarlos en sus buffers correspondientes para llevar la cuenta de 3 junctions para el reviseAndRetain de los otros casos
+		if(desc.getId() >= 0) {
+			if(edible) pendingEdibleCases += 1;
+			else pendingChasingCases += 1;
+		}
 		
 		// Add to the buffer
 		// Revise the buffer size
@@ -95,15 +104,19 @@ public class GhostStorageManager {
 		
 		desc = (GhostDescription) bCase.getDescription();
 		edible = desc.getEdible();
-		if(edible) pendingEdibleCases -= 1;
-		else pendingChasingCases -= 1;
-		
+		if(desc.getId() >= 0) {
+			if(edible) pendingEdibleCases -= 1;
+			else pendingChasingCases -= 1;
+		}
 		
 		reviseCase(bCase);
 		retainCase(bCase);
 	}
 	
 	private void reviseCase(CBRCase bCase) {
+		// En caso de que el id=-1 no queremos ni revisar ni guardar el caso.
+		if(((GhostDescription) bCase.getDescription()).getId() == -1) return;
+		
 		GhostDescription description = (GhostDescription)bCase.getDescription();
 		int oldScore = description.getScore();
 		int oldLives = description.getMspacmanLives();
@@ -116,16 +129,31 @@ public class GhostStorageManager {
 		result.initializeCounter();
 	}
 	
+	public void removeOldCase(CBRCase bCase) {
+		boolean edible = ((GhostDescription) bCase.getDescription()).getEdible();
+		
+		Collection<CBRCase> caseToModify = new ArrayList<>(1);
+		caseToModify.add(bCase);
+		
+		if(edible)	
+			this.caseBaseEdible.forgetCases(caseToModify);
+		else
+			this.caseBaseEdible.forgetCases(caseToModify);
+	}
+	
+	public void retainOldCase(CBRCase oldCase) {
+		// Por no cambiar "retainCase" 
+		retainCase(oldCase);
+	}
+	
 	private void retainCase(CBRCase bCase)
 	{
-		boolean edible = ((GhostDescription) bCase.getDescription()).getEdible();
-		// TODO aplicar el documento de diseño al retain
-
-		//Store the old case right now into the case base
-		//Alternatively we could store all them when game finishes in close() method
+		// En caso de que el id=-1 no queremos ni revisar ni guardar el caso.
+		if(((GhostDescription) bCase.getDescription()).getId() == -1) return;
 		
-		//here you should also check if the case must be stored into persistence (too similar to existing ones, etc.)
-		if(edible)
+		boolean edible = ((GhostDescription) bCase.getDescription()).getEdible();
+		
+		if(edible)	
 			StoreCasesMethod.storeCase(this.caseBaseEdible, bCase);
 		else
 			StoreCasesMethod.storeCase(this.caseBaseChasing, bCase);

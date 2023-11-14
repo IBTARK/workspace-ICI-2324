@@ -26,6 +26,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 
 	private String opponent;
 	private MOVE action;
+	private boolean retainNewCase;
 	
 	/*
 	 * Explicacion de por que tenemos que tener 1 solo storage manager que lleve ambas CaseBase:
@@ -56,7 +57,8 @@ public class GhostCBRengine implements StandardCBRApplication {
 	final static String TEAM = "grupo01";
 	
 	
-	final static String CONNECTOR_FILE_PATH = "es/ucm/fdi/ici/c2324/practica3/"+TEAM+"/ghosts/plaintextconfig.xml";
+	final static String CONNECTOR_EDIBLE_FILE_PATH = "es/ucm/fdi/ici/c2324/practica3/"+TEAM+"/ghosts/plaintextconfig_edible.xml";
+	final static String CONNECTOR_CHASING_FILE_PATH = "es/ucm/fdi/ici/c2324/practica3/"+TEAM+"/ghosts/plaintextconfig_chasing.xml";
 	final static String  CASE_BASE_EDIBLE_PATH = "cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"edible"+File.separator;
 	final static String  CASE_BASE_CHASING_PATH = "cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"chasing"+File.separator;
 	
@@ -82,8 +84,8 @@ public class GhostCBRengine implements StandardCBRApplication {
 		generalCaseBaseEdible = new CachedLinearCaseBase();
 		generalCaseBaseChasing = new CachedLinearCaseBase();
 		
-		connectorEdible.initFromXMLfile(FileIO.findFile(CONNECTOR_FILE_PATH));
-		connectorChasing.initFromXMLfile(FileIO.findFile(CONNECTOR_FILE_PATH));
+		connectorEdible.initFromXMLfile(FileIO.findFile(CONNECTOR_EDIBLE_FILE_PATH));
+		connectorChasing.initFromXMLfile(FileIO.findFile(CONNECTOR_CHASING_FILE_PATH));
 		
 		//Do not use default case base path in the xml file. Instead use custom file path for each opponent.
 		//Note that you can create any subfolder of files to store the case base inside your "cbrdata/grupoXX" folder.
@@ -99,9 +101,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 		/*
 		 * HACER 2 SIMCONFIG , UNA EDIBLE OTRA NO Y A LA HORA DE EVALUAR (EN cycle) SE ELIGE LA SIMCONFIg
 		 */
-		// TODO investigar como hacer mapping para vectores. En caso de no poder hacer cada uno de los elementos del vector new Attribute por separado
-		// Estilo: UP_mspacman, UP_nearestEdible, etc.
-		// Solucionado: hacemos atributos para cada uno de los elementos, como indicado en la linea previa.
+		// Se puede hacer un CaseComponent por cada vector a la hora de almacenar (se tendria que cambiar el mapeo también en los config.xml
 		
 		// lives, time, edibleTime (SOLO EDIBLE WEIGTHS), mspacmanToPPill y vectors (total de vectores, se divide para 4).
 		double edibleWeigths[] = { 0.05, 0.05, 0.05, 0.05, 0.8/4};
@@ -242,6 +242,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 	public void cycle(CBRQuery query) throws ExecutionException {
 		
 		boolean edible = ((GhostDescription) query.getDescription()).getEdible();
+		this.retainNewCase = true;
 		// HACER UN IF DONDE VEAMOS SI ES EDIBLE.
 		// ELEGIR DE LA BASE DE CASOS Y ASIGNAR EL SIMCONFIG CORRESPONDIENTE
 		
@@ -323,20 +324,16 @@ public class GhostCBRengine implements StandardCBRApplication {
 
 	private MOVE reuse(Collection<RetrievalResult> eval)
 	{
-		// TODO aplicar el documento de diseï¿½o al reuse.
 		
-		// This simple implementation only uses 1NN
-		// Consider using kNNs with majority voting
 		Iterator<RetrievalResult> topCases = SelectCases.selectTopKRR(eval, 5).iterator();
 		RetrievalResult topRetrieval = topCases.next();
-		CBRCase currentCase = topRetrieval.get_case();
+		CBRCase retrievedCase = topRetrieval.get_case();
 		double similarity = topRetrieval.getEval();
 		if(similarity < 0.5) 
 			return MOVE.NEUTRAL;
 		
 		
-		GhostResult result = (GhostResult) currentCase.getResult();
-		GhostSolution solution = (GhostSolution) currentCase.getSolution();
+		GhostResult result = (GhostResult) retrievedCase.getResult();
 		double minReut = similarity * Math.sqrt(result.getNumReps()) / result.getScore();
 		double curReut;
 		RetrievalResult currentRetrieval;
@@ -354,15 +351,26 @@ public class GhostCBRengine implements StandardCBRApplication {
 		}
 		
 		// Al salir, en topRetrieval tenemos el caso con MENOR "reut", por lo que vemos su similitud y su solution.
-		solution = (GhostSolution) topRetrieval.get_case().getSolution();
+		GhostSolution solution = (GhostSolution) topRetrieval.get_case().getSolution();
 		similarity = topRetrieval.getEval();
 		
 		if(similarity >= 0.9) {
-			// EN VEZ DE GUARDAR EL CASO HAY QUE AUMENTAR EL CONTADOR.
-			// Lo podriamos (?) poner antes del bucle anterior, como "else if" del "if(similarity < 0.5)".
+			// EN CASO DE QUE ESTA VARIABLE SEA FALSE QUEREMOS NO RETENER EL CASO.
+			// para ello, le asignaremos un id=-1 al CBRCase en la funcion createNewCase() para facilitar el revise and retain en el storageManager
+			// 
+			this.retainNewCase = false;
 			
-			// Proximamente: en vez de devolver el action, asignar a this.action el movimiento de la solucion, y devolver un boolean ... -
-			// ... diciendo true si queremos mandarlo a reviseAndRetain o false si queremos modificar el topRetrieval, aumentando su contador
+			// Recogemos el CBRCase de topRetrieval
+			retrievedCase = topRetrieval.get_case();
+			
+			// Eliminamos de la base de casos el top 1-NN
+			storageManager.removeOldCase(retrievedCase);
+			// Incrementamos el contador (numReps)
+			GhostResult resultToModify = (GhostResult) retrievedCase.getResult();
+			resultToModify.incrementCounter();
+			retrievedCase.setResult(resultToModify);
+			// Lo añadimos de vuelta a la base de casos
+			storageManager.retainOldCase(retrievedCase);
 		}
 
 		MOVE action = solution.getAction();
@@ -389,17 +397,28 @@ public class GhostCBRengine implements StandardCBRApplication {
 		GhostResult newResult = new GhostResult();
 		GhostSolution newSolution = new GhostSolution();
 		int newId;
-		if(newDescription.getEdible()) {
-			newId = this.caseBaseEdible.getCases().size();
-			newId+= storageManager.getPendingEdibleCases();
+		// En caso de que retainNewCase sea true, significa que no tenemos un vecino con similitud mayor que 0.9, por lo que creamos el caso con un ID correcto
+		if(this.retainNewCase) {
+			if(newDescription.getEdible()) {
+				newId = this.caseBaseEdible.getCases().size();
+				newId+= storageManager.getPendingEdibleCases();
+			}
+			else {
+				newId = this.caseBaseChasing.getCases().size();
+				newId+= storageManager.getPendingChasingCases();
+			}
+			newDescription.setId(newId);
+			newResult.setId(newId);
+			newSolution.setId(newId);
 		}
+		// En caso de que retainNewCase sea FALSE, significa que tenemos un vecino con similitud mayor que 0.9
+		// Por lo que asignamos los id = -1 para luego procesar mejor el reviseAndRetain del storageManager
 		else {
-			newId = this.caseBaseChasing.getCases().size();
-			newId+= storageManager.getPendingChasingCases();
+			newDescription.setId(-1);
+			newResult.setId(-1);
+			newSolution.setId(-1);
 		}
-		newDescription.setId(newId);
-		newResult.setId(newId);
-		newSolution.setId(newId);
+		
 		newSolution.setAction(this.action);
 		newCase.setDescription(newDescription);
 		newCase.setResult(newResult);
