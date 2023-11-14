@@ -2,6 +2,7 @@ package es.ucm.fdi.ici.c2324.practica3.grupo01.ghosts;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Iterator;
 
 import es.ucm.fdi.gaia.jcolibri.cbraplications.StandardCBRApplication;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.Attribute;
@@ -326,22 +327,45 @@ public class GhostCBRengine implements StandardCBRApplication {
 		
 		// This simple implementation only uses 1NN
 		// Consider using kNNs with majority voting
-		RetrievalResult first = SelectCases.selectTopKRR(eval, 1).iterator().next();
-		CBRCase mostSimilarCase = first.get_case();
-		double similarity = first.getEval();
-
-		GhostResult result = (GhostResult) mostSimilarCase.getResult();
-		GhostSolution solution = (GhostSolution) mostSimilarCase.getSolution();
+		Iterator<RetrievalResult> topCases = SelectCases.selectTopKRR(eval, 5).iterator();
+		RetrievalResult topRetrieval = topCases.next();
+		CBRCase currentCase = topRetrieval.get_case();
+		double similarity = topRetrieval.getEval();
+		if(similarity < 0.5) 
+			return MOVE.NEUTRAL;
 		
-		//Now compute a solution for the query
 		
-		//Here, it simply takes the action of the 1NN
-		MOVE action = solution.getAction();
-		
-		//But if not enough similarity or bad case, choose another move randomly
-		if((similarity<0.7)||(result.getScore()<100)) {
-			action = getRandomMove();
+		GhostResult result = (GhostResult) currentCase.getResult();
+		GhostSolution solution = (GhostSolution) currentCase.getSolution();
+		double minReut = similarity * Math.sqrt(result.getNumReps()) / result.getScore();
+		double curReut;
+		RetrievalResult currentRetrieval;
+				
+		// Con este bucle calculamos el caso con MENOR "reut" y lo seleccionamos como topRetrieval para luego elegir su movimiento.
+		while(topCases.hasNext()) {
+			currentRetrieval = topCases.next();
+			result = (GhostResult) currentRetrieval.get_case().getResult();
+			curReut = currentRetrieval.getEval() * Math.sqrt(result.getNumReps()) / result.getScore();
+			
+			if(curReut < minReut) {
+				minReut = curReut;
+				topRetrieval = currentRetrieval;
+			}
 		}
+		
+		// Al salir, en topRetrieval tenemos el caso con MENOR "reut", por lo que vemos su similitud y su solution.
+		solution = (GhostSolution) topRetrieval.get_case().getSolution();
+		similarity = topRetrieval.getEval();
+		
+		if(similarity >= 0.9) {
+			// EN VEZ DE GUARDAR EL CASO HAY QUE AUMENTAR EL CONTADOR.
+			// Lo podriamos (?) poner antes del bucle anterior, como "else if" del "if(similarity < 0.5)".
+			
+			// Proximamente: en vez de devolver el action, asignar a this.action el movimiento de la solucion, y devolver un boolean ... -
+			// ... diciendo true si queremos mandarlo a reviseAndRetain o false si queremos modificar el topRetrieval, aumentando su contador
+		}
+
+		MOVE action = solution.getAction();
 		return action;
 	}
 	
