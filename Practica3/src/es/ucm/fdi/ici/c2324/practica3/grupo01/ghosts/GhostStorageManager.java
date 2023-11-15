@@ -116,9 +116,9 @@ public class GhostStorageManager {
 	}
 	
 	private void reviseCase(CBRCase bCase) {
-		// En caso de que el CBRCase esté en el mapa de oldCases, no queremos hacer ni el revise ni el retain.
-		if(oldCases.containsKey(bCase)) return;
-		
+		// En caso de que el CBRCase estï¿½ en el mapa de oldCases, no queremos hacer ni el revise ni el retain.
+		//if(oldCases.containsKey(bCase)) return;
+		// Si lo hacemos, porque GhostResult del bCase no esta calculado del todo ?
 		GhostDescription description = (GhostDescription)bCase.getDescription();
 		int oldScore = description.getScore();
 		int oldLives = description.getMspacmanLives();
@@ -129,6 +129,7 @@ public class GhostStorageManager {
 		GhostResult result = (GhostResult)bCase.getResult();
 		result.setScore(resultScore);	
 		result.initializeCounter();
+		bCase.setResult(result);
 	}
 	
 	public void removeOldCase(CBRCase bCase) {
@@ -158,7 +159,7 @@ public class GhostStorageManager {
 			GhostResult resultToModify = (GhostResult) oldCase.getResult();
 			resultToModify.incrementCounter();
 			oldCase.setResult(resultToModify);
-			// Lo añadimos de vuelta a la base de casos
+			// Lo aï¿½adimos de vuelta a la base de casos
 			if(edible)	
 				StoreCasesMethod.storeCase(this.caseBaseEdible, oldCase);
 			else

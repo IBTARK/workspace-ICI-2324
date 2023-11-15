@@ -1,6 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica3.grupo01.ghosts;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -19,6 +20,8 @@ import es.ucm.fdi.gaia.jcolibri.util.FileIO;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.Average;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CachedLinearCaseBase;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CustomPlainTextConnector;
+import es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman.MsPacManDescription;
+import es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman.SimPacmanVector;
 import pacman.game.Constants.MOVE;
 
 public class GhostCBRengine implements StandardCBRApplication {
@@ -61,6 +64,9 @@ public class GhostCBRengine implements StandardCBRApplication {
 	final static String  CASE_BASE_EDIBLE_PATH = "cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"edible"+File.separator;
 	final static String  CASE_BASE_CHASING_PATH = "cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"chasing"+File.separator;
 	
+	final static int NUM_NEIGHBORS = 5; //number of neighbors of the KNN
+	final static double MOST_SIM_VAL = 0.5; 
+	
 	public GhostCBRengine(GhostStorageManager storageManager) {
 		this.storageManager = storageManager;
 	}
@@ -100,8 +106,28 @@ public class GhostCBRengine implements StandardCBRApplication {
 		/*
 		 * HACER 2 SIMCONFIG , UNA EDIBLE OTRA NO Y A LA HORA DE EVALUAR (EN cycle) SE ELIGE LA SIMCONFIg
 		 */
-		// Se puede hacer un CaseComponent por cada vector a la hora de almacenar (se tendria que cambiar el mapeo también en los config.xml
-
+		// Se puede hacer un CaseComponent por cada vector a la hora de almacenar (se tendria que cambiar el mapeo tambiï¿½n en los config.xml
+		simConfigEdible =  new NNConfig();
+		simConfigEdible.setDescriptionSimFunction(new SimGhost());
+		simConfigEdible.addMapping(new Attribute("mspacmanLives", GhostDescription.class), new Interval(2));
+		simConfigEdible.addMapping(new Attribute("score", GhostDescription.class), new Interval(15000));
+		simConfigEdible.addMapping(new Attribute("time", GhostDescription.class),new Interval(4000));
+		simConfigEdible.addMapping(new Attribute("mspacmanToPPill", GhostDescription.class),new Interval(650));
+		simConfigEdible.addMapping(new Attribute("upVector",GhostDescription.class), new SimGhostVector());
+		simConfigEdible.addMapping(new Attribute("downVector",GhostDescription.class), new SimGhostVector());
+		simConfigEdible.addMapping(new Attribute("leftVector",GhostDescription.class), new SimGhostVector());
+		simConfigEdible.addMapping(new Attribute("rightVector",GhostDescription.class), new SimGhostVector());
+		
+		simConfigChasing = new NNConfig();
+		simConfigChasing.setDescriptionSimFunction(new SimGhost());
+		simConfigChasing.addMapping(new Attribute("mspacmanLives", GhostDescription.class), new Interval(2));
+		simConfigChasing.addMapping(new Attribute("score", GhostDescription.class), new Interval(15000));
+		simConfigChasing.addMapping(new Attribute("time", GhostDescription.class),new Interval(4000));
+		simConfigChasing.addMapping(new Attribute("mspacmanToPPill", GhostDescription.class),new Interval(650));
+		simConfigChasing.addMapping(new Attribute("upVector",GhostDescription.class), new SimGhostVector());
+		simConfigChasing.addMapping(new Attribute("downVector",GhostDescription.class), new SimGhostVector());
+		simConfigChasing.addMapping(new Attribute("leftVector",GhostDescription.class), new SimGhostVector());
+		simConfigChasing.addMapping(new Attribute("rightVector",GhostDescription.class), new SimGhostVector());
 	}
 
 
@@ -111,7 +137,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 		caseBaseChasing.init(connectorChasing);
 		generalCaseBaseEdible.init(generalConnectorEdible);
 		generalCaseBaseChasing.init(generalConnectorChasing);
-		// Por que se retorna si desde Ghosts no se hace nada con el CaseBase???
+		
 		return caseBaseEdible;
 	}
 
@@ -139,18 +165,21 @@ public class GhostCBRengine implements StandardCBRApplication {
 	private void computeRetrieveAndReuseGeneral(CBRQuery query, boolean edible) {
 		
 		Collection<RetrievalResult> eval;
-		if(edible && generalCaseBaseEdible.getCases().isEmpty()
-				|| !edible && generalCaseBaseChasing.getCases().isEmpty()) {
+		ArrayList<RetrievalResult> neighbors = null;
+		if((edible && generalCaseBaseEdible.getCases().isEmpty())
+				|| (!edible && generalCaseBaseChasing.getCases().isEmpty())) {
 			this.action = MOVE.NEUTRAL;
 		}
 		else {
 			// Comprobamos la evaluacion en la base de casos del oponente
 			eval = getGeneralCaseBaseEval(query, edible);
-			RetrievalResult first = SelectCases.selectTopKRR(eval, 1).iterator().next();
-			double similarity = first.getEval();
+			neighbors = new ArrayList<>(SelectCases.selectTopKRR(eval, NUM_NEIGHBORS));
+
+			//RetrievalResult first = SelectCases.selectTopKRR(eval, 1).iterator().next();
+			//double similarity = first.getEval();
 			
 			
-			if(similarity < 0.7) 
+			if(neighbors.get(0).getEval() < 0.7) 
 				this.action = MOVE.NEUTRAL;
 			else
 				this.action = reuse(eval);
@@ -159,18 +188,21 @@ public class GhostCBRengine implements StandardCBRApplication {
 
 	private void computeRetrieveAndReuseOpponent(CBRQuery query, boolean edible) {
 		Collection<RetrievalResult> eval;
-		if(edible && caseBaseEdible.getCases().isEmpty()
-				|| !edible && caseBaseChasing.getCases().isEmpty()) {
+		ArrayList<RetrievalResult> neighbors = null;
+		if((edible && caseBaseEdible.getCases().isEmpty())
+				|| (!edible && caseBaseChasing.getCases().isEmpty())) {
 			this.action = MOVE.NEUTRAL;
 		}
 		else {
 			// Comprobamos la evaluacion en la base de casos del oponente
 			eval = getOpponentCaseBaseEval(query, edible);
-			RetrievalResult first = SelectCases.selectTopKRR(eval, 1).iterator().next();
-			double similarity = first.getEval();
+			neighbors = new ArrayList<>(SelectCases.selectTopKRR(eval, NUM_NEIGHBORS));
+
+			//RetrievalResult first = SelectCases.selectTopKRR(eval, 1).iterator().next();
+			//double similarity = first.getEval();
 			
-			if(similarity < 0.5) 
-				this.action = MOVE.NEUTRAL;
+			if(neighbors.get(0).getEval() < MOST_SIM_VAL) 
+				this.action = MOVE.NEUTRAL; // OR FORM GENERIC CASE BASE?
 			else
 				this.action = reuse(eval);
 		}
@@ -202,11 +234,11 @@ public class GhostCBRengine implements StandardCBRApplication {
 	private MOVE reuse(Collection<RetrievalResult> eval)
 	{
 		
-		Iterator<RetrievalResult> topCases = SelectCases.selectTopKRR(eval, 5).iterator();
+		Iterator<RetrievalResult> topCases = SelectCases.selectTopKRR(eval, NUM_NEIGHBORS).iterator();
 		RetrievalResult topRetrieval = topCases.next();
 		CBRCase retrievedCase = topRetrieval.get_case();
 		double similarity = topRetrieval.getEval();
-		if(similarity < 0.5) 
+		if(similarity < MOST_SIM_VAL) 
 			return MOVE.NEUTRAL;
 		
 		

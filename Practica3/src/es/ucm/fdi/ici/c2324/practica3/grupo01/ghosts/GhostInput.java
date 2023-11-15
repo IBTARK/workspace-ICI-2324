@@ -1,6 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica3.grupo01.ghosts;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRQuery;
 import es.ucm.fdi.ici.cbr.CBRInput;
@@ -18,6 +19,7 @@ public class GhostInput extends CBRInput {
 	Boolean edible;
 	Integer edibleTime;
 	Integer mspacmanToPPill;		// MsPacMan's distance to its nearest PPill.
+	ArrayList<MOVE> possibleMoves; //Possible moves of Ghost
 	// 4 arrays, one for each move, each containing in order:
 	/* Integer mspacman; 			Distance to mspacman.
 	 * Integer nearestEdible;		Distance to nearest edible.
@@ -39,12 +41,14 @@ public class GhostInput extends CBRInput {
 		if(type==null) return;
 		int ghost = game.getGhostCurrentNodeIndex(type);
 		int mspacman = game.getPacmanCurrentNodeIndex();
+		MOVE lastMove = game.getGhostLastMoveMade(type);
 		
 		this.mspacmanLives = game.getPacmanNumberOfLivesRemaining();
 		this.score = game.getScore();
 		this.time = game.getTotalTime();
 		this.edible = game.isGhostEdible(type);
 		this.edibleTime = edible ? game.getGhostEdibleTime(type) : Integer.MAX_VALUE;
+		this.possibleMoves = new ArrayList<MOVE>(Arrays.asList(game.getPossibleMoves(ghost, lastMove)));
 		computeMspacmanToPPill(game);
 		
 		ArrayList<Integer> auxList;
@@ -98,6 +102,7 @@ public class GhostInput extends CBRInput {
 		description.setEdible(edible);
 		description.setEdibleTime(edibleTime);
 		description.setMspacmanToPPill(mspacmanToPPill);
+		description.setPossibleMoves((MOVE [])possibleMoves.toArray());
 		description.setUp(up);
 		description.setRight(right);
 		description.setDown(down);

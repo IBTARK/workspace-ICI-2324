@@ -1,7 +1,5 @@
  package es.ucm.fdi.ici.c2324.practica3.grupo01.ghosts;
 
-import java.util.ArrayList;
-
 import es.ucm.fdi.gaia.jcolibri.cbrcore.Attribute;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CaseComponent;
 import pacman.game.Constants.GHOST;
@@ -124,11 +122,18 @@ public class GhostDescription implements CaseComponent {
 	public void setLeft(GhostDistanceVector left) {
 		this.left = left;
 	}
+	
+	public MOVE[] getPossibleMoves(){
+		return possibleMoves;
+	}
+	
+	public void setPossibleMoves(MOVE[] moves){
+		possibleMoves = moves;
+	}
 
 	@Override
 	public Attribute getIdAttribute() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Attribute("id", GhostDistanceVector.class);
 	}
 	
 	@Override
