@@ -1,10 +1,12 @@
 package es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import es.ucm.fdi.gaia.jcolibri.cbrcore.Attribute;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CaseComponent;
 import pacman.game.Constants.MOVE;
+import es.ucm.fdi.gaia.jcolibri.connector.TypeAdaptor;
 
 /**
  * The description used for MsPacMan is: distances vector.
@@ -25,10 +27,12 @@ public class MsPacManDescription implements CaseComponent {
 	 2: remaining edible time of the nearest edible ghost
 	 3: distance to the nearest PPill
 	*/
-	DistanceVector up = new DistanceVector(MOVE.UP);  
-	DistanceVector down = new DistanceVector(MOVE.DOWN);
-	DistanceVector right = new DistanceVector(MOVE.RIGHT);
-	DistanceVector left = new DistanceVector(MOVE.LEFT);
+	DistanceVector up = new DistanceVector();  
+	DistanceVector down = new DistanceVector();
+	DistanceVector right = new DistanceVector();
+	DistanceVector left = new DistanceVector();
+	
+	public static final int NUM_ELEMS = 5; //Number of elements of each vector
 	
 	//Getters
 	
@@ -48,27 +52,20 @@ public class MsPacManDescription implements CaseComponent {
 		return score;
 	}
 	
-	public CaseComponent getUpVector(){
+	public DistanceVector getUpVector(){
 		return up;
 	}
 	
-	public CaseComponent getDownVector(){
+	public DistanceVector getDownVector(){
 		return down;
 	}
 
-	public CaseComponent getRightVector(){
+	public DistanceVector getRightVector(){
 		return right;
 	}
 	
-	public CaseComponent getLeftVector(){
+	public DistanceVector getLeftVector(){
 		return left;
-	}
-	
-	public CaseComponent getVector(MOVE m) {
-		if(m == MOVE.UP) return up;
-		else if(m == MOVE.DOWN) return down;
-		else if(m == MOVE.LEFT) return left;
-		else return right;
 	}
 	
 	public MOVE[] getPossibleMoves(){
@@ -97,20 +94,20 @@ public class MsPacManDescription implements CaseComponent {
 		return score;
 	}
 	
-	public void setUpVector(ArrayList<Integer> up){
-		this.up.setVector(up);
+	public void setUpVector(DistanceVector up){
+		this.up = up;
 	}
 	
-	public void setDownVector(ArrayList<Integer> down){
-		this.down.setVector(down);
+	public void setDownVector(DistanceVector down){
+		this.down = down;
 	}
 	
-	public void setRightVector(ArrayList<Integer> right){
-		this.right.setVector(right);
+	public void setRightVector(DistanceVector right){
+		this.right = right;
 	}
 	
-	public void setLeftVector(ArrayList<Integer> left){
-		this.left.setVector(left);
+	public void setLeftVector(DistanceVector left){
+		this.left = left;
 	}
 	
 	public void setPossibleMoves(MOVE[] moves){
@@ -130,19 +127,23 @@ public class MsPacManDescription implements CaseComponent {
 	}
 
 
-	protected class DistanceVector implements CaseComponent {
+	protected static class DistanceVector implements TypeAdaptor, CaseComponent {
 		
-		private Integer id;
 		private ArrayList<Integer> dist;
 		private MOVE move;
+		private Integer id;
 		
-		DistanceVector(MOVE move) {
-			this.move = move;
+		DistanceVector() {
+			dist = new ArrayList<>();
 		}
-
-		@Override
-		public Attribute getIdAttribute() {
-			return new Attribute("id", DistanceVector.class);
+		
+		DistanceVector(MOVE m, ArrayList<Integer> a) {
+			move = m;
+			dist = a;
+		}
+		
+		public void setId(Integer id) {
+			this.id = MOVE.values().length * id + move.ordinal();
 		}
 		
 		public Integer getId() {
@@ -156,13 +157,31 @@ public class MsPacManDescription implements CaseComponent {
 		public MOVE getMove() {
 			return move;
 		}
-		
-		public void setId(Integer id) {
-			this.id = MOVE.values().length * id + move.ordinal();
+
+		@Override
+		public void fromString(String content) throws Exception {
+			StringTokenizer tknizer = new StringTokenizer(content, ";", false);
+			
+			move = (MOVE) tknizer.nextElement();
+			
+			for(int i = 0; i < NUM_ELEMS; i++) {
+				dist.add((Integer)tknizer.nextElement());
+			}
 		}
 		
-		public void setVector(ArrayList<Integer> dist) {
-			this.dist = dist;
+		public String toString() {
+			String str =  move.toString();
+			
+			for(Integer elem : dist) {
+				str += ";" + elem.toString();
+			}
+			
+			return str;
+		}
+
+		@Override
+		public Attribute getIdAttribute() {
+			return new Attribute("id", DistanceVector.class);
 		}
 	}
 }

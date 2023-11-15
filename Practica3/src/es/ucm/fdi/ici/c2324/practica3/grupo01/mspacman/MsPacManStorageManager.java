@@ -1,5 +1,6 @@
 package es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman;
 
+import java.util.Map;
 import java.util.Vector;
 
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCase;
@@ -12,6 +13,10 @@ public class MsPacManStorageManager {
 	Game game;
 	CBRCaseBase caseBase;
 	Vector<CBRCase> buffer;
+	Map<CBRCase, CBRCase> chosenReusedCaseMap;
+	
+	public static final double SCORE_TH = 10;
+	public static final double SIM_TH = 0.9;
 
 	private final static int TIME_WINDOW = 3;
 	
@@ -29,8 +34,9 @@ public class MsPacManStorageManager {
 		this.caseBase = caseBase;
 	}
 	
-	public void reviseAndRetain(CBRCase newCase)
-	{			
+	public void reviseAndRetain(CBRCase newCase, Map<CBRCase, CBRCase> chosenReusedCaseMap){
+		this.chosenReusedCaseMap = chosenReusedCaseMap;
+		
 		this.buffer.add(newCase);
 		
 		//Buffer not full yet.
@@ -40,21 +46,32 @@ public class MsPacManStorageManager {
 		
 		CBRCase bCase = this.buffer.remove(0);
 		reviseCase(bCase);
-		retainCase(bCase);
+		
+		if(((MsPacManResult)bCase.getResult()).getScore() > SCORE_TH)
+			retainCase(bCase);
 		
 	}
 	
 	private void reviseCase(CBRCase bCase) {
 		MsPacManDescription description = (MsPacManDescription)bCase.getDescription();
-		int oldScore = description.getScore();
-		int currentScore = game.getScore();
-		int resultValue = currentScore - oldScore;
+		
+		//Information of the case being revised
+		int oldScore = description.getScore(), oldLives = description.getLives();
+		//Information of the current state of the game
+		int currentScore = game.getScore(), currentLives = description.getLives();
+		
+	
+		int resultValue = (currentScore - oldScore) / (oldLives - currentLives + 1);
 		
 		MsPacManResult result = (MsPacManResult)bCase.getResult();
 		result.setScore(resultValue);
 		bCase.setResult(result);
 	}
 	
+	/**
+	 * The 
+	 * @param bCase
+	 */
 	private void retainCase(CBRCase bCase)
 	{
 		//Store the old case right now into the case base
@@ -62,7 +79,18 @@ public class MsPacManStorageManager {
 		
 		//here you should also check if the case must be stored into persistence (too similar to existing ones, etc.)
 		
-		StoreCasesMethod.storeCase(this.caseBase, bCase);
+		if(chosenReusedCaseMap.get(bCase) == null)StoreCasesMethod.storeCase(this.caseBase, bCase);
+		else {
+			SimPacman sim = new SimPacman();
+			if(sim.compute(bCase.getDescription(), chosenReusedCaseMap.get(bCase).getDescription(), bCase, chosenReusedCaseMap.get(bCase), null) < SIM_TH) {
+				StoreCasesMethod.storeCase(this.caseBase, bCase);
+			}
+			else {
+				MsPacManResult res = (MsPacManResult) chosenReusedCaseMap.get(bCase).getResult();
+				res.setNumReps(res.getNumReps() + 1);
+			}
+		}
+		
 	}
 
 	public void close() {

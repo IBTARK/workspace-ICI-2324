@@ -21,6 +21,8 @@ import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CustomPlainTextConnector
 import pacman.game.Constants.MOVE;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 public class MsPacManCBRengine implements StandardCBRApplication {
 
@@ -29,8 +31,12 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	private MsPacManStorageManager storageManager;
 
 	CustomPlainTextConnector connector;
+	CustomPlainTextConnector connectorGeneric;
 	CBRCaseBase caseBase;
+	CBRCaseBase genericCaseBase; //TODO como inicializarla
 	NNConfig simConfig;
+	
+	private Map<CBRCase, CBRCase> chosenReusedCaseMap; //Map of case to the case chosen to be reused
 	
 	
 	final static String TEAM = "grupo01"; 
@@ -45,6 +51,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	public MsPacManCBRengine(MsPacManStorageManager storageManager)
 	{
 		this.storageManager = storageManager;
+		chosenReusedCaseMap = new HashMap<>();
 	}
 	
 	public void setOpponent(String opponent) {
@@ -54,24 +61,28 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	@Override
 	public void configure() throws ExecutionException {
 		connector = new CustomPlainTextConnector();
+		connectorGeneric = new CustomPlainTextConnector();
 		caseBase = new CachedLinearCaseBase();
+		genericCaseBase = new CachedLinearCaseBase();
 		
 		connector.initFromXMLfile(FileIO.findFile(CONNECTOR_FILE_PATH));
 		
 		//Do not use default case base path in the xml file. Instead use custom file path for each opponent.
 		//Note that you can create any subfolder of files to store the case base inside your "cbrdata/grupoXX" folder.
 		connector.setCaseBaseFile(CASE_BASE_PATH, opponent+".csv");
+		connectorGeneric.setCaseBaseFile(CASE_BASE_PATH, "generic.csv");
 		
 		this.storageManager.setCaseBase(caseBase);
 		
 		simConfig = new NNConfig();
-		simConfig.setDescriptionSimFunction(new Average());
+		simConfig.setDescriptionSimFunction(new SimPacman());
 		simConfig.addMapping(new Attribute("score",MsPacManDescription.class), new Interval(15000));
+		simConfig.addMapping(new Attribute("lives", MsPacManDescription.class), new Interval(2));
 		simConfig.addMapping(new Attribute("time",MsPacManDescription.class), new Interval(4000));
-		simConfig.addMapping(new Attribute("upVector",MsPacManDescription.class), new Interval(650));
-		simConfig.addMapping(new Attribute("downVector",MsPacManDescription.class), new Interval(650));
-		simConfig.addMapping(new Attribute("leftVector",MsPacManDescription.class), new Interval(650));
-		simConfig.addMapping(new Attribute("rightVector",MsPacManDescription.class), new Interval(650));
+		simConfig.addMapping(new Attribute("upVector",MsPacManDescription.class), new SimPacmanVector());
+		simConfig.addMapping(new Attribute("downVector",MsPacManDescription.class), new SimPacmanVector());
+		simConfig.addMapping(new Attribute("leftVector",MsPacManDescription.class), new SimPacmanVector());
+		simConfig.addMapping(new Attribute("rightVector",MsPacManDescription.class), new SimPacmanVector());
 	}
 
 	@Override
@@ -82,49 +93,64 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 
 	@Override
 	public void cycle(CBRQuery query) throws ExecutionException {
-		if(caseBase.getCases().isEmpty()) {
-			this.action = MOVE.NEUTRAL;
+		Collection<RetrievalResult> eval;
+		ArrayList<RetrievalResult> neighbors = null;
+		
+		if(!caseBase.getCases().isEmpty()) {
+			//Compute retrieve from the case base 
+			eval = NNScoringMethod.evaluateSimilarity(caseBase.getCases(), query, simConfig);
+			//NUM_NEIGHBORS-NN
+			neighbors = new ArrayList<>(SelectCases.selectTopKRR(eval, NUM_NEIGHBORS));
+			
 		}
-		else {
+		
+		boolean fromGeneric = false;
+		
+		//The generic case base has to be used
+		if(caseBase.getCases().isEmpty() || neighbors.get(0).getEval() < MOST_SIM_VAL) {
 			//Compute retrieve
-			Collection<RetrievalResult> eval = NNScoringMethod.evaluateSimilarity(caseBase.getCases(), query, simConfig);
-			//Compute reuse
-			this.action = reuse(eval);
+			eval = NNScoringMethod.evaluateSimilarity(genericCaseBase.getCases(), query, simConfig);
+			//NUM_NEIGHBORS-NN
+			neighbors = new ArrayList<>(SelectCases.selectTopKRR(eval, NUM_NEIGHBORS));
+			
+			fromGeneric = true;
 		}
+	
+		
+		CBRCase newCase = createNewCase(query);
+		
+		//Compute reuse
+		this.action = reuse(neighbors, newCase, fromGeneric);
+	
 		
 		//Compute revise & retain
-		CBRCase newCase = createNewCase(query);
-		this.storageManager.reviseAndRetain(newCase);
-		
+		this.storageManager.reviseAndRetain(newCase, chosenReusedCaseMap);
 	}
 
 	
-	private MOVE reuse(Collection<RetrievalResult> eval)
+	private MOVE reuse(ArrayList<RetrievalResult> neighbors, CBRCase reuseCase, boolean fromGeneric)
 	{
-		//NUM_NEIGHBORS-NN
-		ArrayList<RetrievalResult> neighbors = new ArrayList<>(SelectCases.selectTopKRR(eval, NUM_NEIGHBORS));
-	
-		//If the similarity of the most similar case is lower then MOST_SIM_VAL the solution is taken from the generic storage
-		if(neighbors.get(0).getEval() < MOST_SIM_VAL) return MOVE.NEUTRAL;//TODO coger de la genérica
-		else {
-			double maxReutVal = -1;
-			int reutCase = -1;
-			
-			for(int i = 0; i < NUM_NEIGHBORS; i++) {
-				RetrievalResult ret = neighbors.get(i);
-				MsPacManResult result = (MsPacManResult) ret.get_case().getResult();
-				double reutVal = ret.getEval() * Math.sqrt(result.getNumReps()) * result.getScore();
-				if(reutVal > maxReutVal) {
-					maxReutVal = reutVal;
-					reutCase = i;
-				}
+		double maxReutVal = -1;
+		int reutCase = -1;
+		
+		for(int i = 0; i < NUM_NEIGHBORS; i++) {
+			RetrievalResult ret = neighbors.get(i);
+			MsPacManResult result = (MsPacManResult) ret.get_case().getResult();
+			double reutVal = ret.getEval() * Math.sqrt(result.getNumReps()) * result.getScore();
+			if(reutVal > maxReutVal) {
+				maxReutVal = reutVal;
+				reutCase = i;
 			}
-			
-			CBRCase chosenCase = neighbors.get(reutCase).get_case();
-			MsPacManSolution solution = (MsPacManSolution) chosenCase.getSolution();
-			
-			return solution.getAction();
 		}
+		
+		if(!fromGeneric)chosenReusedCaseMap.put(reuseCase,neighbors.get(reutCase).get_case());
+		else chosenReusedCaseMap.put(reuseCase,null);
+		
+		CBRCase chosenCase = neighbors.get(reutCase).get_case();
+		MsPacManSolution solution = (MsPacManSolution) chosenCase.getSolution();
+		
+		return solution.getAction();
+		
 	}
 
 	/**

@@ -3,10 +3,12 @@ package es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCase;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRQuery;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CaseComponent;
+import es.ucm.fdi.gaia.jcolibri.connector.TypeAdaptor;
 import es.ucm.fdi.gaia.jcolibri.exception.NoApplicableSimilarityFunctionException;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.NNConfig;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.GlobalSimilarityFunction;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.local.Interval;
+import es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman.MsPacManDescription.DistanceVector;
 import pacman.game.Constants.MOVE;
 
 public class SimPacman implements GlobalSimilarityFunction {
@@ -32,7 +34,7 @@ public class SimPacman implements GlobalSimilarityFunction {
 		
 		//Local similarity of the vectors   
 		for(MOVE m : MOVE.values()) {
-			simVectors +=  0.25 * simVector.compute(msPacManCase.getVector(m), msPacManQuery.getVector(m), _case, _query, numSimConfig);
+			simVectors +=  0.25 * simVector.compute(getVector(msPacManCase, m), getVector(msPacManQuery, m), _case, _query, numSimConfig);
 		}
 		
 		//Local similarity of the remaining time
@@ -56,4 +58,10 @@ public class SimPacman implements GlobalSimilarityFunction {
 		return VECTORSWEIGHT * simVectors + LIVESWEIGHT * simLives + TIMEWEIGHT * simTime;
 	}
 
+	private CaseComponent getVector(MsPacManDescription msPacManCase, MOVE m) {
+		if(m == MOVE.UP) return msPacManCase.getUpVector();
+		else if(m == MOVE.DOWN) return msPacManCase.getDownVector();
+		else if(m == MOVE.LEFT) return msPacManCase.getLeftVector();
+		else return msPacManCase.getRightVector();
+	}
 }

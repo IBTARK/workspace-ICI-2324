@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRQuery;
+import es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman.MsPacManDescription.DistanceVector;
 import es.ucm.fdi.ici.cbr.CBRInput;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
@@ -69,10 +70,10 @@ public class MsPacManInput extends CBRInput {
 		description.setTime(time);
 		description.setLives(lives);
 		description.setPossibleMoves((MOVE [])possibleMoves.toArray());
-		description.setUpVector(up);
-		description.setDownVector(down);
-		description.setRightVector(right);
-		description.setLeftVector(left);
+		description.setUpVector(new DistanceVector(MOVE.UP, up));
+		description.setDownVector(new DistanceVector(MOVE.DOWN, down));
+		description.setRightVector(new DistanceVector(MOVE.RIGHT, right));
+		description.setLeftVector(new DistanceVector(MOVE.LEFT, left));
 		
 		CBRQuery query = new CBRQuery();
 		query.setDescription(description);
