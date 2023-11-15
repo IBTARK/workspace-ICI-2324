@@ -3,12 +3,10 @@ package es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCase;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRQuery;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CaseComponent;
-import es.ucm.fdi.gaia.jcolibri.connector.TypeAdaptor;
 import es.ucm.fdi.gaia.jcolibri.exception.NoApplicableSimilarityFunctionException;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.NNConfig;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.GlobalSimilarityFunction;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.local.Interval;
-import es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman.MsPacManDescription.DistanceVector;
 import pacman.game.Constants.MOVE;
 
 public class SimPacman implements GlobalSimilarityFunction {

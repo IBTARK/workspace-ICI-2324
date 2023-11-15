@@ -34,7 +34,7 @@ public class MsPacManStorageManager {
 		this.caseBase = caseBase;
 	}
 	
-	public void reviseAndRetain(CBRCase newCase, Map<CBRCase, CBRCase> chosenReusedCaseMap){
+	public void reviseAndRetain(CBRCase newCase, Map<CBRCase, CBRCase> chosenReusedCaseMap) {
 		this.chosenReusedCaseMap = chosenReusedCaseMap;
 		
 		this.buffer.add(newCase);

@@ -1,7 +1,10 @@
 package es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import es.ucm.fdi.gaia.jcolibri.cbraplications.StandardCBRApplication;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.Attribute;
@@ -15,14 +18,9 @@ import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.NNScoringMethod;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.local.Interval;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.selection.SelectCases;
 import es.ucm.fdi.gaia.jcolibri.util.FileIO;
-import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.Average;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CachedLinearCaseBase;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CustomPlainTextConnector;
 import pacman.game.Constants.MOVE;
-
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 
 public class MsPacManCBRengine implements StandardCBRApplication {
 
@@ -121,7 +119,8 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 		
 		//Compute reuse
 		this.action = reuse(neighbors, newCase, fromGeneric);
-	
+		//Asign the final action
+		((MsPacManSolution)newCase.getSolution()).setAction(action);
 		
 		//Compute revise & retain
 		this.storageManager.reviseAndRetain(newCase, chosenReusedCaseMap);
