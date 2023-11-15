@@ -88,9 +88,11 @@ public class MsPacManStorageManager {
 			else {
 				MsPacManResult res = (MsPacManResult) chosenReusedCaseMap.get(bCase).getResult();
 				res.setNumReps(res.getNumReps() + 1);
+				
+				//TODO sustituir en caseBase
 			}
 		}
-		
+		chosenReusedCaseMap.remove(bCase);
 	}
 
 	public void close() {
