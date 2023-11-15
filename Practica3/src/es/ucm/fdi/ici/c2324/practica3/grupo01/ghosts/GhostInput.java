@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRQuery;
 import es.ucm.fdi.ici.cbr.CBRInput;
-import pacman.game.Game;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
+import pacman.game.Game;
 
 public class GhostInput extends CBRInput {
 
@@ -24,10 +24,10 @@ public class GhostInput extends CBRInput {
 	 * Integer nearestEdibleTime;	Remaining edible time of the nearest edible.
 	 * Integer nearestChasing;		Distance to nearest chasing ghost.
 	 */
-	ArrayList<Integer> UP;
-	ArrayList<Integer> RIGHT;
-	ArrayList<Integer> DOWN;
-	ArrayList<Integer> LEFT;
+	private GhostDistanceVector up = new GhostDistanceVector(MOVE.UP);
+	private GhostDistanceVector right = new GhostDistanceVector(MOVE.RIGHT);
+	private GhostDistanceVector down = new GhostDistanceVector(MOVE.DOWN);
+	private GhostDistanceVector left = new GhostDistanceVector(MOVE.LEFT);
 	
 	public GhostInput(Game game, GHOST g) {
 		super(game);
@@ -47,7 +47,6 @@ public class GhostInput extends CBRInput {
 		this.edibleTime = edible ? game.getGhostEdibleTime(type) : Integer.MAX_VALUE;
 		computeMspacmanToPPill(game);
 		
-		initializeArrays();
 		ArrayList<Integer> auxList;
 		for(MOVE move: game.getPossibleMoves(ghost, game.getGhostLastMoveMade(type))) {
 			auxList = new ArrayList<Integer>(4);
@@ -72,34 +71,19 @@ public class GhostInput extends CBRInput {
 	private void copyList(ArrayList<Integer> auxList, MOVE move) {
 		switch(move) {
 		case UP:
-			this.UP = new ArrayList<Integer>(auxList);
+			this.up.setDistancias(new ArrayList<Integer>(auxList));
 			break;
 		case RIGHT:
-			this.RIGHT = new ArrayList<Integer>(auxList);
+			this.right.setDistancias(new ArrayList<Integer>(auxList));
 			break;
 		case DOWN:
-			this.DOWN= new ArrayList<Integer>(auxList);
+			this.down.setDistancias(new ArrayList<Integer>(auxList));
 			break;
 		case LEFT:
-			this.LEFT = new ArrayList<Integer>(auxList);
+			this.left.setDistancias(new ArrayList<Integer>(auxList));
 			break;
 		case NEUTRAL:
 		default:
-		}
-	}
-
-	private void initializeArrays() {
-		int i;
-		this.UP = new ArrayList<Integer>(4);
-		this.RIGHT = new ArrayList<Integer>(4);
-		this.DOWN = new ArrayList<Integer>(4);
-		this.LEFT = new ArrayList<Integer>(4);
-		
-		for(i=0; i<4; i++) {
-			UP.add(i,Integer.MAX_VALUE);
-			RIGHT.add(i,Integer.MAX_VALUE);
-			DOWN.add(i,Integer.MAX_VALUE);
-			LEFT.add(i,Integer.MAX_VALUE);
 		}
 	}
 
@@ -114,10 +98,10 @@ public class GhostInput extends CBRInput {
 		description.setEdible(edible);
 		description.setEdibleTime(edibleTime);
 		description.setMspacmanToPPill(mspacmanToPPill);
-		description.setUP(UP);
-		description.setRIGHT(RIGHT);
-		description.setDOWN(DOWN);
-		description.setLEFT(LEFT);
+		description.setUp(up);
+		description.setRight(right);
+		description.setDown(down);
+		description.setLeft(left);
 		
 		CBRQuery query = new CBRQuery();
 		query.setDescription(description);

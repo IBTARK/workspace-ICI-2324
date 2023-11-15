@@ -2,6 +2,8 @@ package es.ucm.fdi.ici.c2324.practica3.grupo01.ghosts;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCase;
@@ -26,6 +28,8 @@ public class GhostStorageManager {
 	
 	int pendingEdibleCases;
 	int pendingChasingCases;
+	
+	Map<CBRCase, CBRCase> oldCases;
 
 	private final static int TIME_WINDOW = 3;
 	
@@ -37,6 +41,7 @@ public class GhostStorageManager {
 		this.bufferSue = new Vector<CBRCase>();
 		pendingEdibleCases = 0;
 		pendingChasingCases = 0;
+		this.oldCases =  new HashMap<>();
 	}
 	
 	public void setGame(Game game) {
@@ -53,19 +58,16 @@ public class GhostStorageManager {
 		this.caseBaseChasing = caseBase;
 	}
 	
-	public void reviseAndRetain(CBRCase newCase)
+	public void reviseAndRetain(CBRCase newCase, CBRCase oldCase)
 	{
+		if(oldCase!=null) 
+			oldCases.put(newCase, oldCase);
+		
 		GhostDescription desc = (GhostDescription) newCase.getDescription();
 		boolean edible = desc.getEdible();
 		GHOST type = desc.getType();
 		
-		// Ya explicado en el reuse y en el createNewCase:
-		// A esta función llegarán casos con id=-1
-		// Estos casos serán aquellos que tenian vecinos similares, por lo que no los tendremos en cuenta ... -
-		// ... a la hora del revise y el retain.
-		// No incrementamos ni decrementamos el contador de los pendingCases porque no lo vamos a guardar.
-		// De todas maneras, queremos guardarlos en sus buffers correspondientes para llevar la cuenta de 3 junctions para el reviseAndRetain de los otros casos
-		if(desc.getId() >= 0) {
+		if(!oldCases.containsKey(newCase)) {
 			if(edible) pendingEdibleCases += 1;
 			else pendingChasingCases += 1;
 		}
@@ -104,7 +106,7 @@ public class GhostStorageManager {
 		
 		desc = (GhostDescription) bCase.getDescription();
 		edible = desc.getEdible();
-		if(desc.getId() >= 0) {
+		if(!oldCases.containsKey(bCase)) {
 			if(edible) pendingEdibleCases -= 1;
 			else pendingChasingCases -= 1;
 		}
@@ -114,8 +116,8 @@ public class GhostStorageManager {
 	}
 	
 	private void reviseCase(CBRCase bCase) {
-		// En caso de que el id=-1 no queremos ni revisar ni guardar el caso.
-		if(((GhostDescription) bCase.getDescription()).getId() == -1) return;
+		// En caso de que el CBRCase esté en el mapa de oldCases, no queremos hacer ni el revise ni el retain.
+		if(oldCases.containsKey(bCase)) return;
 		
 		GhostDescription description = (GhostDescription)bCase.getDescription();
 		int oldScore = description.getScore();
@@ -138,25 +140,39 @@ public class GhostStorageManager {
 		if(edible)	
 			this.caseBaseEdible.forgetCases(caseToModify);
 		else
-			this.caseBaseEdible.forgetCases(caseToModify);
+			this.caseBaseChasing.forgetCases(caseToModify);
 	}
-	
-	public void retainOldCase(CBRCase oldCase) {
-		// Por no cambiar "retainCase" 
-		retainCase(oldCase);
-	}
+
 	
 	private void retainCase(CBRCase bCase)
 	{
-		// En caso de que el id=-1 no queremos ni revisar ni guardar el caso.
-		if(((GhostDescription) bCase.getDescription()).getId() == -1) return;
-		
 		boolean edible = ((GhostDescription) bCase.getDescription()).getEdible();
 		
-		if(edible)	
-			StoreCasesMethod.storeCase(this.caseBaseEdible, bCase);
-		else
-			StoreCasesMethod.storeCase(this.caseBaseChasing, bCase);
+		// EN caso de que el map oldCases contenga el bCase, queremos NO guardarlo, e incrementar el caso oldCase mapeado.
+		if(oldCases.containsKey(bCase)) {
+			CBRCase oldCase = oldCases.get(bCase);
+			
+			// Eliminamos de la base de casos el NN con mayor reut
+			removeOldCase(oldCase);
+			// Incrementamos el contador (numReps)
+			GhostResult resultToModify = (GhostResult) oldCase.getResult();
+			resultToModify.incrementCounter();
+			oldCase.setResult(resultToModify);
+			// Lo añadimos de vuelta a la base de casos
+			if(edible)	
+				StoreCasesMethod.storeCase(this.caseBaseEdible, oldCase);
+			else
+				StoreCasesMethod.storeCase(this.caseBaseChasing, oldCase);
+			
+			oldCases.remove(bCase);
+		}
+		else {
+			if(edible)	
+				StoreCasesMethod.storeCase(this.caseBaseEdible, bCase);
+			else
+				StoreCasesMethod.storeCase(this.caseBaseChasing, bCase);
+		}
+		
 	}
 
 	public void close() {

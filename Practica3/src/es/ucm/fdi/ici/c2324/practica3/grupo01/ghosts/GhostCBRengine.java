@@ -19,14 +19,13 @@ import es.ucm.fdi.gaia.jcolibri.util.FileIO;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.Average;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CachedLinearCaseBase;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CustomPlainTextConnector;
-import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.DistanceInterval;
 import pacman.game.Constants.MOVE;
 
 public class GhostCBRengine implements StandardCBRApplication {
 
 	private String opponent;
 	private MOVE action;
-	private boolean retainNewCase;
+	private CBRCase oldCase;
 	
 	/*
 	 * Explicacion de por que tenemos que tener 1 solo storage manager que lleve ambas CaseBase:
@@ -102,129 +101,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 		 * HACER 2 SIMCONFIG , UNA EDIBLE OTRA NO Y A LA HORA DE EVALUAR (EN cycle) SE ELIGE LA SIMCONFIg
 		 */
 		// Se puede hacer un CaseComponent por cada vector a la hora de almacenar (se tendria que cambiar el mapeo también en los config.xml
-		
-		// lives, time, edibleTime (SOLO EDIBLE WEIGTHS), mspacmanToPPill y vectors (total de vectores, se divide para 4).
-		double edibleWeigths[] = { 0.05, 0.05, 0.05, 0.05, 0.8/4};
-		double chasingWeigths[] = { 0.05, 0.05, 0, 0.05, 0.85/4 };
-		// mspacman, nearestEdible, nearestEdibleTime, nearestChasing
-		double vectorWeigths[] = { 0.40, 0.25, 0.1, 0.25 };
-		
-		// Atributos que van a ser utilizados en ambas simConfigs (menos edibleTime)
-		Attribute mspacmanLives = 			new Attribute("mspacmanLives",GhostDescription.class);
-		Attribute time = 					new Attribute("time",GhostDescription.class);
-		Attribute edibleTime = 				new Attribute("edibleTime",GhostDescription.class);
-		Attribute mspacmanToPPill = 		new Attribute("mspacmanToPPill",GhostDescription.class);
-		Attribute UP_mspacman = 			new Attribute("UP_mspacman",GhostDescription.class);
-		Attribute UP_nearestEdible = 		new Attribute("UP_nearestEdible",GhostDescription.class);
-		Attribute UP_nearestEdibleTime = 	new Attribute("UP_nearestEdibleTime",GhostDescription.class);
-		Attribute UP_nearestChasing = 		new Attribute("UP_nearestChasing",GhostDescription.class);
-		Attribute RIGHT_mspacman = 			new Attribute("RIGHT_mspacman",GhostDescription.class);
-		Attribute RIGHT_nearestEdible = 	new Attribute("RIGHT_nearestEdible",GhostDescription.class);
-		Attribute RIGHT_nearestEdibleTime = new Attribute("RIGHT_nearestEdibleTime",GhostDescription.class);
-		Attribute RIGHT_nearestChasing = 	new Attribute("RIGHT_nearestChasing",GhostDescription.class);
-		Attribute DOWN_mspacman = 			new Attribute("DOWN_mspacman",GhostDescription.class);
-		Attribute DOWN_nearestEdible = 		new Attribute("DOWN_nearestEdible",GhostDescription.class);
-		Attribute DOWN_nearestEdibleTime = 	new Attribute("DOWN_nearestEdibleTime",GhostDescription.class);
-		Attribute DOWN_nearestChasing = 	new Attribute("DOWN_nearestChasing",GhostDescription.class);
-		Attribute LEFT_mspacman = 			new Attribute("LEFT_mspacman",GhostDescription.class);
-		Attribute LEFT_nearestEdible = 		new Attribute("LEFT_nearestEdible",GhostDescription.class);
-		Attribute LEFT_nearestEdibleTime = 	new Attribute("LEFT_nearestEdibleTime",GhostDescription.class);
-		Attribute LEFT_nearestChasing = 	new Attribute("LEFT_nearestChasing",GhostDescription.class);
-		
-		simConfigEdible = new NNConfig();
-		simConfigEdible.setDescriptionSimFunction(new Average());
-		simConfigEdible.addMapping(mspacmanLives, new Interval(4));
-			simConfigEdible.setWeight(mspacmanLives, edibleWeigths[0]);
-		simConfigEdible.addMapping(time, new Interval(4000));
-			simConfigEdible.setWeight(time, edibleWeigths[1]);
-		simConfigEdible.addMapping(edibleTime,new Interval(200));
-			simConfigEdible.setWeight(edibleTime, edibleWeigths[2]);		
-		simConfigEdible.addMapping(mspacmanToPPill, new DistanceInterval(300));
-			simConfigEdible.setWeight(mspacmanToPPill, edibleWeigths[3]);
-		
-		simConfigEdible.addMapping(UP_mspacman, new DistanceInterval(300));
-			simConfigEdible.setWeight(UP_mspacman, edibleWeigths[4]*vectorWeigths[0]);
-		simConfigEdible.addMapping(UP_nearestEdible, new DistanceInterval(300));
-			simConfigEdible.setWeight(UP_nearestEdible, edibleWeigths[4]*vectorWeigths[1]);
-		simConfigEdible.addMapping(UP_nearestEdibleTime, new DistanceInterval(200));
-			simConfigEdible.setWeight(UP_nearestEdibleTime, edibleWeigths[4]*vectorWeigths[2]);
-		simConfigEdible.addMapping(UP_nearestChasing, new DistanceInterval(300));
-			simConfigEdible.setWeight(UP_nearestChasing, edibleWeigths[4]*vectorWeigths[3]);
-		
-		simConfigEdible.addMapping(RIGHT_mspacman, new DistanceInterval(300));
-			simConfigEdible.setWeight(RIGHT_mspacman, edibleWeigths[4]*vectorWeigths[0]);
-		simConfigEdible.addMapping(RIGHT_nearestEdible, new DistanceInterval(300));
-			simConfigEdible.setWeight(RIGHT_nearestEdible, edibleWeigths[4]*vectorWeigths[1]);
-		simConfigEdible.addMapping(RIGHT_nearestEdibleTime, new DistanceInterval(200));
-			simConfigEdible.setWeight(RIGHT_nearestEdibleTime, edibleWeigths[4]*vectorWeigths[2]);
-		simConfigEdible.addMapping(RIGHT_nearestChasing, new DistanceInterval(300));
-			simConfigEdible.setWeight(RIGHT_nearestChasing, edibleWeigths[4]*vectorWeigths[3]);
-		
-		simConfigEdible.addMapping(DOWN_mspacman, new DistanceInterval(300));
-			simConfigEdible.setWeight(DOWN_mspacman, edibleWeigths[4]*vectorWeigths[0]);
-		simConfigEdible.addMapping(DOWN_nearestEdible, new DistanceInterval(300));
-			simConfigEdible.setWeight(DOWN_nearestEdible, edibleWeigths[4]*vectorWeigths[1]);
-		simConfigEdible.addMapping(DOWN_nearestEdibleTime, new DistanceInterval(200));
-			simConfigEdible.setWeight(DOWN_nearestEdibleTime, edibleWeigths[4]*vectorWeigths[2]);
-		simConfigEdible.addMapping(DOWN_nearestChasing, new DistanceInterval(300));
-			simConfigEdible.setWeight(DOWN_nearestChasing, edibleWeigths[4]*vectorWeigths[3]);
-		
-		simConfigEdible.addMapping(LEFT_mspacman, new DistanceInterval(300));
-			simConfigEdible.setWeight(LEFT_mspacman, edibleWeigths[4]*vectorWeigths[0]);
-		simConfigEdible.addMapping(LEFT_nearestEdible, new DistanceInterval(300));
-			simConfigEdible.setWeight(LEFT_nearestEdible, edibleWeigths[4]*vectorWeigths[1]);
-		simConfigEdible.addMapping(LEFT_nearestEdibleTime, new DistanceInterval(200));
-			simConfigEdible.setWeight(LEFT_nearestEdibleTime, edibleWeigths[4]*vectorWeigths[2]);
-		simConfigEdible.addMapping(LEFT_nearestChasing, new DistanceInterval(300));
-			simConfigEdible.setWeight(LEFT_nearestChasing, edibleWeigths[4]*vectorWeigths[3]);
-		
-		
-		simConfigChasing = new NNConfig();
-		simConfigChasing.setDescriptionSimFunction(new Average());
-		simConfigChasing.addMapping(mspacmanLives, new Interval(4));
-			simConfigChasing.setWeight(mspacmanLives, chasingWeigths[0]);
-		simConfigChasing.addMapping(time, new Interval(4000));
-			simConfigChasing.setWeight(time, chasingWeigths[1]);
-		//simConfigChasing.addMapping(edibleTime,new Interval(200));
-			//simConfigChasing.setWeight(edibleTime, chasingWeigths[2]);		
-		simConfigChasing.addMapping(mspacmanToPPill, new DistanceInterval(300));
-			simConfigChasing.setWeight(mspacmanToPPill, chasingWeigths[3]);
-		
-		simConfigChasing.addMapping(UP_mspacman, new DistanceInterval(300));
-			simConfigChasing.setWeight(UP_mspacman, chasingWeigths[4]*vectorWeigths[0]);
-		simConfigChasing.addMapping(UP_nearestEdible, new DistanceInterval(300));
-			simConfigChasing.setWeight(UP_nearestEdible, chasingWeigths[4]*vectorWeigths[1]);
-		simConfigChasing.addMapping(UP_nearestEdibleTime, new DistanceInterval(200));
-			simConfigChasing.setWeight(UP_nearestEdibleTime, chasingWeigths[4]*vectorWeigths[2]);
-		simConfigChasing.addMapping(UP_nearestChasing, new DistanceInterval(300));
-			simConfigChasing.setWeight(UP_nearestChasing, chasingWeigths[4]*vectorWeigths[3]);
-		
-		simConfigChasing.addMapping(RIGHT_mspacman, new DistanceInterval(300));
-			simConfigChasing.setWeight(RIGHT_mspacman, chasingWeigths[4]*vectorWeigths[0]);
-		simConfigChasing.addMapping(RIGHT_nearestEdible, new DistanceInterval(300));
-			simConfigChasing.setWeight(RIGHT_nearestEdible, chasingWeigths[4]*vectorWeigths[1]);
-		simConfigChasing.addMapping(RIGHT_nearestEdibleTime, new DistanceInterval(200));
-			simConfigChasing.setWeight(RIGHT_nearestEdibleTime, chasingWeigths[4]*vectorWeigths[2]);
-		simConfigChasing.addMapping(RIGHT_nearestChasing, new DistanceInterval(300));
-			simConfigChasing.setWeight(RIGHT_nearestChasing, chasingWeigths[4]*vectorWeigths[3]);
-		
-		simConfigChasing.addMapping(DOWN_mspacman, new DistanceInterval(300));
-			simConfigChasing.setWeight(DOWN_mspacman, chasingWeigths[4]*vectorWeigths[0]);
-		simConfigChasing.addMapping(DOWN_nearestEdible, new DistanceInterval(300));
-			simConfigChasing.setWeight(DOWN_nearestEdible, chasingWeigths[4]*vectorWeigths[1]);
-		simConfigChasing.addMapping(DOWN_nearestEdibleTime, new DistanceInterval(200));
-			simConfigChasing.setWeight(DOWN_nearestEdibleTime, chasingWeigths[4]*vectorWeigths[2]);
-		simConfigChasing.addMapping(DOWN_nearestChasing, new DistanceInterval(300));
-			simConfigChasing.setWeight(DOWN_nearestChasing, chasingWeigths[4]*vectorWeigths[3]);
-		
-		simConfigChasing.addMapping(LEFT_mspacman, new DistanceInterval(300));
-			simConfigChasing.setWeight(LEFT_mspacman, chasingWeigths[4]*vectorWeigths[0]);
-		simConfigChasing.addMapping(LEFT_nearestEdible, new DistanceInterval(300));
-			simConfigChasing.setWeight(LEFT_nearestEdible, chasingWeigths[4]*vectorWeigths[1]);
-		simConfigChasing.addMapping(LEFT_nearestEdibleTime, new DistanceInterval(200));
-			simConfigChasing.setWeight(LEFT_nearestEdibleTime, chasingWeigths[4]*vectorWeigths[2]);
-		simConfigChasing.addMapping(LEFT_nearestChasing, new DistanceInterval(300));
-			simConfigChasing.setWeight(LEFT_nearestChasing, chasingWeigths[4]*vectorWeigths[3]);
+
 	}
 
 
@@ -242,7 +119,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 	public void cycle(CBRQuery query) throws ExecutionException {
 		
 		boolean edible = ((GhostDescription) query.getDescription()).getEdible();
-		this.retainNewCase = true;
+		this.oldCase = null;
 		// HACER UN IF DONDE VEAMOS SI ES EDIBLE.
 		// ELEGIR DE LA BASE DE CASOS Y ASIGNAR EL SIMCONFIG CORRESPONDIENTE
 		
@@ -255,7 +132,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 			this.action = getRandomMove();
 		//Compute revise & retain
 		CBRCase newCase = createNewCase(query);
-		this.storageManager.reviseAndRetain(newCase);
+		this.storageManager.reviseAndRetain(newCase, oldCase);
 		
 	}
 
@@ -355,22 +232,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 		similarity = topRetrieval.getEval();
 		
 		if(similarity >= 0.9) {
-			// EN CASO DE QUE ESTA VARIABLE SEA FALSE QUEREMOS NO RETENER EL CASO.
-			// para ello, le asignaremos un id=-1 al CBRCase en la funcion createNewCase() para facilitar el revise and retain en el storageManager
-			// 
-			this.retainNewCase = false;
-			
-			// Recogemos el CBRCase de topRetrieval
-			retrievedCase = topRetrieval.get_case();
-			
-			// Eliminamos de la base de casos el top 1-NN
-			storageManager.removeOldCase(retrievedCase);
-			// Incrementamos el contador (numReps)
-			GhostResult resultToModify = (GhostResult) retrievedCase.getResult();
-			resultToModify.incrementCounter();
-			retrievedCase.setResult(resultToModify);
-			// Lo añadimos de vuelta a la base de casos
-			storageManager.retainOldCase(retrievedCase);
+			this.oldCase =  topRetrieval.get_case();
 		}
 
 		MOVE action = solution.getAction();
@@ -397,27 +259,19 @@ public class GhostCBRengine implements StandardCBRApplication {
 		GhostResult newResult = new GhostResult();
 		GhostSolution newSolution = new GhostSolution();
 		int newId;
-		// En caso de que retainNewCase sea true, significa que no tenemos un vecino con similitud mayor que 0.9, por lo que creamos el caso con un ID correcto
-		if(this.retainNewCase) {
-			if(newDescription.getEdible()) {
-				newId = this.caseBaseEdible.getCases().size();
-				newId+= storageManager.getPendingEdibleCases();
-			}
-			else {
-				newId = this.caseBaseChasing.getCases().size();
-				newId+= storageManager.getPendingChasingCases();
-			}
-			newDescription.setId(newId);
-			newResult.setId(newId);
-			newSolution.setId(newId);
+
+		if(newDescription.getEdible()) {
+			newId = this.caseBaseEdible.getCases().size();
+			newId+= storageManager.getPendingEdibleCases();
 		}
-		// En caso de que retainNewCase sea FALSE, significa que tenemos un vecino con similitud mayor que 0.9
-		// Por lo que asignamos los id = -1 para luego procesar mejor el reviseAndRetain del storageManager
 		else {
-			newDescription.setId(-1);
-			newResult.setId(-1);
-			newSolution.setId(-1);
+			newId = this.caseBaseChasing.getCases().size();
+			newId+= storageManager.getPendingChasingCases();
 		}
+		newDescription.setId(newId);
+		newResult.setId(newId);
+		newSolution.setId(newId);
+	
 		
 		newSolution.setAction(this.action);
 		newCase.setDescription(newDescription);
