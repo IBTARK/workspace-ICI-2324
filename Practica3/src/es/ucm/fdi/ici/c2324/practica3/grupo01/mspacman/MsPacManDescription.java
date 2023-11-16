@@ -19,7 +19,6 @@ public class MsPacManDescription implements CaseComponent {
 	private Integer time;
 	private Integer lives; //Remaining lives of MsPacMan
 	private Integer score;
-	private MOVE[] possibleMoves;
 	/*
 	 List for each possible movement with the next information:
 	 0: distance to the nearest chasing ghost
@@ -68,10 +67,6 @@ public class MsPacManDescription implements CaseComponent {
 		return leftVector;
 	}
 	
-	public MOVE[] getPossibleMoves(){
-		return possibleMoves;
-	}
-
 	//Setters
 	
 	public void setId(Integer id) {
@@ -109,10 +104,6 @@ public class MsPacManDescription implements CaseComponent {
 	public void setLeftVector(DistanceVector left){
 		this.leftVector = left;
 	}
-	
-	public void setPossibleMoves(MOVE[] moves){
-		possibleMoves = moves;
-	}
 
 
 	@Override
@@ -127,7 +118,7 @@ public class MsPacManDescription implements CaseComponent {
 	}
 
 
-	protected static class DistanceVector implements TypeAdaptor, CaseComponent {
+	public static class DistanceVector implements TypeAdaptor, CaseComponent {
 		
 		private ArrayList<Integer> dist;
 		private MOVE move;
@@ -135,7 +126,7 @@ public class MsPacManDescription implements CaseComponent {
 		
 		private static final String SEPARATOR = ";";
 		
-		DistanceVector() {
+		public DistanceVector() {
 			dist = new ArrayList<>();
 		}
 		
@@ -145,7 +136,7 @@ public class MsPacManDescription implements CaseComponent {
 		}
 		
 		public void setId(Integer id) {
-			this.id = MOVE.values().length * id + move.ordinal();
+			this.id = id;
 		}
 		
 		public Integer getId() {
@@ -164,12 +155,13 @@ public class MsPacManDescription implements CaseComponent {
 		public void fromString(String content) throws Exception {
 			StringTokenizer tknizer = new StringTokenizer(content, SEPARATOR, false);
 			
-			move = (MOVE) tknizer.nextElement();
+			move = MOVE.valueOf(tknizer.nextElement().toString()); 
 			dist = new ArrayList<>();
 			if (!content.equals(move.toString() + SEPARATOR + "null"))
 				for(int i = 0; i < NUM_ELEMS; i++) {
-					dist.add((Integer)tknizer.nextElement());
+					dist.add(Integer.parseInt(tknizer.nextElement().toString()));
 				}
+			else dist = null;
 		}
 		
 		public String toString() {

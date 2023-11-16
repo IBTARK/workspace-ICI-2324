@@ -69,7 +69,6 @@ public class MsPacManInput extends CBRInput {
 		MsPacManDescription description = new MsPacManDescription();
 		description.setTime(time);
 		description.setLives(lives);
-		description.setPossibleMoves(possibleMoves.toArray(new MOVE[0]));
 		description.setUpVector(new DistanceVector(MOVE.UP, up));
 		description.setDownVector(new DistanceVector(MOVE.DOWN, down));
 		description.setRightVector(new DistanceVector(MOVE.RIGHT, right));

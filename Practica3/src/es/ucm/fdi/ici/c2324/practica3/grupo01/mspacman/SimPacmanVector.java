@@ -1,7 +1,6 @@
 package es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCase;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRQuery;
@@ -10,7 +9,6 @@ import es.ucm.fdi.gaia.jcolibri.exception.NoApplicableSimilarityFunctionExceptio
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.NNConfig;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.GlobalSimilarityFunction;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.local.Interval;
-import pacman.game.Constants.MOVE;
 
 public class SimPacmanVector implements GlobalSimilarityFunction {
 	
@@ -32,8 +30,8 @@ public class SimPacmanVector implements GlobalSimilarityFunction {
 		MsPacManDescription.DistanceVector vecQuery = (MsPacManDescription.DistanceVector) componentOfQuery;
 		
 		//Check if the movement analyzed is valid for the case and the query
-		boolean vecInCase = new ArrayList<MOVE>(Arrays.asList(((MsPacManDescription)_case.getDescription()).getPossibleMoves())).contains(vecCase.getMove()),
-				vecInQuery = new ArrayList<MOVE>(Arrays.asList(((MsPacManDescription)_query.getDescription()).getPossibleMoves())).contains(vecCase.getMove());
+		boolean vecInCase = vecCase.getVector() != null,
+				vecInQuery = vecQuery.getVector() != null;
 		
 		if (vecCase.getMove() == vecQuery.getMove() && !vecInCase && !vecInQuery)
 			return 1;
