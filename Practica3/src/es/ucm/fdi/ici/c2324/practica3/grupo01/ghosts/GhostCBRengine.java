@@ -183,7 +183,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 			//double similarity = first.getEval();
 			
 			
-			if(neighbors.get(0).getEval() < 0.7) 
+			if(neighbors.get(0).getEval() < MOST_SIM_VAL) 
 				this.action = MOVE.NEUTRAL;
 			else
 				this.action = reuse(eval);
