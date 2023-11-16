@@ -9,22 +9,10 @@
 		<Map>time</Map>		
 		<Map>edibleTime</Map>		
 		<Map>mspacmanToPPill</Map>
-		<Map>UP_mspacman</Map>
-		<Map>UP_nearestEdible</Map>		
-		<Map>UP_nearestEdibleTime</Map>		
-		<Map>UP_nearestChasing</Map>	
-		<Map>RIGHT_mspacman</Map>
-		<Map>RIGHT_nearestEdible</Map>		
-		<Map>RIGHT_nearestEdibleTime</Map>		
-		<Map>RIGHT_nearestChasing</Map>	
-		<Map>DOWN_mspacman</Map>
-		<Map>DOWN_nearestEdible</Map>		
-		<Map>DOWN_nearestEdibleTime</Map>		
-		<Map>DOWN_nearestChasing</Map>	
-		<Map>LEFT_mspacman</Map>
-		<Map>LEFT_nearestEdible</Map>		
-		<Map>LEFT_nearestEdibleTime</Map>		
-		<Map>LEFT_nearestChasing</Map>	
+		<Map>up</Map>
+		<Map>down</Map>
+		<Map>right</Map>
+		<Map>left</Map>	
 	</DescriptionMappings>
 	<SolutionClassName>es.ucm.fdi.ici.c2324.practica3.grupo01.ghosts.GhostSolution</SolutionClassName>
 	<SolutionMappings>
