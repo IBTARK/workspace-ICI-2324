@@ -60,6 +60,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 	final static String CONNECTOR_CHASING_FILE_PATH = "es/ucm/fdi/ici/c2324/practica3/"+TEAM+"/ghosts/plaintextconfig_chasing.xml";
 	final static String  CASE_BASE_EDIBLE_PATH = "cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"edible"+File.separator;
 	final static String  CASE_BASE_CHASING_PATH = "cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"chasing"+File.separator;
+	final static String GENERIC_CASE_BASE_NAME = "generic.csv";
 	
 	final static int NUM_NEIGHBORS = 5; //number of neighbors of the KNN
 	final static double MOST_SIM_VAL = 0.5;
@@ -95,8 +96,8 @@ public class GhostCBRengine implements StandardCBRApplication {
 		connectorEdible.setCaseBaseFile(CASE_BASE_EDIBLE_PATH, opponent+".csv");
 		connectorChasing.setCaseBaseFile(CASE_BASE_CHASING_PATH, opponent+".csv");
 		
-		generalConnectorEdible.setCaseBaseFile(CASE_BASE_EDIBLE_PATH, "general_edible.csv");
-		generalConnectorChasing.setCaseBaseFile(CASE_BASE_CHASING_PATH, "general_chasing.csv");
+		generalConnectorEdible.setCaseBaseFile(CASE_BASE_EDIBLE_PATH, GENERIC_CASE_BASE_NAME);
+		generalConnectorChasing.setCaseBaseFile(CASE_BASE_CHASING_PATH, GENERIC_CASE_BASE_NAME);
 		
 		this.storageManager.setCaseBaseEdible(caseBaseEdible);
 		this.storageManager.setCaseBaseChasing(caseBaseChasing);
