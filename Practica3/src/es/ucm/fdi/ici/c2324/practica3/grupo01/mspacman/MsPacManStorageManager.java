@@ -52,6 +52,19 @@ public class MsPacManStorageManager {
 		
 	}
 	
+	public void reviseAndRetainGeneric(CBRCase newCase) {
+		this.buffer.add(newCase);
+		
+		//Buffer not full yet.
+		if(this.buffer.size()<TIME_WINDOW)
+			return;
+		
+		CBRCase bCase = this.buffer.remove(0);
+		reviseCase(bCase);
+		
+		StoreCasesMethod.storeCase(this.caseBase, bCase);
+	}
+	
 	private void reviseCase(CBRCase bCase) {
 		MsPacManDescription description = (MsPacManDescription)bCase.getDescription();
 		

@@ -27,10 +27,10 @@ public class MsPacManDescription implements CaseComponent {
 	 2: remaining edible time of the nearest edible ghost
 	 3: distance to the nearest PPill
 	*/
-	DistanceVector up = new DistanceVector();  
-	DistanceVector down = new DistanceVector();
-	DistanceVector right = new DistanceVector();
-	DistanceVector left = new DistanceVector();
+	DistanceVector upVector = new DistanceVector();  
+	DistanceVector downVector = new DistanceVector();
+	DistanceVector rightVector = new DistanceVector();
+	DistanceVector leftVector = new DistanceVector();
 	
 	public static final int NUM_ELEMS = 5; //Number of elements of each vector
 	
@@ -53,19 +53,19 @@ public class MsPacManDescription implements CaseComponent {
 	}
 	
 	public DistanceVector getUpVector(){
-		return up;
+		return upVector;
 	}
 	
 	public DistanceVector getDownVector(){
-		return down;
+		return downVector;
 	}
 
 	public DistanceVector getRightVector(){
-		return right;
+		return rightVector;
 	}
 	
 	public DistanceVector getLeftVector(){
-		return left;
+		return leftVector;
 	}
 	
 	public MOVE[] getPossibleMoves(){
@@ -76,10 +76,10 @@ public class MsPacManDescription implements CaseComponent {
 	
 	public void setId(Integer id) {
 		this.id = id;
-		up.setId(id);
-		down.setId(id);
-		left.setId(id);
-		right.setId(id);
+		upVector.setId(id);
+		downVector.setId(id);
+		leftVector.setId(id);
+		rightVector.setId(id);
 	}
 	
 	public void setTime(Integer time) {
@@ -90,24 +90,24 @@ public class MsPacManDescription implements CaseComponent {
 		this.lives = lives;
 	}
 	
-	public Integer setScore() {
-		return score;
+	public void setScore(Integer score) {
+		this.score = score;
 	}
 	
 	public void setUpVector(DistanceVector up){
-		this.up = up;
+		this.upVector = up;
 	}
 	
 	public void setDownVector(DistanceVector down){
-		this.down = down;
+		this.downVector = down;
 	}
 	
 	public void setRightVector(DistanceVector right){
-		this.right = right;
+		this.rightVector = right;
 	}
 	
 	public void setLeftVector(DistanceVector left){
-		this.left = left;
+		this.leftVector = left;
 	}
 	
 	public void setPossibleMoves(MOVE[] moves){
@@ -122,8 +122,8 @@ public class MsPacManDescription implements CaseComponent {
 
 	@Override
 	public String toString() {
-		return "MsPacManDescription [id = " + id  + ", lives = " + lives + ", time= " + time + ", up = " + up.toString() + 
-				", down = " + down.toString() + ", right = " + right.toString() + ", left = " + left.toString() + "]";
+		return "MsPacManDescription [id = " + id  + ", lives = " + lives + ", time= " + time + ", up = " + upVector.toString() + 
+				", down = " + downVector.toString() + ", right = " + rightVector.toString() + ", left = " + leftVector.toString() + "]";
 	}
 
 
@@ -132,6 +132,8 @@ public class MsPacManDescription implements CaseComponent {
 		private ArrayList<Integer> dist;
 		private MOVE move;
 		private Integer id;
+		
+		private static final String SEPARATOR = ";";
 		
 		DistanceVector() {
 			dist = new ArrayList<>();
@@ -160,20 +162,23 @@ public class MsPacManDescription implements CaseComponent {
 
 		@Override
 		public void fromString(String content) throws Exception {
-			StringTokenizer tknizer = new StringTokenizer(content, ";", false);
+			StringTokenizer tknizer = new StringTokenizer(content, SEPARATOR, false);
 			
 			move = (MOVE) tknizer.nextElement();
-			
-			for(int i = 0; i < NUM_ELEMS; i++) {
-				dist.add((Integer)tknizer.nextElement());
-			}
+			dist = new ArrayList<>();
+			if (!content.equals(move.toString() + SEPARATOR + "null"))
+				for(int i = 0; i < NUM_ELEMS; i++) {
+					dist.add((Integer)tknizer.nextElement());
+				}
 		}
 		
 		public String toString() {
 			String str =  move.toString();
+			if (dist == null)
+				return str + SEPARATOR + "null";
 			
 			for(Integer elem : dist) {
-				str += ";" + elem.toString();
+				str += SEPARATOR + elem.toString();
 			}
 			
 			return str;

@@ -69,11 +69,12 @@ public class MsPacManInput extends CBRInput {
 		MsPacManDescription description = new MsPacManDescription();
 		description.setTime(time);
 		description.setLives(lives);
-		description.setPossibleMoves((MOVE [])possibleMoves.toArray());
+		description.setPossibleMoves(possibleMoves.toArray(new MOVE[0]));
 		description.setUpVector(new DistanceVector(MOVE.UP, up));
 		description.setDownVector(new DistanceVector(MOVE.DOWN, down));
 		description.setRightVector(new DistanceVector(MOVE.RIGHT, right));
 		description.setLeftVector(new DistanceVector(MOVE.LEFT, left));
+		description.setScore(game.getScore());
 		
 		CBRQuery query = new CBRQuery();
 		query.setDescription(description);
@@ -123,7 +124,7 @@ public class MsPacManInput extends CBRInput {
 				//Last movement of the ghost g
 				MOVE ghostLastMove = game.getGhostLastMoveMade(g);
 				
-				if(ghostPos != -1) 
+				if(game.getGhostLairTime(g) <= 0) 
 					if(edible) distance = game.getShortestPathDistance(pos, ghostPos, m);
 					else distance = game.getShortestPathDistance(ghostPos, pos, ghostLastMove);
 				else
@@ -198,7 +199,7 @@ public class MsPacManInput extends CBRInput {
 	private Integer computeDistanceNearestChasingGhostToPos(Game g, int pos, MOVE m) {
 		GHOST nearestChasing = getNearestGhostToPos(game, pos, m, false);
 		
-		return nearestChasing != null ? game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearestChasing), m) : null;
+		return nearestChasing != null ? game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearestChasing), m) : Integer.MAX_VALUE;
 	}
 	
 	/**
@@ -219,8 +220,8 @@ public class MsPacManInput extends CBRInput {
 			resul.add(game.getGhostEdibleTime(nearestEdible));
 		}
 		else {
-			resul.add(null);
-			resul.add(null);
+			resul.add(Integer.MAX_VALUE);
+			resul.add(0);
 		}
 		
 		return resul;
@@ -237,7 +238,7 @@ public class MsPacManInput extends CBRInput {
 	private Integer computeDistanceNearestPPillToPos(Game g, int pos, MOVE m) {
 		Integer nearestPPill = getNearestPPillToPos(game, pos, m);
 		
-		return nearestPPill != null ? game.getShortestPathDistance(pos, nearestPPill, m) : null;
+		return nearestPPill != null ? game.getShortestPathDistance(pos, nearestPPill, m) : Integer.MAX_VALUE;
 	}
 	
 	/**
@@ -251,6 +252,6 @@ public class MsPacManInput extends CBRInput {
 	private Integer computeDistanceNearestPillToPos(Game g, int pos, MOVE m) {
 		Integer nearestPill = getNearestPillToPos(game, pos, m);
 		
-		return nearestPill != null ? game.getShortestPathDistance(pos, nearestPill, m) : null;
+		return nearestPill != null ? game.getShortestPathDistance(pos, nearestPill, m) : Integer.MAX_VALUE;
 	}
 }

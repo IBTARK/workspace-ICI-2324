@@ -1,7 +1,5 @@
-import es.ucm.fdi.ici.c2324.practica3.grupo01.MsPacMan;
 import pacman.Executor;
 import pacman.controllers.GhostController;
-import pacman.controllers.PacmanController;
 
 public class ExecutorTest {
 
@@ -12,12 +10,18 @@ public class ExecutorTest {
                 .setScaleFactor(2.5)
                 .build();
 
-        PacmanController pacMan = new MsPacMan();
-        GhostController ghosts = new AggressiveGhosts();
-        
-        System.out.println( 
-            executor.runGame(pacMan, ghosts, 30) //last parameter defines speed
-        );     
+        while (true)
+        try {
+        	AlgorithmicMsPacMan pacMan = new AlgorithmicMsPacMan();
+		    GhostController ghosts = new GhostsRandom();
+		    
+		    System.out.println( 
+		        executor.runGame(pacMan, ghosts, 1) //last parameter defines speed
+		    );     
+		    pacMan.closeCaseBase();
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
     }
 	
 }
