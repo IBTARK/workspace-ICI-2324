@@ -65,7 +65,8 @@ public class GhostCBRengine implements StandardCBRApplication {
 	final static String  CASE_BASE_CHASING_PATH = "cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"chasing"+File.separator;
 	
 	final static int NUM_NEIGHBORS = 5; //number of neighbors of the KNN
-	final static double MOST_SIM_VAL = 0.5; 
+	final static double MOST_SIM_VAL = 0.5;
+	final static double RETAIN_SIM_VAL = 0.9;
 	
 	public GhostCBRengine(GhostStorageManager storageManager) {
 		this.storageManager = storageManager;
@@ -150,10 +151,10 @@ public class GhostCBRengine implements StandardCBRApplication {
 		// HACER UN IF DONDE VEAMOS SI ES EDIBLE.
 		// ELEGIR DE LA BASE DE CASOS Y ASIGNAR EL SIMCONFIG CORRESPONDIENTE
 		
-		computeRetrieveAndReuseOpponent(query, edible);
+		computeRetrieveAndReuse(caseBaseEdible, caseBaseChasing, query, edible);
 		
 		if(this.action == MOVE.NEUTRAL)
-			computeRetrieveAndReuseGeneral(query, edible);
+			computeRetrieveAndReuse(generalCaseBaseEdible, generalCaseBaseChasing, query, edible);
 		
 		if(this.action == MOVE.NEUTRAL)
 			this.action = getRandomMove();
@@ -163,17 +164,21 @@ public class GhostCBRengine implements StandardCBRApplication {
 		
 	}
 
-	private void computeRetrieveAndReuseGeneral(CBRQuery query, boolean edible) {
+	private void computeRetrieveAndReuse(CBRCaseBase CBedible, CBRCaseBase CBchasing, CBRQuery query, boolean edible) {
 		
 		Collection<RetrievalResult> eval;
 		ArrayList<RetrievalResult> neighbors = null;
-		if((edible && generalCaseBaseEdible.getCases().isEmpty())
-				|| (!edible && generalCaseBaseChasing.getCases().isEmpty())) {
+		if((edible && CBedible.getCases().isEmpty())
+				|| (!edible && CBchasing.getCases().isEmpty())) {
 			this.action = MOVE.NEUTRAL;
 		}
 		else {
 			// Comprobamos la evaluacion en la base de casos del oponente
-			eval = getGeneralCaseBaseEval(query, edible);
+			if(edible)
+				eval = NNScoringMethod.evaluateSimilarity(CBedible.getCases(), query, simConfigEdible);
+			else
+				eval = NNScoringMethod.evaluateSimilarity(CBchasing.getCases(), query, simConfigChasing);
+			
 			neighbors = new ArrayList<>(SelectCases.selectTopKRR(eval, NUM_NEIGHBORS));
 
 			//RetrievalResult first = SelectCases.selectTopKRR(eval, 1).iterator().next();
@@ -185,51 +190,6 @@ public class GhostCBRengine implements StandardCBRApplication {
 			else
 				this.action = reuse(eval);
 		}
-	}
-
-	private void computeRetrieveAndReuseOpponent(CBRQuery query, boolean edible) {
-		Collection<RetrievalResult> eval;
-		ArrayList<RetrievalResult> neighbors = null;
-		if((edible && caseBaseEdible.getCases().isEmpty())
-				|| (!edible && caseBaseChasing.getCases().isEmpty())) {
-			this.action = MOVE.NEUTRAL;
-		}
-		else {
-			// Comprobamos la evaluacion en la base de casos del oponente
-			eval = getOpponentCaseBaseEval(query, edible);
-			neighbors = new ArrayList<>(SelectCases.selectTopKRR(eval, NUM_NEIGHBORS));
-
-			//RetrievalResult first = SelectCases.selectTopKRR(eval, 1).iterator().next();
-			//double similarity = first.getEval();
-			
-			if(neighbors.get(0).getEval() < MOST_SIM_VAL) 
-				this.action = MOVE.NEUTRAL; // OR FORM GENERIC CASE BASE?
-			else
-				this.action = reuse(eval);
-		}
-		
-	}
-
-	private Collection<RetrievalResult> getOpponentCaseBaseEval(CBRQuery query, boolean edible) {
-		Collection<RetrievalResult> eval;
-		
-		if(edible)
-			eval = NNScoringMethod.evaluateSimilarity(caseBaseEdible.getCases(), query, simConfigEdible);
-		else
-			eval = NNScoringMethod.evaluateSimilarity(caseBaseChasing.getCases(), query, simConfigChasing);
-		
-		return eval;
-	}
-
-	private Collection<RetrievalResult> getGeneralCaseBaseEval(CBRQuery query, boolean edible) {
-		Collection<RetrievalResult> eval;
-		
-		if(edible)
-			eval = NNScoringMethod.evaluateSimilarity(generalCaseBaseEdible.getCases(), query, simConfigEdible);
-		else
-			eval = NNScoringMethod.evaluateSimilarity(generalCaseBaseChasing.getCases(), query, simConfigChasing);
-		
-		return eval;
 	}
 
 	private MOVE reuse(Collection<RetrievalResult> eval)
@@ -264,7 +224,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 		GhostSolution solution = (GhostSolution) topRetrieval.get_case().getSolution();
 		similarity = topRetrieval.getEval();
 		
-		if(similarity >= 0.9) {
+		if(similarity >= RETAIN_SIM_VAL) {
 			this.oldCase =  topRetrieval.get_case();
 		}
 
