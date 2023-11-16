@@ -112,6 +112,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 		simConfigEdible.addMapping(new Attribute("mspacmanLives", GhostDescription.class), new Interval(2));
 		simConfigEdible.addMapping(new Attribute("score", GhostDescription.class), new Interval(15000));
 		simConfigEdible.addMapping(new Attribute("time", GhostDescription.class),new Interval(4000));
+		simConfigEdible.addMapping(new Attribute("edibleTime", GhostDescription.class),new Interval(650));
 		simConfigEdible.addMapping(new Attribute("mspacmanToPPill", GhostDescription.class),new Interval(650));
 		simConfigEdible.addMapping(new Attribute("upVector",GhostDescription.class), new SimGhostVector());
 		simConfigEdible.addMapping(new Attribute("downVector",GhostDescription.class), new SimGhostVector());

@@ -11,11 +11,14 @@ import pacman.game.Constants.MOVE;
 
 public class SimGhost implements GlobalSimilarityFunction {
 
-	private static final double VECTORSWEIGHT = 0.9;
+	private static final double EDIBLE_VECTORSWEIGHT = 0.85;
+	private static final double CHASING_VECTORSWEIGHT = 0.9;
 	private static final double LIVESWEIGHT = 0.05;
 	private static final double TIMEWEIGHT = 0.05;
+	private static final double EDIBLETIMEWEIGHT = 0.05;
 
 	private static final int MAX_TIME = 4000;
+	private static final int MAX_EDIBLE_TIME = 200;
 	private static final int MAX_LIVES = 2;
 	
 	@Override
@@ -24,6 +27,8 @@ public class SimGhost implements GlobalSimilarityFunction {
 		
 		GhostDescription ghostCase = (GhostDescription) componentOfCase;
 		GhostDescription ghostQuery = (GhostDescription) componentOfQuery;
+		
+		boolean edible = ghostQuery.getEdible();
 		
 		//Similarity for the vectors
 		SimGhostVector simVector = new SimGhostVector();
@@ -51,9 +56,22 @@ public class SimGhost implements GlobalSimilarityFunction {
 			e.printStackTrace();
 		}
 		
+		double simEdibleTime = 0;
+		if(edible) {
+			try {
+				simEdibleTime = new Interval(MAX_EDIBLE_TIME).compute(ghostCase.getEdibleTime(), ghostQuery.getEdibleTime());
+			} catch (NoApplicableSimilarityFunctionException e) {
+				e.printStackTrace();
+			}
+		}
 	
 		//Global similarity
-		return VECTORSWEIGHT * simVectors + LIVESWEIGHT * simLives + TIMEWEIGHT * simTime;
+		double globalSim = 0;
+		if(edible)
+			globalSim = EDIBLE_VECTORSWEIGHT * simVectors + LIVESWEIGHT * simLives + TIMEWEIGHT * simTime + EDIBLETIMEWEIGHT * simEdibleTime;
+		else
+			globalSim = CHASING_VECTORSWEIGHT * simVectors + LIVESWEIGHT * simLives + TIMEWEIGHT * simTime;
+		return globalSim;
 	}
 
 	private CaseComponent getVector(GhostDescription ghostCase, MOVE m) {

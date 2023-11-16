@@ -12,6 +12,12 @@ public class GhostDistanceVector implements es.ucm.fdi.gaia.jcolibri.connector.T
 	private MOVE move;
 	private ArrayList<Integer> distancias;
 	
+	private static final String SEPARATOR = ";";
+	
+	public GhostDistanceVector() {
+		distancias = new ArrayList<>();
+	}
+		
 	public MOVE getMove() {
 		return move;
 	}
@@ -36,10 +42,11 @@ public class GhostDistanceVector implements es.ucm.fdi.gaia.jcolibri.connector.T
 	
 	@Override
 	public void fromString(String content) throws Exception {
-		StringTokenizer tknizer = new StringTokenizer(content, ";", false);
+		StringTokenizer tknizer = new StringTokenizer(content, SEPARATOR, false);
 		
 		move = (MOVE) tknizer.nextElement();
 		
+		this.distancias = new ArrayList<>();
 		for(int i = 0; i < 4; i++) {
 			distancias.add((Integer)tknizer.nextElement());
 		}
@@ -50,7 +57,7 @@ public class GhostDistanceVector implements es.ucm.fdi.gaia.jcolibri.connector.T
 		String str =  move.toString();
 		
 		for(Integer elem : distancias) {
-			str += ";" + elem.toString();
+			str += SEPARATOR + elem.toString();
 		}
 		
 		return str;
