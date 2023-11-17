@@ -31,7 +31,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	CustomPlainTextConnector connector;
 	CustomPlainTextConnector connectorGeneric;
 	CBRCaseBase caseBase;
-	CBRCaseBase genericCaseBase; //TODO como inicializarla
+	CBRCaseBase genericCaseBase;
 	NNConfig simConfig;
 	
 	private Map<CBRCase, CBRCase> chosenReusedCaseMap; //Map of case to the case chosen to be reused
@@ -64,6 +64,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 		genericCaseBase = new CachedLinearCaseBase();
 		
 		connector.initFromXMLfile(FileIO.findFile(CONNECTOR_FILE_PATH));
+		connectorGeneric.initFromXMLfile(FileIO.findFile(CONNECTOR_FILE_PATH));
 		
 		//Do not use default case base path in the xml file. Instead use custom file path for each opponent.
 		//Note that you can create any subfolder of files to store the case base inside your "cbrdata/grupoXX" folder.
@@ -86,6 +87,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	@Override
 	public CBRCaseBase preCycle() throws ExecutionException {
 		caseBase.init(connector);
+		genericCaseBase.init(connectorGeneric);
 		return caseBase;
 	}
 
@@ -132,7 +134,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 		double maxReutVal = -1;
 		int reutCase = -1;
 		
-		for(int i = 0; i < NUM_NEIGHBORS; i++) {
+		for(int i = 0; i < neighbors.size(); i++) {
 			RetrievalResult ret = neighbors.get(i);
 			MsPacManResult result = (MsPacManResult) ret.get_case().getResult();
 			double reutVal = ret.getEval() * Math.sqrt(result.getNumReps()) * result.getScore();
@@ -182,6 +184,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	public void postCycle() throws ExecutionException {
 		this.storageManager.close();
 		this.caseBase.close();
+		this.genericCaseBase.close();
 	}
 
 }

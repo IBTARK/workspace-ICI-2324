@@ -61,7 +61,6 @@ public class Attribute extends es.ucm.fdi.gaia.jcolibri.cbrcore.Attribute {
 			getFunction = findGetter(_class, fieldToGetter(attributeName), this.getType());
 			setFunction = findSetter(_class, fieldToSetter(attributeName), this.getType());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -148,7 +147,6 @@ public class Attribute extends es.ucm.fdi.gaia.jcolibri.cbrcore.Attribute {
 		
 		
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

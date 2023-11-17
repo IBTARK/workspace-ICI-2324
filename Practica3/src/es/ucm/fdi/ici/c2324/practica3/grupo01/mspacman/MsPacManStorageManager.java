@@ -92,14 +92,18 @@ public class MsPacManStorageManager {
 		
 		//here you should also check if the case must be stored into persistence (too similar to existing ones, etc.)
 		
-		if(chosenReusedCaseMap.get(bCase) == null)StoreCasesMethod.storeCase(this.caseBase, bCase);
+		if(chosenReusedCaseMap.get(bCase) == null) StoreCasesMethod.storeCase(this.caseBase, bCase);
 		else {
 			SimPacman sim = new SimPacman();
-			if(sim.compute(bCase.getDescription(), chosenReusedCaseMap.get(bCase).getDescription(), bCase, chosenReusedCaseMap.get(bCase), null) < SIM_TH) {
+			//TODO 	QUITAR TRUE
+			if(true || sim.compute(bCase.getDescription(), chosenReusedCaseMap.get(bCase).getDescription(), bCase, chosenReusedCaseMap.get(bCase), null) < SIM_TH) {
 				StoreCasesMethod.storeCase(this.caseBase, bCase);
 			}
 			else {
 				MsPacManResult res = (MsPacManResult) chosenReusedCaseMap.get(bCase).getResult();
+				MsPacManResult resAct = (MsPacManResult) bCase.getResult();
+				//Mean of the scores of the similar cases
+				res.setScore((res.getScore() * res.getNumReps() + resAct.getScore() ) / (res.getNumReps() + 1));
 				res.setNumReps(res.getNumReps() + 1);
 				
 				//TODO sustituir en caseBase
