@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import es.ucm.fdi.gaia.jcolibri.cbraplications.StandardCBRApplication;
-import es.ucm.fdi.gaia.jcolibri.cbrcore.Attribute;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCase;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCaseBase;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRQuery;
@@ -17,6 +16,7 @@ import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.NNScoringMethod;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.local.Interval;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.selection.SelectCases;
 import es.ucm.fdi.gaia.jcolibri.util.FileIO;
+import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.Attribute;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CachedLinearCaseBase;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CustomPlainTextConnector;
 import pacman.game.Constants.MOVE;
@@ -63,8 +63,8 @@ public class GhostCBRengine implements StandardCBRApplication {
 	final static String GENERIC_CASE_BASE_NAME = "generic.csv";
 	
 	final static int NUM_NEIGHBORS = 5; //number of neighbors of the KNN
-	final static double MOST_SIM_VAL = 0.5;
-	final static double RETAIN_SIM_VAL = 0.9;
+	final static double MOST_SIM_VAL = 0.7;
+	final static double RETAIN_SIM_VAL = 0.95;
 	
 	public GhostCBRengine(GhostStorageManager storageManager) {
 		this.storageManager = storageManager;
@@ -90,6 +90,8 @@ public class GhostCBRengine implements StandardCBRApplication {
 		
 		connectorEdible.initFromXMLfile(FileIO.findFile(CONNECTOR_EDIBLE_FILE_PATH));
 		connectorChasing.initFromXMLfile(FileIO.findFile(CONNECTOR_CHASING_FILE_PATH));
+		generalConnectorEdible.initFromXMLfile(FileIO.findFile(CONNECTOR_EDIBLE_FILE_PATH));
+		generalConnectorChasing.initFromXMLfile(FileIO.findFile(CONNECTOR_CHASING_FILE_PATH));
 		
 		//Do not use default case base path in the xml file. Instead use custom file path for each opponent.
 		//Note that you can create any subfolder of files to store the case base inside your "cbrdata/grupoXX" folder.

@@ -44,18 +44,25 @@ public class GhostDistanceVector implements es.ucm.fdi.gaia.jcolibri.connector.T
 	public void fromString(String content) throws Exception {
 		StringTokenizer tknizer = new StringTokenizer(content, SEPARATOR, false);
 		
-		move = (MOVE) tknizer.nextElement();
+		move = MOVE.valueOf(tknizer.nextElement().toString());
 		
 		this.distancias = new ArrayList<>();
-		for(int i = 0; i < 4; i++) {
-			distancias.add((Integer)tknizer.nextElement());
-		}
+		if (!content.equals(move.toString() + SEPARATOR + "null"))
+			for(int i = 0; i < 4; i++) {
+				distancias.add(Integer.parseInt(tknizer.nextElement().toString()));
+			}
+		else
+			this.distancias = null;
 	}
 	
 	@Override
 	public String toString() {
 		String str =  move.toString();
 		
+		if(this.distancias==null) {
+			str += SEPARATOR + "null";
+		}
+		else 
 		for(Integer elem : distancias) {
 			str += SEPARATOR + elem.toString();
 		}

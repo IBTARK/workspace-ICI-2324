@@ -124,6 +124,10 @@ public class GhostStorageManager {
 		int oldLives = description.getMspacmanLives();
 		int currentScore = game.getScore();
 		int currentLives = game.getPacmanNumberOfLivesRemaining();
+		if(currentLives > oldLives) {
+			currentLives = oldLives;
+		}
+		
 		int resultScore = (currentScore - oldScore) / (oldLives - currentLives + 1);
 		
 		GhostResult result = (GhostResult)bCase.getResult();
@@ -133,6 +137,7 @@ public class GhostStorageManager {
 	}
 	
 	public void removeOldCase(CBRCase bCase) {
+		
 		boolean edible = ((GhostDescription) bCase.getDescription()).getEdible();
 		
 		Collection<CBRCase> caseToModify = new ArrayList<>(1);

@@ -67,7 +67,10 @@ public class GhostDescription implements CaseComponent {
 	}
 
 	public Boolean getEdible() {
-		return edible;
+		if(edible==null)
+			return false;
+		else
+			return edible;
 	}
 
 	public void setEdible(Boolean edible) {

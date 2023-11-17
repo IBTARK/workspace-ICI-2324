@@ -19,7 +19,7 @@ public class SimGhost implements GlobalSimilarityFunction {
 
 	private static final int MAX_TIME = 4000;
 	private static final int MAX_EDIBLE_TIME = 200;
-	private static final int MAX_LIVES = 2;
+	private static final int MAX_LIVES = 4;
 	
 	@Override
 	public double compute(CaseComponent componentOfCase, CaseComponent componentOfQuery, CBRCase _case, CBRQuery _query,
