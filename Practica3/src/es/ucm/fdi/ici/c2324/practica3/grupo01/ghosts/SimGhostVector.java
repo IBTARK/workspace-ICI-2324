@@ -31,8 +31,8 @@ public class SimGhostVector implements GlobalSimilarityFunction {
 		GhostDistanceVector vecQuery = (GhostDistanceVector) componentOfQuery;
 		
 		//Check if the movement analyzed is valid for the case and the query
-		boolean vecInCase = new ArrayList<MOVE>(Arrays.asList(((GhostDescription)_case.getDescription()).getPossibleMoves())).contains(vecCase.getMove()),
-				vecInQuery = new ArrayList<MOVE>(Arrays.asList(((GhostDescription)_query.getDescription()).getPossibleMoves())).contains(vecCase.getMove());
+		boolean vecInCase = vecCase.getDistancias() != null,
+				vecInQuery = vecQuery.getDistancias() != null;
 		
 		if (vecCase.getMove() == vecQuery.getMove() && !vecInCase && !vecInQuery)
 			return 1;
