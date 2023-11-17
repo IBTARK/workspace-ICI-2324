@@ -75,9 +75,9 @@ public class SimGhost implements GlobalSimilarityFunction {
 	}
 
 	private CaseComponent getVector(GhostDescription ghostCase, MOVE m) {
-		if(m == MOVE.UP) return ghostCase.getUp();
-		else if(m == MOVE.DOWN) return ghostCase.getDown();
-		else if(m == MOVE.LEFT) return ghostCase.getLeft();
-		else return ghostCase.getRight();
+		if(m == MOVE.UP) return ghostCase.getUpVector();
+		else if(m == MOVE.DOWN) return ghostCase.getDownVector();
+		else if(m == MOVE.LEFT) return ghostCase.getLeftVector();
+		else return ghostCase.getRightVector();
 	}
 }

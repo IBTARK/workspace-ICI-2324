@@ -103,10 +103,10 @@ public class GhostInput extends CBRInput {
 		description.setEdibleTime(edibleTime);
 		description.setMspacmanToPPill(mspacmanToPPill);
 		description.setPossibleMoves((MOVE [])possibleMoves.toArray());
-		description.setUp(up);
-		description.setRight(right);
-		description.setDown(down);
-		description.setLeft(left);
+		description.setUpVector(up);
+		description.setRightVector(right);
+		description.setDownVector(down);
+		description.setLeftVector(left);
 		
 		CBRQuery query = new CBRQuery();
 		query.setDescription(description);

@@ -19,10 +19,10 @@ public class GhostDescription implements CaseComponent {
 	private Integer mspacmanToPPill;		//MsPacMan's distance to its nearest PPill.
 	private MOVE[] possibleMoves;
 	
-	private GhostDistanceVector up = new GhostDistanceVector(MOVE.UP);
-	private GhostDistanceVector right = new GhostDistanceVector(MOVE.RIGHT);
-	private GhostDistanceVector down = new GhostDistanceVector(MOVE.DOWN);
-	private GhostDistanceVector left = new GhostDistanceVector(MOVE.LEFT);
+	private GhostDistanceVector upVector = new GhostDistanceVector(MOVE.UP);
+	private GhostDistanceVector rightVector = new GhostDistanceVector(MOVE.RIGHT);
+	private GhostDistanceVector downVector = new GhostDistanceVector(MOVE.DOWN);
+	private GhostDistanceVector leftVector = new GhostDistanceVector(MOVE.LEFT);
 	
 	// In order to make the mapping easier, we will make each value of the arrays into separate attributes
 
@@ -90,38 +90,6 @@ public class GhostDescription implements CaseComponent {
 	public void setMspacmanToPPill(Integer mspacmanToPPill) {
 		this.mspacmanToPPill = mspacmanToPPill;
 	}
-
-	public GhostDistanceVector getUp() {
-		return up;
-	}
-
-	public void setUp(GhostDistanceVector up) {
-		this.up = up;
-	}
-
-	public GhostDistanceVector getRight() {
-		return right;
-	}
-
-	public void setRight(GhostDistanceVector right) {
-		this.right = right;
-	}
-
-	public GhostDistanceVector getDown() {
-		return down;
-	}
-
-	public void setDown(GhostDistanceVector down) {
-		this.down = down;
-	}
-
-	public GhostDistanceVector getLeft() {
-		return left;
-	}
-
-	public void setLeft(GhostDistanceVector left) {
-		this.left = left;
-	}
 	
 	public MOVE[] getPossibleMoves(){
 		return possibleMoves;
@@ -129,6 +97,38 @@ public class GhostDescription implements CaseComponent {
 	
 	public void setPossibleMoves(MOVE[] moves){
 		possibleMoves = moves;
+	}
+
+	public GhostDistanceVector getUpVector() {
+		return upVector;
+	}
+
+	public void setUpVector(GhostDistanceVector upVector) {
+		this.upVector = upVector;
+	}
+
+	public GhostDistanceVector getRightVector() {
+		return rightVector;
+	}
+
+	public void setRightVector(GhostDistanceVector rightVector) {
+		this.rightVector = rightVector;
+	}
+
+	public GhostDistanceVector getDownVector() {
+		return downVector;
+	}
+
+	public void setDownVector(GhostDistanceVector downVector) {
+		this.downVector = downVector;
+	}
+
+	public GhostDistanceVector getLeftVector() {
+		return leftVector;
+	}
+
+	public void setLeftVector(GhostDistanceVector leftVector) {
+		this.leftVector = leftVector;
 	}
 
 	@Override
