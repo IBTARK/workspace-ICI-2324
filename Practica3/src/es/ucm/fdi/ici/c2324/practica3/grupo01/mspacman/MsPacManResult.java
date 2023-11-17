@@ -7,7 +7,7 @@ public class MsPacManResult implements CaseComponent {
 
 	Integer id;
 	Integer score;
-	Integer numReps;
+	Integer numReps = 1;
 	
 	//Getters
 	
