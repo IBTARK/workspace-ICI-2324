@@ -124,7 +124,7 @@ public class GhostDescription implements CaseComponent {
 
 	@Override
 	public Attribute getIdAttribute() {
-		return new Attribute("id", GhostDistanceVector.class);
+		return new Attribute("id", GhostDescription.class);
 	}
 	
 	@Override
