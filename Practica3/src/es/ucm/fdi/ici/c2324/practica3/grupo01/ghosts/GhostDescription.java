@@ -17,7 +17,6 @@ public class GhostDescription implements CaseComponent {
 	private Boolean edible;
 	private Integer edibleTime;
 	private Integer mspacmanToPPill;		//MsPacMan's distance to its nearest PPill.
-	private MOVE[] possibleMoves;
 	
 	private GhostDistanceVector upVector = new GhostDistanceVector(MOVE.UP);
 	private GhostDistanceVector rightVector = new GhostDistanceVector(MOVE.RIGHT);
@@ -89,14 +88,6 @@ public class GhostDescription implements CaseComponent {
 
 	public void setMspacmanToPPill(Integer mspacmanToPPill) {
 		this.mspacmanToPPill = mspacmanToPPill;
-	}
-	
-	public MOVE[] getPossibleMoves(){
-		return possibleMoves;
-	}
-	
-	public void setPossibleMoves(MOVE[] moves){
-		possibleMoves = moves;
 	}
 
 	public GhostDistanceVector getUpVector() {

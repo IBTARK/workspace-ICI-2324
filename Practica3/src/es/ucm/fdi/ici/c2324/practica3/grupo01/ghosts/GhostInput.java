@@ -102,7 +102,6 @@ public class GhostInput extends CBRInput {
 		description.setEdible(edible);
 		description.setEdibleTime(edibleTime);
 		description.setMspacmanToPPill(mspacmanToPPill);
-		description.setPossibleMoves((MOVE [])possibleMoves.toArray());
 		description.setUpVector(up);
 		description.setRightVector(right);
 		description.setDownVector(down);
