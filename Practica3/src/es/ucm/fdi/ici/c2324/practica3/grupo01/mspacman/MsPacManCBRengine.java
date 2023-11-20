@@ -30,7 +30,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 
 	CustomPlainTextConnector connector;
 	CustomPlainTextConnector connectorGeneric;
-	CBRCaseBase caseBase;
+	CachedLinearCaseBase caseBase;
 	CBRCaseBase genericCaseBase;
 	NNConfig simConfig;
 	
@@ -45,6 +45,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	
 	final static int NUM_NEIGHBORS = 5; //number of neighbors of the KNN
 	final static double MOST_SIM_VAL = 0.5; 
+	public static final double SCORE_TH = 10;
 	
 	public MsPacManCBRengine(MsPacManStorageManager storageManager)
 	{
@@ -144,6 +145,16 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 			}
 		}
 		
+		if(maxReutVal < MOST_SIM_VAL * SCORE_TH) {
+			chosenReusedCaseMap.put(reuseCase,null);
+			
+			int index = (int)Math.floor(Math.random()*4);
+			if(MOVE.values()[index]==action.opposite()) 
+				index= (index+1)%4;
+			action = MOVE.values()[index];
+			return action;
+		}
+		
 		if(!fromGeneric)chosenReusedCaseMap.put(reuseCase,neighbors.get(reutCase).get_case());
 		else chosenReusedCaseMap.put(reuseCase,null);
 		
@@ -164,7 +175,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 		MsPacManDescription newDescription = (MsPacManDescription) query.getDescription();
 		MsPacManResult newResult = new MsPacManResult();
 		MsPacManSolution newSolution = new MsPacManSolution();
-		int newId = this.caseBase.getCases().size();
+		int newId = this.caseBase.getNextId();
 		newId+= storageManager.getPendingCases();
 		newDescription.setId(newId);
 		newResult.setId(newId);

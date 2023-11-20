@@ -18,14 +18,15 @@ public class ExecutorTest {
                 .build();
 
         try {
-        	for(int i = 0; i < 25; i++) {
+        	for(int i = 0; i < 475; i++) {
+        		System.out.println(i);
         		MsPacMan pacMan = new MsPacMan();
-    		    GhostController ghosts = new es.ucm.fdi.ici.c2223.practica1.grupo01.Ghosts();
+    		    GhostController ghosts = new AlgorithmicGhosts();
     		    
     		    System.out.println( 
     		        executor.runGame(pacMan, ghosts, 1) //last parameter defines speed
     		    );
-        	}     
+        	}  
         } catch (Exception e) {
         	e.printStackTrace();
         }

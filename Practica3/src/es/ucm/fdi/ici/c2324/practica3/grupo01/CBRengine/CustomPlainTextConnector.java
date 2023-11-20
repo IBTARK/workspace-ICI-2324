@@ -250,8 +250,11 @@ public class CustomPlainTextConnector implements Connector {
 	 */
 	public void deleteCases(Collection<CBRCase> cases){
 		try {
+			if(cases.isEmpty())
+				return;
 			BufferedReader br = null;
-			br = new BufferedReader( new InputStreamReader(FileIO.findFile(this.PROP_FILEPATH).openStream()));
+			//br = new BufferedReader( new InputStreamReader(FileIO.findFile(this.PROP_FILEPATH).openStream()));
+			br = new BufferedReader( new InputStreamReader(FileIO.openFile(this.PROP_FILEPATH)));
 			//if (br == null) throw new Exception("Error opening file for reading: " + this.PROP_FILEPATH);
 
 			ArrayList<String> lines = new ArrayList<String>();
@@ -264,15 +267,19 @@ public class CustomPlainTextConnector implements Connector {
 
 				StringTokenizer st = new StringTokenizer(line, this.PROP_DELIM);
 				String caseId = st.nextToken();
+				boolean found = false;
 				for (Iterator<CBRCase> cIter = cases.iterator(); cIter.hasNext();) {
 					CBRCase _case = cIter.next();
-					if (!caseId.equals(_case.getID().toString()))
-						lines.add(line);
+					if (caseId.equals(_case.getID().toString()))
+						found = true;
 				}
+				if(!found)
+					lines.add(line);
 			}
 			br.close();
 
 			BufferedWriter bw = null;
+			//bw = new BufferedWriter(new FileWriter(FileIO.findFile(this.PROP_FILEPATH).getFile(), false));
 			bw = new BufferedWriter(new FileWriter(FileIO.findFile(this.PROP_FILEPATH).getFile(), false));
 			//if (bw == null) throw new Exception("Error opening file for writing: "+ this.PROP_FILEPATH);
 			for (ListIterator<String> lIter = lines.listIterator(); lIter.hasNext();) {

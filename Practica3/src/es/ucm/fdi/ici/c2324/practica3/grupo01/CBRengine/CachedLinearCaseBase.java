@@ -24,15 +24,19 @@ public class CachedLinearCaseBase implements CBRCaseBase {
 	private Collection<CBRCase> originalCases;
 	private Collection<CBRCase> workingCases;
 	private Collection<CBRCase> casesToRemove;
+	
+	private Integer nextId;
+	
 	/**
 	 * Closes the case base saving or deleting the cases of the persistence media
 	 */
 	public void close() {
-		workingCases.removeAll(casesToRemove);
 		
 		Collection<CBRCase> casesToStore = new ArrayList<>(workingCases);
 		casesToStore.removeAll(originalCases);
 
+		
+		connector.deleteCases(casesToRemove);
 		connector.storeCases(casesToStore);
 		connector.close();
 	}
@@ -42,6 +46,8 @@ public class CachedLinearCaseBase implements CBRCaseBase {
 	 */
 	public void forgetCases(Collection<CBRCase> cases) {
 		workingCases.removeAll(cases);
+		originalCases.removeAll(cases);
+		casesToRemove.addAll(cases);
 	}
 
 	/**
@@ -67,14 +73,21 @@ public class CachedLinearCaseBase implements CBRCaseBase {
 		originalCases = this.connector.retrieveAllCases();	
 		workingCases = new java.util.ArrayList<CBRCase>(originalCases);
 		casesToRemove = new ArrayList<>();
+		nextId = workingCases.size();
 	}
 	
 
+	public Integer getNextId()
+	{
+		return nextId;
+	}
+	
 	/**
 	 * Learns cases that are only saved when closing the Case Base.
 	 */
 	public void learnCases(Collection<CBRCase> cases) {
 		workingCases.addAll(cases);
+		nextId += cases.size();
 	}
 
 }

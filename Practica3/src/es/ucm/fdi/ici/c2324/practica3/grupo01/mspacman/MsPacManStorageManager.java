@@ -2,6 +2,7 @@ package es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman;
 
 import java.util.Map;
 import java.util.Vector;
+import java.util.Arrays;
 
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCase;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCaseBase;
@@ -95,8 +96,7 @@ public class MsPacManStorageManager {
 		if(chosenReusedCaseMap.get(bCase) == null) StoreCasesMethod.storeCase(this.caseBase, bCase);
 		else {
 			SimPacman sim = new SimPacman();
-			//TODO 	QUITAR TRUE
-			if(true || sim.compute(bCase.getDescription(), chosenReusedCaseMap.get(bCase).getDescription(), bCase, chosenReusedCaseMap.get(bCase), null) < SIM_TH) {
+			if(sim.compute(bCase.getDescription(), chosenReusedCaseMap.get(bCase).getDescription(), bCase, chosenReusedCaseMap.get(bCase), null) < SIM_TH) {
 				StoreCasesMethod.storeCase(this.caseBase, bCase);
 			}
 			else {
@@ -106,7 +106,9 @@ public class MsPacManStorageManager {
 				res.setScore((res.getScore() * res.getNumReps() + resAct.getScore() ) / (res.getNumReps() + 1));
 				res.setNumReps(res.getNumReps() + 1);
 				
-				//TODO sustituir en caseBase
+				//Substitute in caseBase
+				this.caseBase.forgetCases(Arrays.asList(chosenReusedCaseMap.get(bCase)));
+				StoreCasesMethod.storeCase(this.caseBase, chosenReusedCaseMap.get(bCase));
 			}
 		}
 		chosenReusedCaseMap.remove(bCase);
