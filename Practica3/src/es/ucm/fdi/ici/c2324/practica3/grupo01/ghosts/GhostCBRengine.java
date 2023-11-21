@@ -63,8 +63,8 @@ public class GhostCBRengine implements StandardCBRApplication {
 	final static String GENERIC_CASE_BASE_NAME = "generic.csv";
 	
 	final static int NUM_NEIGHBORS = 5; //number of neighbors of the KNN
-	final static double MOST_SIM_VAL = 0.7;
-	final static double RETAIN_SIM_VAL = 0.95;
+	final static double MINIMUM_SIM_VAL = 0.7;
+	final static double RETAIN_SIM_VAL = 0.9;
 	
 	public GhostCBRengine(GhostStorageManager storageManager) {
 		this.storageManager = storageManager;
@@ -156,9 +156,11 @@ public class GhostCBRengine implements StandardCBRApplication {
 		if(this.action == MOVE.NEUTRAL)
 			computeRetrieveAndReuse(generalCaseBaseEdible, generalCaseBaseChasing, query, edible);
 		
-		if(this.action == MOVE.NEUTRAL)
+		if(this.action == MOVE.NEUTRAL) {
 			this.action = getRandomMove();
-		//Compute revise & retain
+			System.out.print("MOVIMIENTO ALEATORIO");
+		}
+			//Compute revise & retain
 		CBRCase newCase = createNewCase(query);
 		this.storageManager.reviseAndRetain(newCase, oldCase);
 		
@@ -185,11 +187,12 @@ public class GhostCBRengine implements StandardCBRApplication {
 			//double similarity = first.getEval();
 			
 			
-			if(neighbors.get(0).getEval() < MOST_SIM_VAL) 
+			if(neighbors.get(0).getEval() < MINIMUM_SIM_VAL) 
 				this.action = MOVE.NEUTRAL;
 			else
-				this.action = reuse(eval);
+				this.action = reuse2(eval);
 		}
+		this.oldCase = null;
 	}
 
 	private MOVE reuse(Collection<RetrievalResult> eval)
@@ -199,12 +202,58 @@ public class GhostCBRengine implements StandardCBRApplication {
 		RetrievalResult topRetrieval = topCases.next();
 		CBRCase retrievedCase = topRetrieval.get_case();
 		double similarity = topRetrieval.getEval();
-		if(similarity < MOST_SIM_VAL) 
+		if(similarity < MINIMUM_SIM_VAL) 
 			return MOVE.NEUTRAL;
 		
 		
 		GhostResult result = (GhostResult) retrievedCase.getResult();
-		double minReut = similarity * Math.sqrt(result.getNumReps()) / result.getScore();
+		double minReut = similarity;
+		double curReut;
+		RetrievalResult currentRetrieval;
+
+		// Con este bucle calculamos el caso con MENOR "reut" y lo seleccionamos como topRetrieval para luego elegir su movimiento.
+		while(topCases.hasNext()) {
+			currentRetrieval = topCases.next();
+			result = (GhostResult) currentRetrieval.get_case().getResult();
+			curReut = currentRetrieval.getEval();
+			
+			if(curReut > minReut) {
+				minReut = curReut;
+				topRetrieval = currentRetrieval;
+			}
+		}
+		
+		// Al salir, en topRetrieval tenemos el caso con MENOR "reut", por lo que vemos su similitud y su solution.
+		GhostSolution solution = (GhostSolution) topRetrieval.get_case().getSolution();
+		similarity = topRetrieval.getEval();
+		
+		if(similarity >= RETAIN_SIM_VAL) {
+			this.oldCase =  topRetrieval.get_case();
+		}
+
+		MOVE action = solution.getAction();
+		return action;
+	}
+	
+	/**
+	 * Alternativa de reuse donde escogeremos el movimiento en base a una inspeccion de los movimientos del top 5 y escogiendo
+	 * el movimiento mas usado teniendo en cuenta las similitudes
+	 * 
+	 * @param eval
+	 * @return
+	 */
+	private MOVE reuse2(Collection<RetrievalResult> eval)
+	{
+		Iterator<RetrievalResult> topCases = SelectCases.selectTopKRR(eval, NUM_NEIGHBORS).iterator();
+		RetrievalResult topRetrieval = topCases.next();
+		CBRCase retrievedCase = topRetrieval.get_case();
+		double similarity = topRetrieval.getEval();
+		if(similarity < MINIMUM_SIM_VAL) 
+			return MOVE.NEUTRAL;
+		
+		
+		GhostResult result = (GhostResult) retrievedCase.getResult();
+		double minReut = similarity * Math.sqrt(result.getNumReps()) / (result.getScore() + 1);
 		double curReut;
 		RetrievalResult currentRetrieval;
 				
@@ -270,6 +319,9 @@ public class GhostCBRengine implements StandardCBRApplication {
 		newCase.setDescription(newDescription);
 		newCase.setResult(newResult);
 		newCase.setSolution(newSolution);
+	
+		System.out.println(newDescription.getEdible() + " " + newSolution.toString());
+		
 		return newCase;
 	}
 	

@@ -14,14 +14,14 @@ import pacman.game.Constants.MOVE;
 
 public class SimGhostVector implements GlobalSimilarityFunction {
 
-	private static final double[] WEIGHTS = { 0.40, 0.25, 0.1, 0.25 };
+	private static final double[] WEIGHTS = { 1.0 , 0.00, 0.00, 0.00 };
 	
 	private static final int MSPACMAN_IDX = 0;
 	private static final int EDIBLE_IDX = 1;
 	private static final int EDIBLE_TIME_IDX = 2;
 	private static final int CHASING_IDX = 3;
 
-	private static final int MAX_DIST = 650;
+	private static final int MAX_DIST = 250;
 	private static final int MAX_TIME_EDIBLE = 200;
 
 	@Override
@@ -44,10 +44,10 @@ public class SimGhostVector implements GlobalSimilarityFunction {
 		
 		double sim = 0;
 		try {
-			sim += WEIGHTS[MSPACMAN_IDX] * new Interval(MAX_DIST).compute(distCase.get(MSPACMAN_IDX), distQuery.get(MSPACMAN_IDX));
-			sim += WEIGHTS[EDIBLE_IDX] * new Interval(MAX_DIST).compute(distCase.get(EDIBLE_IDX), distQuery.get(EDIBLE_IDX));
-			sim += WEIGHTS[EDIBLE_TIME_IDX] * new Interval(MAX_TIME_EDIBLE).compute(distCase.get(EDIBLE_TIME_IDX), distQuery.get(EDIBLE_TIME_IDX));
-			sim += WEIGHTS[CHASING_IDX] * new Interval(MAX_DIST).compute(distCase.get(CHASING_IDX), distQuery.get(CHASING_IDX));
+			sim += WEIGHTS[MSPACMAN_IDX] * new DistanceInterval(MAX_DIST).compute(distCase.get(MSPACMAN_IDX), distQuery.get(MSPACMAN_IDX));
+			sim += WEIGHTS[EDIBLE_IDX] * new DistanceInterval(MAX_DIST).compute(distCase.get(EDIBLE_IDX), distQuery.get(EDIBLE_IDX));
+			sim += WEIGHTS[EDIBLE_TIME_IDX] * new DistanceInterval(MAX_TIME_EDIBLE).compute(distCase.get(EDIBLE_TIME_IDX), distQuery.get(EDIBLE_TIME_IDX));
+			sim += WEIGHTS[CHASING_IDX] * new DistanceInterval(MAX_DIST).compute(distCase.get(CHASING_IDX), distQuery.get(CHASING_IDX));
 		}
 		catch (NoApplicableSimilarityFunctionException e) {
 			e.printStackTrace();

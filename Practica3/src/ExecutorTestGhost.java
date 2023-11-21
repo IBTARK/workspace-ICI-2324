@@ -9,20 +9,25 @@ public class ExecutorTestGhost {
     public static void main(String[] args) {
         Executor executor = new Executor.Builder()
                 .setTickLimit(4000)
-                .setVisual(false)
+                .setVisual(true)
                 .setScaleFactor(2.5)
                 .build();
 
-        try {
-        	PacmanController pacMan = new MsPacMan();
-		    GhostController ghosts = new Ghosts();
-		    
-		    System.out.println( 
-		        executor.runGame(pacMan, ghosts, 1) //last parameter defines speed
-		    );
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
+        for(int i = 0; i < 2; i++) {
+        	 try {
+             	PacmanController pacMan = new MsPacMan();
+     		    GhostController ghosts = new Ghosts();
+     		    
+     		    System.out.println( 
+     		        executor.runGame(pacMan, ghosts, 10) //last parameter defines speed
+     		    );
+     		    
+     		    
+     		    
+             } catch (Exception e) {
+             	e.printStackTrace();
+             }
+    	}
     }
 	
 }

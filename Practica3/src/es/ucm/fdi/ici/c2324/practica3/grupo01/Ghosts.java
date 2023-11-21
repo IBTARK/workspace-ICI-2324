@@ -49,12 +49,15 @@ public class Ghosts extends GhostController {
 		try {
 			for(GHOST ghost: GHOST.values())
 			{
-				GhostInput input = new GhostInput(game, ghost);
-				input.parseInput();
-				storageManager.setGame(game);
-				cbrEngine.cycle(input.getQuery());
-				MOVE move = cbrEngine.getSolution();
-				result.put(ghost, move);
+				if(game.doesGhostRequireAction(ghost)) {
+					GhostInput input = new GhostInput(game, ghost);
+					input.parseInput();
+					storageManager.setGame(game);
+					cbrEngine.cycle(input.getQuery());
+					MOVE move = cbrEngine.getSolution();
+					result.put(ghost, move);
+				}
+				else result.put(ghost, MOVE.NEUTRAL);
 			}
 			
 			return result;
