@@ -11,6 +11,8 @@ import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.LocalSimi
  */
 public class DistanceInterval implements LocalSimilarityFunction {
 
+	private static final int MAX_DIST = 250;
+	
 	/** Interval */
 	double _interval;
 
@@ -45,8 +47,8 @@ public class DistanceInterval implements LocalSimilarityFunction {
 		double v1 = i1.doubleValue();
 		double v2 = i2.doubleValue();
 		
-		if((v1 >= Integer.MAX_VALUE || v1 <= -1) && !(v2 >= Integer.MAX_VALUE || v2 <= -1)
-				|| (v2 >= Integer.MAX_VALUE || v2 <= -1) && !(v1 >= Integer.MAX_VALUE || v1 <= -1))
+		if((v1 >= MAX_DIST || v1 <= -1) && !(v2 >= MAX_DIST || v2 <= -1)
+				|| (v2 >= MAX_DIST || v2 <= -1) && !(v1 >= MAX_DIST || v1 <= -1))
 			return 0;
 		
 		return 1 - ((double) Math.abs(v1 - v2) / _interval);
