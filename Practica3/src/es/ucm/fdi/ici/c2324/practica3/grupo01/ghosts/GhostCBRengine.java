@@ -41,11 +41,11 @@ public class GhostCBRengine implements StandardCBRApplication {
 	// These connectors and case bases are the ones connecting to the generic case base.
 	CustomPlainTextConnector connectorEdible;
 	CustomPlainTextConnector connectorChasing;
-	CBRCaseBase caseBaseEdible;
-	CBRCaseBase caseBaseChasing;
+	CachedLinearCaseBase caseBaseEdible;
+	CachedLinearCaseBase caseBaseChasing;
 	
-	CBRCaseBase generalCaseBaseEdible;
-	CBRCaseBase generalCaseBaseChasing;
+	CachedLinearCaseBase generalCaseBaseEdible;
+	CachedLinearCaseBase generalCaseBaseChasing;
 	CustomPlainTextConnector generalConnectorEdible;
 	CustomPlainTextConnector generalConnectorChasing;
 
@@ -254,11 +254,11 @@ public class GhostCBRengine implements StandardCBRApplication {
 		int newId;
 
 		if(newDescription.getEdible()) {
-			newId = this.caseBaseEdible.getCases().size();
+			newId = this.caseBaseEdible.getNextId();
 			newId+= storageManager.getPendingEdibleCases();
 		}
 		else {
-			newId = this.caseBaseChasing.getCases().size();
+			newId = this.caseBaseChasing.getNextId();
 			newId+= storageManager.getPendingChasingCases();
 		}
 		newDescription.setId(newId);

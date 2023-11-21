@@ -9,6 +9,7 @@ import java.util.Vector;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCase;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCaseBase;
 import es.ucm.fdi.gaia.jcolibri.method.retain.StoreCasesMethod;
+import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CachedLinearCaseBase;
 import pacman.game.Constants.GHOST;
 import pacman.game.Game;
 
@@ -17,8 +18,8 @@ public class GhostStorageManager {
 	// vamos a necesitar tener 2 case base, uno para el ghosts edible y otro para el chasing
 	// las case base generales no es necesario tenerlas aqui porque no almacenaremos ahi movimientos mientras jugamos contra un oponente
 	Game game;
-	CBRCaseBase caseBaseEdible;
-	CBRCaseBase caseBaseChasing;
+	CachedLinearCaseBase caseBaseEdible;
+	CachedLinearCaseBase caseBaseChasing;
 	
 	// Tendremos un buffer por cada ghost, aunque recuperando casos no tengamos en cuenta el ghost que era.
 	Vector<CBRCase> bufferBlinky;
@@ -48,12 +49,12 @@ public class GhostStorageManager {
 		this.game = game;
 	}
 	
-	public void setCaseBaseEdible(CBRCaseBase caseBase)
+	public void setCaseBaseEdible(CachedLinearCaseBase caseBase)
 	{
 		this.caseBaseEdible = caseBase;
 	}
 	
-	public void setCaseBaseChasing(CBRCaseBase caseBase)
+	public void setCaseBaseChasing(CachedLinearCaseBase caseBase)
 	{
 		this.caseBaseChasing = caseBase;
 	}
