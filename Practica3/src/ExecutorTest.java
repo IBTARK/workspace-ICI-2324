@@ -1,12 +1,6 @@
+import es.ucm.fdi.ici.c2324.practica3.grupo01.MsPacMan;
 import pacman.Executor;
 import pacman.controllers.GhostController;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import es.ucm.fdi.gaia.jcolibri.util.FileIO;
-import es.ucm.fdi.ici.c2324.practica3.grupo01.MsPacMan;
 
 public class ExecutorTest {
 

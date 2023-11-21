@@ -20,8 +20,8 @@ public class SimPacmanVector implements GlobalSimilarityFunction {
 	private static final int PPILL_IDX = 3;
 	private static final int PILL_IDX = 4;
 
-	private static final int MAX_DIST = 650;
-	private static final int MAX_TIME_EDIBLE = 200;
+	private static final int MAX_DIST = MsPacManInput.MAX_DIST;
+	public static final int MAX_TIME_EDIBLE = 200;
 
 	@Override
 	public double compute(CaseComponent componentOfCase, CaseComponent componentOfQuery, CBRCase _case, CBRQuery _query,
