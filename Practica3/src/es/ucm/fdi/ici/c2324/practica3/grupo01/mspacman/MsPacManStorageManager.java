@@ -16,7 +16,7 @@ public class MsPacManStorageManager {
 	Vector<CBRCase> buffer;
 	Map<CBRCase, CBRCase> chosenReusedCaseMap;
 	
-	public static final double SCORE_TH = 10;
+	public static final double SCORE_TH = 50;
 	public static final double SIM_TH = 0.9;
 
 	private final static int TIME_WINDOW = 3;
@@ -95,8 +95,9 @@ public class MsPacManStorageManager {
 		
 		if(chosenReusedCaseMap.get(bCase) == null) StoreCasesMethod.storeCase(this.caseBase, bCase);
 		else {
-			SimPacman sim = new SimPacman();
-			if(sim.compute(bCase.getDescription(), chosenReusedCaseMap.get(bCase).getDescription(), bCase, chosenReusedCaseMap.get(bCase), null) < SIM_TH) {
+			double sim = new SimPacman().compute(bCase.getDescription(), chosenReusedCaseMap.get(bCase).getDescription(), bCase, chosenReusedCaseMap.get(bCase), null);
+			
+			if(sim < SIM_TH) {
 				StoreCasesMethod.storeCase(this.caseBase, bCase);
 			}
 			else {
