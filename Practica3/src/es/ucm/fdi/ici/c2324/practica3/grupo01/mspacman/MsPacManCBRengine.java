@@ -135,7 +135,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 		double maxReutVal = -1;
 		int reutCase = new Random().nextInt(NUM_NEIGHBORS);
 		chosenReusedCaseMap.put(reuseCase,null);
-		
+		//System.out.println(neighbors.get(0).getEval());
 		if(neighbors.get(0).getEval() < SIM_TH)
 			return randomMove();
 		
@@ -154,8 +154,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 		if (maxReutVal < SCORE_TH)
 			return randomMove();
 		
-		if(!fromGeneric)
-			chosenReusedCaseMap.put(reuseCase,neighbors.get(reutCase).get_case());
+		//if(!fromGeneric) chosenReusedCaseMap.put(reuseCase,neighbors.get(reutCase).get_case());
 		
 		CBRCase chosenCase = neighbors.get(reutCase).get_case();
 		MsPacManSolution solution = (MsPacManSolution) chosenCase.getSolution();

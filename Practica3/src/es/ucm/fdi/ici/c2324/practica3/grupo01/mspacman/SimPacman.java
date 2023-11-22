@@ -31,10 +31,10 @@ public class SimPacman implements GlobalSimilarityFunction {
 		double simVectors = 0;
 		
 		//Local similarity of the vectors   
-		for(MOVE m : MOVE.values()) {
-			simVectors +=  0.25 * simVector.compute(getVector(msPacManCase, m), getVector(msPacManQuery, m), _case, _query, numSimConfig);
+		for(MOVE m : MOVE.values()) if (m != MOVE.NEUTRAL) {
+			double aux = simVector.compute(getVector(msPacManCase, m), getVector(msPacManQuery, m), _case, _query, numSimConfig);
+			simVectors +=  0.25 * aux;
 		}
-		
 		//Local similarity of the remaining time
 		double simTime = 0;
 		try {
@@ -51,7 +51,6 @@ public class SimPacman implements GlobalSimilarityFunction {
 			e.printStackTrace();
 		}
 		
-	
 		//Global similarity
 		return VECTORSWEIGHT * simVectors + LIVESWEIGHT * simLives + TIMEWEIGHT * simTime;
 	}
