@@ -12,7 +12,7 @@ import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.local.Int
 
 public class SimPacmanVector implements GlobalSimilarityFunction {
 	
-	private static final double[] WEIGHTS = { 0.35, 0.2, 0.15, 0.25, 0.05 };
+	private static final double[] WEIGHTS = { 0.35, 0.35, 0.05, 0.2, 0.05 };
 	
 	private static final int CHASING_IDX = 0;
 	private static final int EDIBLE_IDX = 1;

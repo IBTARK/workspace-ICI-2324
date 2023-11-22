@@ -75,7 +75,7 @@ public class MsPacManStorageManager {
 		int currentScore = game.getScore(), currentLives = description.getLives();
 		
 	
-		int resultValue = 1 + (currentScore - oldScore) / (oldLives - currentLives + 1);
+		int resultValue = 1 + (currentScore - oldScore) / ((oldLives - currentLives)*4 + 1);
 		
 		((MsPacManResult)bCase.getResult()).setScore(resultValue);
 	}
