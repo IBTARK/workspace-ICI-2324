@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCase;
-import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCaseBase;
 import es.ucm.fdi.gaia.jcolibri.util.FileIO;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CachedLinearCaseBase;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CustomPlainTextConnector;
@@ -34,7 +33,7 @@ public class AlgorithmicMsPacMan extends PacmanController{
 
 	private MsPacManStorageManager storageManager;
 	private CustomPlainTextConnector connectorGeneric;
-	private CBRCaseBase genericCaseBase;
+	private CachedLinearCaseBase genericCaseBase;
 	final static String CONNECTOR_FILE_PATH = "es/ucm/fdi/ici/c2324/practica3/grupo01/mspacman/plaintextconfig.xml";
 	final static String CASE_BASE_PATH = "cbrdata"+File.separator+"grupo01"+File.separator+"mspacman"+File.separator;
 	
@@ -64,6 +63,7 @@ public class AlgorithmicMsPacMan extends PacmanController{
 	}
 	
 	public void closeCaseBase() {
+		genericCaseBase.setReward(game.getScore());
 		genericCaseBase.close();
 		connectorGeneric.close();
 	}

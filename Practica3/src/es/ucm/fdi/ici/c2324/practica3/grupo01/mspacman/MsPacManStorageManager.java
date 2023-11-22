@@ -19,7 +19,7 @@ public class MsPacManStorageManager {
 	public static final double SCORE_TH = 50;
 	public static final double SIM_TH = 0.9;
 
-	private final static int TIME_WINDOW = 3;
+	private final static int TIME_WINDOW = 5;
 	
 	public MsPacManStorageManager()
 	{

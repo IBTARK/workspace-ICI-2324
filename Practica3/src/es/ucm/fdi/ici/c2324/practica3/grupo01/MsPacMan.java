@@ -12,6 +12,7 @@ public class MsPacMan extends PacmanController {
 
 	MsPacManCBRengine cbrEngine;
 	MsPacManStorageManager storageManager;
+	private int score;
 		
 	public MsPacMan()
 	{		
@@ -34,6 +35,7 @@ public class MsPacMan extends PacmanController {
 	@Override
 	public void postCompute() {
 		try {
+			cbrEngine.setReward(score);
 			cbrEngine.postCycle();
 		} catch (ExecutionException e) {
 			e.printStackTrace();
@@ -43,14 +45,12 @@ public class MsPacMan extends PacmanController {
 	
 	@Override
 	public MOVE getMove(Game game, long timeDue) {
-		
+		score = game.getScore();
 		
 		//This implementation only computes a new action when MsPacMan is in a junction. 
 		//This is relevant for the case storage policy
 		if(!game.isJunction(game.getPacmanCurrentNodeIndex()))
 			return MOVE.NEUTRAL;
-		
-		
 		try {
 			MsPacManInput input = new MsPacManInput(game);
 			input.parseInput();

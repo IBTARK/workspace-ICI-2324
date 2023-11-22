@@ -9,6 +9,8 @@ import es.ucm.fdi.gaia.jcolibri.cbrcore.CaseBaseFilter;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.Connector;
 import es.ucm.fdi.gaia.jcolibri.exception.InitializingException;
 
+import es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman.MsPacManResult;
+
 /**
  * Cached case base that only persists cases when closing.
  * learn() and forget() are not synchronized with the persistence until close() is invoked.
@@ -26,6 +28,8 @@ public class CachedLinearCaseBase implements CBRCaseBase {
 	private Collection<CBRCase> casesToRemove;
 	
 	private Integer nextId;
+	private int finalReward = 1;
+	private boolean reward = false;
 	
 	/**
 	 * Closes the case base saving or deleting the cases of the persistence media
@@ -37,6 +41,7 @@ public class CachedLinearCaseBase implements CBRCaseBase {
 
 		
 		connector.deleteCases(casesToRemove);
+		if (reward) rewardCases(casesToStore);
 		connector.storeCases(casesToStore);
 		connector.close();
 	}
@@ -90,5 +95,15 @@ public class CachedLinearCaseBase implements CBRCaseBase {
 		nextId += cases.size();
 	}
 
+	public void setReward(int score) {
+		this.finalReward = score;
+		reward = true;
+	}
+	
+	private void rewardCases(Collection<CBRCase> casesToStore) {
+		casesToStore.forEach((c) -> { 
+			MsPacManResult res = (MsPacManResult) c.getResult();
+			res.setScore(res.getScore() * finalReward);
+			});
+	}
 }
-

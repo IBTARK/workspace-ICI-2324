@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import es.ucm.fdi.gaia.jcolibri.cbraplications.StandardCBRApplication;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.Attribute;
@@ -133,19 +134,9 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	private MOVE reuse(ArrayList<RetrievalResult> neighbors, CBRCase reuseCase, boolean fromGeneric)
 	{
 		double maxReutVal = -1;
-		int reutCase = -1;
+		int reutCase = new Random().nextInt(NUM_NEIGHBORS);
 		
-		for(int i = 0; i < neighbors.size(); i++) {
-			RetrievalResult ret = neighbors.get(i);
-			MsPacManResult result = (MsPacManResult) ret.get_case().getResult();
-			double reutVal = ret.getEval() * Math.sqrt(result.getNumReps()) * result.getScore();
-			if(reutVal > maxReutVal) {
-				maxReutVal = reutVal;
-				reutCase = i;
-			}
-		}
-		
-		if(maxReutVal < MOST_SIM_VAL * SCORE_TH) {
+		if(neighbors.get(0).getEval() < MOST_SIM_VAL) {
 			chosenReusedCaseMap.put(reuseCase,null);
 			
 			int index = (int)Math.floor(Math.random()*4);
@@ -153,6 +144,16 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 				index= (index+1)%4;
 			action = MOVE.values()[index];
 			return action;
+		}
+		
+		for(int i = 0; i < neighbors.size(); i++) {
+			RetrievalResult ret = neighbors.get(i);
+			MsPacManResult result = (MsPacManResult) ret.get_case().getResult();
+			double reutVal = result.getScore();
+			if(reutVal > maxReutVal) {
+				maxReutVal = reutVal;
+				reutCase = i;
+			}
 		}
 		
 		if(!fromGeneric)chosenReusedCaseMap.put(reuseCase,neighbors.get(reutCase).get_case());
@@ -198,4 +199,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 		this.genericCaseBase.close();
 	}
 
+	public void setReward(int score) {
+		this.caseBase.setReward(score);
+	}
 }
