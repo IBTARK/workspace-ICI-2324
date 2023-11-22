@@ -21,7 +21,7 @@ public class ExecutorTest {
         		MsPacMan pacMan = new MsPacMan();
     		    GhostController ghosts = new AlgorithmicGhosts();
     		    
-    		    int score = executor.runGame(pacMan, ghosts, 5); //last parameter defines speed
+    		    int score = executor.runGame(pacMan, ghosts, 0); //last parameter defines speed
     		    System.out.println();
     		    
     		    cola.add(score);
