@@ -1,0 +1,28 @@
+<TextFileConfiguration>
+	<FilePath>not used</FilePath>
+	<Delimiters>,</Delimiters>
+	<DescriptionClassName>ghosts_simplified.GhostDescription</DescriptionClassName>
+	<DescriptionMappings>
+		<Map>id</Map>
+		<Map>mspacmanLives</Map>
+		<Map>mspacmanDistance</Map>
+		<Map>score</Map>
+		<Map>time</Map>			
+		<Map>mspacmanToPPill</Map>
+		<Map>upVector</Map>
+		<Map>downVector</Map>
+		<Map>rightVector</Map>
+		<Map>leftVector</Map>
+	</DescriptionMappings>
+	<SolutionClassName>ghosts_simplified.GhostSolution</SolutionClassName>
+	<SolutionMappings>
+		<Map>id</Map>
+		<Map>action</Map>
+	</SolutionMappings>
+	<ResultClassName>ghosts_simplified.GhostResult</ResultClassName>
+	<ResultMappings>
+		<Map>id</Map>
+		<Map>score</Map>
+		<Map>numReps</Map>
+	</ResultMappings>
+</TextFileConfiguration>
