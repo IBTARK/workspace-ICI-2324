@@ -1,4 +1,4 @@
-package es.ucm.fdi.ici.c2324.practica3.grupo01.ghosts;
+package ghosts_simplified;
 
 import es.ucm.fdi.gaia.jcolibri.exception.NoApplicableSimilarityFunctionException;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.LocalSimilarityFunction;
@@ -11,8 +11,6 @@ import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.LocalSimi
  */
 public class DistanceInterval implements LocalSimilarityFunction {
 
-	private static final int MAX_DIST = 250;
-	
 	/** Interval */
 	double _interval;
 
