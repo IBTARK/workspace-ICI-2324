@@ -1,12 +1,13 @@
 package es.ucm.fdi.ici.c2324.practica3.grupo01.mspacman;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Vector;
-import java.util.Arrays;
 
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCase;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCaseBase;
 import es.ucm.fdi.gaia.jcolibri.method.retain.StoreCasesMethod;
+import es.ucm.fdi.ici.c2324.practica3.grupo01.Pair;
 import pacman.game.Game;
 
 public class MsPacManStorageManager {
@@ -14,12 +15,10 @@ public class MsPacManStorageManager {
 	Game game;
 	CBRCaseBase caseBase;
 	Vector<CBRCase> buffer;
-	Map<CBRCase, CBRCase> chosenReusedCaseMap;
-	
-	public static final double SCORE_TH = 0;
-	public static final double SIM_TH = 0.95;
+	Map<CBRCase, Pair<CBRCase,Boolean>> chosenReusedCaseMap;
 
-	private final static int TIME_WINDOW = 5;
+	public static final double SIM_TH = 0.999;
+	private final static int TIME_WINDOW = 2;
 	
 	public MsPacManStorageManager()
 	{
@@ -35,7 +34,7 @@ public class MsPacManStorageManager {
 		this.caseBase = caseBase;
 	}
 	
-	public void reviseAndRetain(CBRCase newCase, Map<CBRCase, CBRCase> chosenReusedCaseMap) {
+	public void reviseAndRetain(CBRCase newCase, Map<CBRCase, Pair<CBRCase,Boolean>> chosenReusedCaseMap) {
 		this.chosenReusedCaseMap = chosenReusedCaseMap;
 		
 		this.buffer.add(newCase);
@@ -48,9 +47,7 @@ public class MsPacManStorageManager {
 		CBRCase bCase = this.buffer.remove(0);
 		reviseCase(bCase);
 		
-		if(((MsPacManResult)bCase.getResult()).getScore() > SCORE_TH)
-			retainCase(bCase);
-		
+		retainCase(bCase);
 	}
 	
 	public void reviseAndRetainGeneric(CBRCase newCase) {
@@ -91,23 +88,35 @@ public class MsPacManStorageManager {
 		
 		//here you should also check if the case must be stored into persistence (too similar to existing ones, etc.)
 		
-		if(chosenReusedCaseMap.get(bCase) == null) StoreCasesMethod.storeCase(this.caseBase, bCase);
+		//Random generated action
+		if(chosenReusedCaseMap.get(bCase) == null) 
+			StoreCasesMethod.storeCase(this.caseBase, bCase);
+		//Case reused from generic case base
+		else if (chosenReusedCaseMap.get(bCase).getSecond()) {
+			CBRCase reusedCase = chosenReusedCaseMap.get(bCase).getFirst();
+			MsPacManResult res = (MsPacManResult)reusedCase.getResult();
+			
+			//if (res.getScore() < ((MsPacManResult)bCase.getResult()).getScore())
+				StoreCasesMethod.storeCase(this.caseBase, reusedCase);
+		}
+		//Case reused from specific case base
 		else {
-			double sim = new SimPacman().compute(bCase.getDescription(), chosenReusedCaseMap.get(bCase).getDescription(), bCase, chosenReusedCaseMap.get(bCase), null);
+			CBRCase reusedCase = chosenReusedCaseMap.get(bCase).getFirst();
+			MsPacManResult res = (MsPacManResult)reusedCase.getResult();
+			MsPacManResult resAct = (MsPacManResult) bCase.getResult();
+			double sim = new SimPacman().compute(bCase.getDescription(), reusedCase.getDescription(), bCase, reusedCase, null);
 			
 			if(sim < SIM_TH) {
 				StoreCasesMethod.storeCase(this.caseBase, bCase);
 			}
 			else {
-				MsPacManResult res = (MsPacManResult) chosenReusedCaseMap.get(bCase).getResult();
-				MsPacManResult resAct = (MsPacManResult) bCase.getResult();
 				//Mean of the scores of the similar cases
 				res.setScore((res.getScore() * res.getNumReps() + resAct.getScore() ) / (res.getNumReps() + 1));
 				res.setNumReps(res.getNumReps() + 1);
 				
 				//Substitute in caseBase
-				this.caseBase.forgetCases(Arrays.asList(chosenReusedCaseMap.get(bCase)));
-				StoreCasesMethod.storeCase(this.caseBase, chosenReusedCaseMap.get(bCase));
+				this.caseBase.forgetCases(Arrays.asList(reusedCase));
+				StoreCasesMethod.storeCase(this.caseBase, reusedCase);
 			}
 		}
 		chosenReusedCaseMap.remove(bCase);

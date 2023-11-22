@@ -19,6 +19,7 @@ import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.NNScoringMethod;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.local.Interval;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.selection.SelectCases;
 import es.ucm.fdi.gaia.jcolibri.util.FileIO;
+import es.ucm.fdi.ici.c2324.practica3.grupo01.Pair;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CachedLinearCaseBase;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CustomPlainTextConnector;
 import pacman.game.Constants.MOVE;
@@ -35,7 +36,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	CBRCaseBase genericCaseBase;
 	NNConfig simConfig;
 	
-	private Map<CBRCase, CBRCase> chosenReusedCaseMap; //Map of case to the case chosen to be reused
+	private Map<CBRCase, Pair<CBRCase,Boolean>> chosenReusedCaseMap; //Map of case to the case chosen to be reused
 	
 	
 	final static String TEAM = "grupo01"; 
@@ -45,7 +46,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	final static String CASE_BASE_PATH = "cbrdata"+File.separator+TEAM+File.separator+"mspacman"+File.separator;
 	
 	final static int NUM_NEIGHBORS = 10; //number of neighbors of the KNN
-	final static double SIM_TH = 0.5; 
+	final static double SIM_TH = 0.8; 
 	public static final double SCORE_TH = 10 * 5000; //Threshold for the product score * finalScore
 	
 	public MsPacManCBRengine(MsPacManStorageManager storageManager)
@@ -109,7 +110,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 		boolean fromGeneric = false;
 		
 		//The generic case base has to be used
-		if(caseBase.getCases().isEmpty() || neighbors.get(0).getEval() < SIM_TH) {
+		if(caseBase.getCases().isEmpty() || neighbors.get(neighbors.size()-1).getEval() < SIM_TH) {
 			//Compute retrieve
 			eval = NNScoringMethod.evaluateSimilarity(genericCaseBase.getCases(), query, simConfig);
 			//NUM_NEIGHBORS-NN
@@ -154,7 +155,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 		if (maxReutVal < SCORE_TH)
 			return randomMove();
 		
-		if(!fromGeneric) chosenReusedCaseMap.put(reuseCase,neighbors.get(reutCase).get_case());
+		chosenReusedCaseMap.put(reuseCase,new Pair<CBRCase,Boolean>(neighbors.get(reutCase).get_case(), fromGeneric));
 		
 		CBRCase chosenCase = neighbors.get(reutCase).get_case();
 		MsPacManSolution solution = (MsPacManSolution) chosenCase.getSolution();
@@ -202,8 +203,11 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	
 	private MOVE randomMove() {
 		int index = (int)Math.floor(Math.random()*4);
+		try {
 		if(MOVE.values()[index]==action.opposite()) 
 			index= (index+1)%4;
+		}
+		catch (Exception e) {}
 		action = MOVE.values()[index];
 		return action;
 	}
