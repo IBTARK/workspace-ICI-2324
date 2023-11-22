@@ -28,14 +28,14 @@ public class CachedLinearCaseBase implements CBRCaseBase {
 	private Collection<CBRCase> casesToRemove;
 	
 	private Integer nextId;
-	private int finalReward = 1;
+	private int finalReward;
 	private boolean reward = false;
 	
 	/**
 	 * Closes the case base saving or deleting the cases of the persistence media
 	 */
 	public void close() {
-		
+		originalCases.removeAll(casesToRemove);
 		Collection<CBRCase> casesToStore = new ArrayList<>(workingCases);
 		casesToStore.removeAll(originalCases);
 
@@ -51,7 +51,6 @@ public class CachedLinearCaseBase implements CBRCaseBase {
 	 */
 	public void forgetCases(Collection<CBRCase> cases) {
 		workingCases.removeAll(cases);
-		originalCases.removeAll(cases);
 		casesToRemove.addAll(cases);
 	}
 
@@ -59,7 +58,7 @@ public class CachedLinearCaseBase implements CBRCaseBase {
 	 * Returns working cases.
 	 */
 	public Collection<CBRCase> getCases() {
-		return workingCases;
+		return originalCases;
 	}
 
 	/**
@@ -103,7 +102,10 @@ public class CachedLinearCaseBase implements CBRCaseBase {
 	private void rewardCases(Collection<CBRCase> casesToStore) {
 		casesToStore.forEach((c) -> { 
 			MsPacManResult res = (MsPacManResult) c.getResult();
-			res.setScore(res.getScore() * finalReward);
+			if (res.getFinalScore() == null)
+				res.setFinalScore(finalReward);
+			else
+				res.setFinalScore((res.getFinalScore() * res.getNumReps() + finalReward) / (res.getNumReps() + 1));
 			});
 	}
 }

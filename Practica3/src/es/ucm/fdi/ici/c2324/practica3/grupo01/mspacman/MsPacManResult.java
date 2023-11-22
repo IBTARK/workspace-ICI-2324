@@ -5,9 +5,10 @@ import es.ucm.fdi.gaia.jcolibri.cbrcore.CaseComponent;
 
 public class MsPacManResult implements CaseComponent {
 
-	Integer id;
-	Integer score;
-	Integer numReps = 1;
+	private Integer id;
+	private Integer score;
+	private Integer numReps = 1;
+	private Integer finalScore;
 	
 	//Getters
 	
@@ -21,6 +22,10 @@ public class MsPacManResult implements CaseComponent {
 	
 	public Integer getNumReps() {
 		return numReps;
+	}
+	
+	public Integer getFinalScore() {
+		return finalScore;
 	}
 
 	//Setters
@@ -36,6 +41,10 @@ public class MsPacManResult implements CaseComponent {
 	public void setNumReps(Integer numReps) {
 		this.numReps = numReps;
 	}
+	
+	public void setFinalScore(Integer score) {
+		finalScore = score;
+	}
 
 	@Override
 	public Attribute getIdAttribute() {
@@ -44,7 +53,7 @@ public class MsPacManResult implements CaseComponent {
 	
 	@Override
 	public String toString() {
-		return "MsPacManResult [id = " + id + ", score = " + score + ", numReps = " + numReps + "]";
+		return "MsPacManResult [id = " + id + ", score = " + score + ", numReps = " + numReps + ", finalScore = " + finalScore + "]";
 	} 
 	
 	

@@ -16,8 +16,8 @@ public class MsPacManStorageManager {
 	Vector<CBRCase> buffer;
 	Map<CBRCase, CBRCase> chosenReusedCaseMap;
 	
-	public static final double SCORE_TH = 50;
-	public static final double SIM_TH = 0.9;
+	public static final double SCORE_TH = 0;
+	public static final double SIM_TH = 0.95;
 
 	private final static int TIME_WINDOW = 5;
 	
@@ -75,11 +75,9 @@ public class MsPacManStorageManager {
 		int currentScore = game.getScore(), currentLives = description.getLives();
 		
 	
-		int resultValue = (currentScore - oldScore) / (oldLives - currentLives + 1);
+		int resultValue = 1 + (currentScore - oldScore) / (oldLives - currentLives + 1);
 		
-		MsPacManResult result = (MsPacManResult)bCase.getResult();
-		result.setScore(resultValue);
-		bCase.setResult(result);
+		((MsPacManResult)bCase.getResult()).setScore(resultValue);
 	}
 	
 	/**

@@ -21,6 +21,7 @@
 	<ResultMappings>
 		<Map>id</Map>
 		<Map>score</Map>
+		<Map>finalScore</Map>
 		<Map>numReps</Map>
 	</ResultMappings>
 </TextFileConfiguration>

@@ -45,8 +45,8 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	final static String CASE_BASE_PATH = "cbrdata"+File.separator+TEAM+File.separator+"mspacman"+File.separator;
 	
 	final static int NUM_NEIGHBORS = 10; //number of neighbors of the KNN
-	final static double MOST_SIM_VAL = 0.5; 
-	public static final double SCORE_TH = MsPacManStorageManager.SCORE_TH;
+	final static double SIM_TH = 0.5; 
+	public static final double SCORE_TH = 10 * 500; //Threshold for the product score * finalScore
 	
 	public MsPacManCBRengine(MsPacManStorageManager storageManager)
 	{
@@ -109,7 +109,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 		boolean fromGeneric = false;
 		
 		//The generic case base has to be used
-		if(caseBase.getCases().isEmpty() || neighbors.get(0).getEval() < MOST_SIM_VAL) {
+		if(caseBase.getCases().isEmpty() || neighbors.get(0).getEval() < SIM_TH) {
 			//Compute retrieve
 			eval = NNScoringMethod.evaluateSimilarity(genericCaseBase.getCases(), query, simConfig);
 			//NUM_NEIGHBORS-NN
@@ -131,33 +131,31 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	}
 
 	
-	private MOVE reuse(ArrayList<RetrievalResult> neighbors, CBRCase reuseCase, boolean fromGeneric)
-	{
+	private MOVE reuse(ArrayList<RetrievalResult> neighbors, CBRCase reuseCase, boolean fromGeneric) {
 		double maxReutVal = -1;
 		int reutCase = new Random().nextInt(NUM_NEIGHBORS);
+		chosenReusedCaseMap.put(reuseCase,null);
 		
-		if(neighbors.get(0).getEval() < MOST_SIM_VAL) {
-			chosenReusedCaseMap.put(reuseCase,null);
-			
-			int index = (int)Math.floor(Math.random()*4);
-			if(MOVE.values()[index]==action.opposite()) 
-				index= (index+1)%4;
-			action = MOVE.values()[index];
-			return action;
-		}
+		if(neighbors.get(0).getEval() < SIM_TH)
+			return randomMove();
 		
 		for(int i = 0; i < neighbors.size(); i++) {
 			RetrievalResult ret = neighbors.get(i);
 			MsPacManResult result = (MsPacManResult) ret.get_case().getResult();
-			double reutVal = result.getScore();
+			
+			//The case with best short-term and final score will be reused
+			double reutVal = result.getScore() * result.getFinalScore();
 			if(reutVal > maxReutVal) {
 				maxReutVal = reutVal;
 				reutCase = i;
 			}
 		}
 		
-		if(!fromGeneric)chosenReusedCaseMap.put(reuseCase,neighbors.get(reutCase).get_case());
-		else chosenReusedCaseMap.put(reuseCase,null);
+		if (maxReutVal < SCORE_TH)
+			return randomMove();
+		
+		if(!fromGeneric)
+			chosenReusedCaseMap.put(reuseCase,neighbors.get(reutCase).get_case());
 		
 		CBRCase chosenCase = neighbors.get(reutCase).get_case();
 		MsPacManSolution solution = (MsPacManSolution) chosenCase.getSolution();
@@ -201,5 +199,13 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 
 	public void setReward(int score) {
 		this.caseBase.setReward(score);
+	}
+	
+	private MOVE randomMove() {
+		int index = (int)Math.floor(Math.random()*4);
+		if(MOVE.values()[index]==action.opposite()) 
+			index= (index+1)%4;
+		action = MOVE.values()[index];
+		return action;
 	}
 }

@@ -1,3 +1,6 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
 import es.ucm.fdi.ici.c2324.practica3.grupo01.MsPacMan;
 import pacman.Executor;
 import pacman.controllers.GhostController;
@@ -12,14 +15,18 @@ public class ExecutorTest {
                 .build();
 
         try {
-        	for(int i = 0; i < 475; i++) {
+        	Queue<Integer> cola = new LinkedList<>();
+        	for(int i = 0; i < 300; i++) {
         		System.out.println(i);
         		MsPacMan pacMan = new MsPacMan();
     		    GhostController ghosts = new AlgorithmicGhosts();
     		    
-    		    System.out.println( 
-    		        executor.runGame(pacMan, ghosts, 5) //last parameter defines speed
-    		    );
+    		    int score = executor.runGame(pacMan, ghosts, 0); //last parameter defines speed
+    		    System.out.println();
+    		    
+    		    cola.add(score);
+    		    if (cola.size() > 20) cola.remove();
+    		    System.out.println(String.format("Media: %d", cola.stream().mapToInt(Integer::intValue).sum() / cola.size()));
         	}  
         } catch (Exception e) {
         	e.printStackTrace();
