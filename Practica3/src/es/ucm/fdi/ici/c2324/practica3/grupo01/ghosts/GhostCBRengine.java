@@ -3,7 +3,6 @@ package es.ucm.fdi.ici.c2324.practica3.grupo01.ghosts;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import es.ucm.fdi.gaia.jcolibri.cbraplications.StandardCBRApplication;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCase;
@@ -13,10 +12,8 @@ import es.ucm.fdi.gaia.jcolibri.exception.ExecutionException;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.RetrievalResult;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.NNConfig;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.NNScoringMethod;
-import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.local.Interval;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.selection.SelectCases;
 import es.ucm.fdi.gaia.jcolibri.util.FileIO;
-import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.Attribute;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CachedLinearCaseBase;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CustomPlainTextConnector;
 import pacman.game.Constants.MOVE;
@@ -59,8 +56,11 @@ public class GhostCBRengine implements StandardCBRApplication {
 	
 	final static String CONNECTOR_EDIBLE_FILE_PATH = "es/ucm/fdi/ici/c2324/practica3/"+TEAM+"/ghosts/plaintextconfig_edible.xml";
 	final static String CONNECTOR_CHASING_FILE_PATH = "es/ucm/fdi/ici/c2324/practica3/"+TEAM+"/ghosts/plaintextconfig_chasing.xml";
-	final static String  CASE_BASE_EDIBLE_PATH = "src/es/ucm/fdi/ici/c2324/practica3/"+TEAM+File.separator+"cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"edible"+File.separator;
-	final static String  CASE_BASE_CHASING_PATH = "src/es/ucm/fdi/ici/c2324/practica3/"+TEAM+File.separator+"cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"chasing"+File.separator;
+	final static String GENERIC_CASE_BASE_EDIBLE_PATH = "src/es/ucm/fdi/ici/c2324/practica3/"+TEAM+File.separator+"cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"edible"+File.separator;
+	final static String GENERIC_CASE_BASE_CHASING_PATH = "src/es/ucm/fdi/ici/c2324/practica3/"+TEAM+File.separator+"cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"chasing"+File.separator;
+
+	final static String OPPONENT_CASE_BASE_EDIBLE_PATH = "/data/grupo01/ghosts"+File.separator+"edible"+File.separator;
+	final static String OPPONENT_CASE_BASE_CHASING_PATH = "/data/grupo01/ghosts"+File.separator+"chasing"+File.separator;
 	final static String GENERIC_CASE_BASE_NAME = "generic.csv";
 	
 	final static int NUM_NEIGHBORS = 5; //number of neighbors of the KNN
@@ -97,11 +97,11 @@ public class GhostCBRengine implements StandardCBRApplication {
 		
 		//Do not use default case base path in the xml file. Instead use custom file path for each opponent.
 		//Note that you can create any subfolder of files to store the case base inside your "cbrdata/grupoXX" folder.
-		connectorEdible.setCaseBaseFile(CASE_BASE_EDIBLE_PATH, opponent+".csv");
-		connectorChasing.setCaseBaseFile(CASE_BASE_CHASING_PATH, opponent+".csv");
+		connectorEdible.setCaseBaseFile(OPPONENT_CASE_BASE_EDIBLE_PATH, opponent+".csv");
+		connectorChasing.setCaseBaseFile(OPPONENT_CASE_BASE_CHASING_PATH, opponent+".csv");
 		
-		generalConnectorEdible.setCaseBaseFile(CASE_BASE_EDIBLE_PATH, GENERIC_CASE_BASE_NAME);
-		generalConnectorChasing.setCaseBaseFile(CASE_BASE_CHASING_PATH, GENERIC_CASE_BASE_NAME);
+		generalConnectorEdible.setCaseBaseFile(GENERIC_CASE_BASE_EDIBLE_PATH, GENERIC_CASE_BASE_NAME);
+		generalConnectorChasing.setCaseBaseFile(GENERIC_CASE_BASE_CHASING_PATH, GENERIC_CASE_BASE_NAME);
 		
 		this.storageManager.setCaseBaseEdible(caseBaseEdible);
 		this.storageManager.setCaseBaseChasing(caseBaseChasing);
