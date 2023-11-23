@@ -27,7 +27,7 @@ import pacman.game.Constants.MOVE;
 public class MsPacManCBRengine implements StandardCBRApplication {
 
 	private String opponent;
-	private MOVE action;
+	private MOVE action;	//Current chosen action
 	private MsPacManStorageManager storageManager;
 
 	CustomPlainTextConnector connector;
@@ -36,18 +36,17 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	CBRCaseBase genericCaseBase;
 	NNConfig simConfig;
 	
-	private Map<CBRCase, Pair<CBRCase,Boolean>> chosenReusedCaseMap; //Map of case to the case chosen to be reused
-	
+	//Map of case to the case chosen to be reused, and boolean set to true if it comes from the generic case base
+	private Map<CBRCase, Pair<CBRCase,Boolean>> chosenReusedCaseMap; 
 	
 	final static String TEAM = "grupo01"; 
-	
 	
 	final static String CONNECTOR_FILE_PATH = "es/ucm/fdi/ici/c2324/practica3/"+TEAM+"/mspacman/plaintextconfig.xml";
 	final static String CASE_BASE_PATH = "cbrdata"+File.separator+TEAM+File.separator+"mspacman"+File.separator;
 	
 	final static int NUM_NEIGHBORS = 10; //number of neighbors of the KNN
-	final static double SIM_TH = 0.8; 
-	public static final double SCORE_TH = 10 * 5000; //Threshold for the product score * finalScore
+	final static double SIM_TH = 0.8; 	 //Similarity threshold for a case to be reused
+	public static final double SCORE_TH = 10 * 5000; //Threshold for the product score * finalScore for a case to be reused
 	
 	public MsPacManCBRengine(MsPacManStorageManager storageManager)
 	{
@@ -134,9 +133,10 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	
 	private MOVE reuse(ArrayList<RetrievalResult> neighbors, CBRCase reuseCase, boolean fromGeneric) {
 		double maxReutVal = -1;
-		int reutCase = new Random().nextInt(NUM_NEIGHBORS);
-		chosenReusedCaseMap.put(reuseCase,null);
+		int reutCase = new Random().nextInt(NUM_NEIGHBORS);	// Initially choses a random neighbour
+		chosenReusedCaseMap.put(reuseCase,null);			//If no neighbour is chosen, the reused case is null
 
+		//If neighbours are not similar, makes a random move
 		if(neighbors.get(0).getEval() < SIM_TH)
 			return randomMove();
 		
@@ -152,11 +152,14 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 			}
 		}
 		
+		//If best score of neighbours is too low, makes a random move
 		if (maxReutVal < SCORE_TH)
 			return randomMove();
 		
+		//The neighbour to reuse is stored and marked as true if it is from generic case base
 		chosenReusedCaseMap.put(reuseCase,new Pair<CBRCase,Boolean>(neighbors.get(reutCase).get_case(), fromGeneric));
 		
+		//Returns neighbours action
 		CBRCase chosenCase = neighbors.get(reutCase).get_case();
 		MsPacManSolution solution = (MsPacManSolution) chosenCase.getSolution();
 		
@@ -197,10 +200,16 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 		this.genericCaseBase.close();
 	}
 
+	/**
+		Asigns the final score obtained in the current game, which will be applied to every new case's result
+	*/
 	public void setReward(int score) {
 		this.caseBase.setReward(score);
 	}
 	
+	/**
+		Returns a random movemet, avoiding the opposite of the last one made (if exists)
+	*/
 	private MOVE randomMove() {
 		int index = (int)Math.floor(Math.random()*4);
 		try {

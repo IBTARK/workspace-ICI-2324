@@ -17,8 +17,8 @@ public class MsPacManStorageManager {
 	Vector<CBRCase> buffer;
 	Map<CBRCase, Pair<CBRCase,Boolean>> chosenReusedCaseMap;
 
-	public static final double SIM_TH = 0.999;
-	private final static int TIME_WINDOW = 2;
+	public static final double SIM_TH = 0.999; //Threshold to consider two cases the same
+	private final static int TIME_WINDOW = 2; //Number of junctions that MsPacMan has to cross to revise a case
 	
 	public MsPacManStorageManager()
 	{
@@ -45,11 +45,17 @@ public class MsPacManStorageManager {
 		
 		
 		CBRCase bCase = this.buffer.remove(0);
-		reviseCase(bCase);
 		
+		reviseCase(bCase);
 		retainCase(bCase);
 	}
 	
+	/**
+	 * 
+	 * Method to revise and retain those cases that may be added to the generic case base
+	 * 
+	 * @param newCase the case being revised and might be retained
+	 */
 	public void reviseAndRetainGeneric(CBRCase newCase) {
 		this.buffer.add(newCase);
 		
@@ -63,6 +69,11 @@ public class MsPacManStorageManager {
 		StoreCasesMethod.storeCase(this.caseBase, bCase);
 	}
 	
+	/**
+	 * Revision phase
+	 * 
+	 * @param bCase case being revised
+	 */
 	private void reviseCase(CBRCase bCase) {
 		MsPacManDescription description = (MsPacManDescription)bCase.getDescription();
 		
@@ -74,20 +85,17 @@ public class MsPacManStorageManager {
 	
 		int resultValue = 1 + (currentScore - oldScore) / ((oldLives - currentLives)*4 + 1);
 		
+		//Set the score
 		((MsPacManResult)bCase.getResult()).setScore(resultValue);
 	}
 	
 	/**
-	 * The 
-	 * @param bCase
+	 * Retention phase
+	 * 
+	 * @param bCase case that might 
 	 */
 	private void retainCase(CBRCase bCase)
 	{
-		//Store the old case right now into the case base
-		//Alternatively we could store all them when game finishes in close() method
-		
-		//here you should also check if the case must be stored into persistence (too similar to existing ones, etc.)
-		
 		//Random generated action
 		if(chosenReusedCaseMap.get(bCase) == null) 
 			StoreCasesMethod.storeCase(this.caseBase, bCase);
@@ -104,12 +112,14 @@ public class MsPacManStorageManager {
 			CBRCase reusedCase = chosenReusedCaseMap.get(bCase).getFirst();
 			MsPacManResult res = (MsPacManResult)reusedCase.getResult();
 			MsPacManResult resAct = (MsPacManResult) bCase.getResult();
+			
+			//Similarity between the case and the one chosen in the reuse phase
 			double sim = new SimPacman().compute(bCase.getDescription(), reusedCase.getDescription(), bCase, reusedCase, null);
 			
-			if(sim < SIM_TH) {
+			if(sim < SIM_TH) { //The similarity of the reused case and the one that might be retained is lower than the threshold
 				StoreCasesMethod.storeCase(this.caseBase, bCase);
 			}
-			else {
+			else { //The reused case and the one that might be retained are considered 
 				//Mean of the scores of the similar cases
 				res.setScore((res.getScore() * res.getNumReps() + resAct.getScore() ) / (res.getNumReps() + 1));
 				res.setNumReps(res.getNumReps() + 1);

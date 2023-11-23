@@ -10,19 +10,25 @@ import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.NNConfig;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.GlobalSimilarityFunction;
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.local.Interval;
 
+/**
+ * The similarity of a vector is a weighted mean of the 5 elements that compose the vector.
+ */
 public class SimPacmanVector implements GlobalSimilarityFunction {
 	
-	private static final double[] WEIGHTS = { 0.35, 0.35, 0.05, 0.2, 0.05 };
+	private static final double[] WEIGHTS = { 0.35, 0.35, 0.05, 0.2, 0.05 }; //Weight of each attribute
 	
-	private static final int CHASING_IDX = 0;
-	private static final int EDIBLE_IDX = 1;
-	private static final int EDIBLE_TIME_IDX = 2;
-	private static final int PPILL_IDX = 3;
-	private static final int PILL_IDX = 4;
+	private static final int CHASING_IDX = 0; //Index of the distance to the closest chasing ghost
+	private static final int EDIBLE_IDX = 1; //Index of the distance to the closest edible ghost
+	private static final int EDIBLE_TIME_IDX = 2; //Index of the remaining edible time of the closest ghost 
+	private static final int PPILL_IDX = 3; //Index of the distance to the closest PPill
+	private static final int PILL_IDX = 4; //Index of the distance to the closest Pill
 
 	private static final int MAX_DIST = MsPacManInput.MAX_DIST;
 	public static final int MAX_TIME_EDIBLE = 200;
 
+	/**
+	 * Computes the similarity of two vectors
+	 */
 	@Override
 	public double compute(CaseComponent componentOfCase, CaseComponent componentOfQuery, CBRCase _case, CBRQuery _query,
 			NNConfig numSimConfig) {

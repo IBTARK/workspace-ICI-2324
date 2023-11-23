@@ -6,9 +6,9 @@ import es.ucm.fdi.gaia.jcolibri.cbrcore.CaseComponent;
 public class MsPacManResult implements CaseComponent {
 
 	private Integer id;
-	private Integer score;
-	private Integer numReps = 1;
-	private Integer finalScore;
+	private Integer score; //Points obtained between the first phase and the revision phase
+	private Integer numReps = 1; //Number of times a case (or very similar ones) have appeared on the case base
+	private Integer finalScore; //Score at the end of the game
 	
 	//Getters
 	

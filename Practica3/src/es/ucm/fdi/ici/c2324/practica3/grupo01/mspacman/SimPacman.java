@@ -9,6 +9,14 @@ import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.GlobalSim
 import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.local.Interval;
 import pacman.game.Constants.MOVE;
 
+
+/**
+ * The global similarity of MsMacMan takes into consideration the local similarities of the
+ * following elements from MsPacManDescription: <p>
+ * 	- The 4 distance vectors (one for each possible move). <p>
+ * 	- Number of lives remaining. <p>
+ *	- Time remaining until the game ends.
+ */ 
 public class SimPacman implements GlobalSimilarityFunction {
 	
 	private static final double VECTORSWEIGHT = 0.9;
@@ -55,6 +63,9 @@ public class SimPacman implements GlobalSimilarityFunction {
 		return VECTORSWEIGHT * simVectors + LIVESWEIGHT * simLives + TIMEWEIGHT * simTime;
 	}
 
+	/**
+		Returns the vector associated with a given movement in MsPacManDescription.
+	*/
 	private CaseComponent getVector(MsPacManDescription msPacManCase, MOVE m) {
 		if(m == MOVE.UP) return msPacManCase.getUpVector();
 		else if(m == MOVE.DOWN) return msPacManCase.getDownVector();

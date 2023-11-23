@@ -39,8 +39,8 @@ public class CachedLinearCaseBase implements CBRCaseBase {
 		Collection<CBRCase> casesToStore = new ArrayList<>(workingCases);
 		casesToStore.removeAll(originalCases);
 
-		
 		connector.deleteCases(casesToRemove);
+		//If a final score has been give, applies it to the cases to store
 		if (reward) rewardCases(casesToStore);
 		connector.storeCases(casesToStore);
 		connector.close();
@@ -61,11 +61,7 @@ public class CachedLinearCaseBase implements CBRCaseBase {
 		return originalCases;
 	}
 
-	/**
-	 * TODO.
-	 */
 	public Collection<CBRCase> getCases(CaseBaseFilter filter) {
-		// TODO
 		return null;
 	}
 
@@ -94,18 +90,24 @@ public class CachedLinearCaseBase implements CBRCaseBase {
 		nextId += cases.size();
 	}
 
+	/**
+		Assigns a score given to the final score of the game, which will be applied to every new case's result
+	*/
 	public void setReward(int score) {
 		this.finalReward = score;
 		reward = true;
 	}
 	
+	/**
+		Applies the final score given with setReward to every new/modified case's result
+	*/
 	private void rewardCases(Collection<CBRCase> casesToStore) {
 		casesToStore.forEach((c) -> { 
 			MsPacManResult res = (MsPacManResult) c.getResult();
 			if (res.getFinalScore() == null)
-				res.setFinalScore(finalReward);
+				res.setFinalScore(finalReward);	//If the case is new, sets the final score
 			else
 				res.setFinalScore((res.getFinalScore() * res.getNumReps() + finalReward) / (res.getNumReps() + 1));
-			});
+			});		//If the case already existed, sets the mean of all of its results
 	}
 }
