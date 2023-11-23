@@ -121,9 +121,7 @@ public class GhostStorageManager {
 		//if(oldCases.containsKey(bCase)) return;
 		// Si lo hacemos, porque GhostResult del bCase no esta calculado del todo ?
 		GhostDescription description = (GhostDescription)bCase.getDescription();
-		int oldScore = description.getScore();
 		int oldLives = description.getMspacmanLives();
-		int currentScore = game.getScore();
 		int currentLives = game.getPacmanNumberOfLivesRemaining();
 		
 		int ghost = game.getGhostCurrentNodeIndex(description.getType());
@@ -167,24 +165,19 @@ public class GhostStorageManager {
 		boolean edible = ((GhostDescription) bCase.getDescription()).getEdible();
 		
 		// EN caso de que el map oldCases contenga el bCase, queremos NO guardarlo, e incrementar el caso oldCase mapeado.
-		/*
-		 * PARA EVITAR QUE SE METAN EN BUCLES, CUANDO REUTILICEMOS UN CASO MUY PARECIDO, QUE TE PARECE
-		 * HACER LA MEDIA DE AMBOS REVISE
-		 * POR SI ESE MISMO MOVIMIENTO NOS HA DADO MAL SCORE, PARA NO REPETIRLO!
-		 * ASI MODIFICAMOS EL SCORE DEL CASO YA GUARDADO, PARA QUE YA NO SEA EL MEJOR 
-		 */
 		if(oldCases.containsKey(bCase)) {
 			CBRCase oldCase = oldCases.get(bCase);
 			
 			// Eliminamos de la base de casos el NN con mayor reut
 			removeOldCase(oldCase);
-			// Incrementamos el contador (numReps)
+			
+			// Incrementamos el contador (numReps) y hacemos la media de la revision y del anterior caso.
 			GhostResult resultToModify = (GhostResult) oldCase.getResult();
 			GhostResult revisedResult = (GhostResult) bCase.getResult();
 			
 			int newScore = (resultToModify.getScore() + revisedResult.getScore()) / 2;
-			
 			resultToModify.setScore(newScore);
+			
 			resultToModify.incrementCounter();
 			
 			oldCase.setResult(resultToModify);
