@@ -67,4 +67,8 @@ public class Ghosts extends GhostController {
 		return result;
 	}
 
+	@Override
+	public String getName() {
+		return "YI-DJ";
+	}
 }

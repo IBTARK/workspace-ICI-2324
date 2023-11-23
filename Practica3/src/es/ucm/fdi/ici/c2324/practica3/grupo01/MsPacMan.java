@@ -64,4 +64,8 @@ public class MsPacMan extends PacmanController {
 		return MOVE.NEUTRAL;
 	}
 
+	@Override
+	public String getName() {
+		return "YI-DJ";
+	}
 }
