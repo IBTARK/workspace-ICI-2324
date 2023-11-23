@@ -55,6 +55,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 	
 	final static String TEAM = "grupo01";
 	
+	final static boolean DEBUG_EVALS = false;
 	
 	final static String CONNECTOR_EDIBLE_FILE_PATH = "/ghosts_simplified/plaintextconfig_edible.xml";
 	final static String CONNECTOR_CHASING_FILE_PATH = "/ghosts_simplified/plaintextconfig_chasing.xml";
@@ -63,9 +64,9 @@ public class GhostCBRengine implements StandardCBRApplication {
 	final static String GENERIC_CASE_BASE_NAME = "generic.csv";
 	
 	final static int NUM_NEIGHBORS = 5; //number of neighbors of the KNN
-	// La similitud de los casos va de 1.2 (max) a 0
-	final static double MINIMUM_SIM_VAL = 0.8;
-	final static double RETAIN_SIM_VAL = 1.05;
+	// La similitud de los casos va de 1 a 0
+	final static double MINIMUM_SIM_VAL = 0.6;
+	final static double RETAIN_SIM_VAL = 0.80;
 	
 	public GhostCBRengine(GhostStorageManager storageManager) {
 		this.storageManager = storageManager;
@@ -155,21 +156,24 @@ public class GhostCBRengine implements StandardCBRApplication {
 		// ELEGIR DE LA BASE DE CASOS Y ASIGNAR EL SIMCONFIG CORRESPONDIENTE
 		
 		computeRetrieveAndReuse(caseBaseEdible, caseBaseChasing, query, edible);
+		if(this.oldCase != null) {
+			if(DEBUG_EVALS) System.out.print("RETAIN ");
+		}
 		
 		if(this.action == MOVE.NEUTRAL) {
 			computeRetrieveAndReuse(generalCaseBaseEdible, generalCaseBaseChasing, query, edible);
 			this.oldCase = null;
 			
 			if(this.action != MOVE.NEUTRAL) {
-				System.out.print("GENERICA ");
+				if(DEBUG_EVALS) System.out.print("GENERICA ");
 			}
 		}
 		else
-			System.out.print("OPONENTE ");
+			if(DEBUG_EVALS) System.out.print("OPONENTE ");
 		
 		if(this.action == MOVE.NEUTRAL) {
 			this.action = getRandomPossibleMove(query);
-			System.out.print("MOVIMIENTO ALEATORIO ");
+			if(DEBUG_EVALS) System.out.print("MOVIMIENTO ALEATORIO ");
 		}
 		
 			//Compute revise & retain
@@ -245,7 +249,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 		}
 		
 		if(topRetrieval != null) {
-			System.out.print("CHASING Eval ["+topRetrieval.getEval() + "] ");
+			if(DEBUG_EVALS) System.out.print("CHASING Eval ["+topRetrieval.getEval() + "] ");
 			if(topRetrieval.getEval() >= RETAIN_SIM_VAL) {
 				this.oldCase =  topRetrieval.get_case();
 			}
@@ -292,7 +296,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 		}
 		
 		if(topRetrieval != null) {
-			System.out.print("CHASING Eval ["+topRetrieval.getEval() + "] ");
+			if(DEBUG_EVALS) System.out.print("CHASING Eval ["+topRetrieval.getEval() + "] ");
 			if(topRetrieval.getEval() >= RETAIN_SIM_VAL) {
 				this.oldCase =  topRetrieval.get_case();
 				}
@@ -354,7 +358,7 @@ public class GhostCBRengine implements StandardCBRApplication {
 		newCase.setResult(newResult);
 		newCase.setSolution(newSolution);
 	
-		System.out.println(newSolution.toString());
+		if(DEBUG_EVALS) System.out.println(newSolution.toString());
 		
 		return newCase;
 	}
