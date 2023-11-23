@@ -20,12 +20,11 @@ public class SimGhost implements GlobalSimilarityFunction {
 	private static final double MSPACMANTOPPILL = 0.05;
 	*/
 	
-	private static final double VECTOR_DIVISOR = 1.3;
-	private static final double EDIBLE_VECTORSWEIGHT = 0.8 / VECTOR_DIVISOR;
-	private static final double CHASING_VECTORSWEIGHT = 0.85 / VECTOR_DIVISOR;
-	private static final double LIVESWEIGHT = 0.0;
-	private static final double TIMEWEIGHT = 0.0;
-	private static final double EDIBLETIMEWEIGHT = 0.5;
+	private static final double EDIBLE_VECTORSWEIGHT = 0.70;
+	private static final double CHASING_VECTORSWEIGHT = 0.75;
+	private static final double LIVESWEIGHT = 0.00;
+	private static final double TIMEWEIGHT = 0.10;
+	private static final double EDIBLETIMEWEIGHT = 0.05;
 	private static final double MSPACMANTOPPILL = 0.10;
 
 	private static final int MAX_TIME = 200;
@@ -49,7 +48,8 @@ public class SimGhost implements GlobalSimilarityFunction {
 		
 		//Local similarity of the vectors   
 		for(MOVE m : MOVE.values()) {
-			simVectors +=  0.25 * simVector.compute(getVector(ghostCase, m), getVector(ghostQuery, m), _case, _query, numSimConfig);
+			if(m != MOVE.NEUTRAL)
+				simVectors +=  0.25 * simVector.compute(getVector(ghostCase, m), getVector(ghostQuery, m), _case, _query, numSimConfig);
 		}
 		
 		//Local similarity of the remaining time
