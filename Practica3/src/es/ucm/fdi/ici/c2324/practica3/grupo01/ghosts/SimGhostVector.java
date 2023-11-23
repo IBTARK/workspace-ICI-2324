@@ -14,8 +14,11 @@ import pacman.game.Constants.MOVE;
 
 public class SimGhostVector implements GlobalSimilarityFunction {
 
-	private static final double[] WEIGHTS = { 1.0 , 0.00, 0.00, 0.00 };
+	// The individual weights of the vector
+	// (in order of the next indices)
+	private static final double[] WEIGHTS = { 0.7 , 0.05, 0.05, 0.2 };
 	
+	// Indices of the parameters of the vector
 	private static final int MSPACMAN_IDX = 0;
 	private static final int EDIBLE_IDX = 1;
 	private static final int EDIBLE_TIME_IDX = 2;
@@ -38,10 +41,11 @@ public class SimGhostVector implements GlobalSimilarityFunction {
 			return 1;
 		if (vecCase.getMove() != vecQuery.getMove() || !vecInCase || !vecInQuery)
 			return 0;
-
+		
 		ArrayList<Integer> distCase = vecCase.getDistancias();
 		ArrayList<Integer> distQuery= vecQuery.getDistancias();
 		
+		// Computes the similarity of each individual Attribute of the array given the weigths and the interval.
 		double sim = 0;
 		try {
 			sim += WEIGHTS[MSPACMAN_IDX] * new DistanceInterval(MAX_DIST).compute(distCase.get(MSPACMAN_IDX), distQuery.get(MSPACMAN_IDX));

@@ -5,14 +5,15 @@
 	<DescriptionMappings>
 		<Map>id</Map>
 		<Map>mspacmanLives</Map>
+		<Map>mspacmanDistance</Map>
 		<Map>score</Map>
-		<Map>time</Map>		
-		<Map>edibleTime</Map>		
+		<Map>time</Map>	
+		<Map>edibleTime</Map>			
 		<Map>mspacmanToPPill</Map>
 		<Map>upVector</Map>
 		<Map>downVector</Map>
 		<Map>rightVector</Map>
-		<Map>leftVector</Map>	
+		<Map>leftVector</Map>
 	</DescriptionMappings>
 	<SolutionClassName>es.ucm.fdi.ici.c2324.practica3.grupo01.ghosts.GhostSolution</SolutionClassName>
 	<SolutionMappings>

@@ -14,6 +14,7 @@ public class GhostInput extends CBRInput {
 
 	GHOST type;
 	Integer mspacmanLives;
+	Integer mspacmanDistance; // Minimum distance to mspacman
 	Integer score;
 	Integer time;
 	Boolean edible;
@@ -44,6 +45,7 @@ public class GhostInput extends CBRInput {
 		MOVE lastMove = game.getGhostLastMoveMade(type);
 		
 		this.mspacmanLives = game.getPacmanNumberOfLivesRemaining();
+		this.mspacmanDistance = game.getShortestPathDistance(ghost, mspacman, lastMove);
 		this.score = game.getScore();
 		this.time = game.getTotalTime();
 		this.edible = game.isGhostEdible(type);
@@ -53,9 +55,10 @@ public class GhostInput extends CBRInput {
 		
 		ArrayList<Integer> auxList;
 		for(MOVE move: game.getPossibleMoves(ghost, game.getGhostLastMoveMade(type))) {
-			auxList = new ArrayList<Integer>(4);
+			int nextPos = game.getNeighbour(ghost, move);
+			auxList = new ArrayList<Integer>();
 			// mspacman's distance from ghost
-			auxList.add(game.getShortestPathDistance(ghost, mspacman, move));
+			auxList.add(0, game.getShortestPathDistance(nextPos, mspacman, move));
 			// this method adds to the move list nearestEdible, nearestEdibleTime, nearestChasing
 			computeNearestGhosts(game, move, auxList);
 			copyList(auxList, move);
@@ -75,16 +78,16 @@ public class GhostInput extends CBRInput {
 	private void copyList(ArrayList<Integer> auxList, MOVE move) {
 		switch(move) {
 		case UP:
-			this.up.setDistancias(new ArrayList<Integer>(auxList));
+			this.up.setDistancias(auxList);
 			break;
 		case RIGHT:
-			this.right.setDistancias(new ArrayList<Integer>(auxList));
+			this.right.setDistancias(auxList);
 			break;
 		case DOWN:
-			this.down.setDistancias(new ArrayList<Integer>(auxList));
+			this.down.setDistancias(auxList);
 			break;
 		case LEFT:
-			this.left.setDistancias(new ArrayList<Integer>(auxList));
+			this.left.setDistancias(auxList);
 			break;
 		case NEUTRAL:
 		default:
@@ -96,12 +99,14 @@ public class GhostInput extends CBRInput {
 		GhostDescription description = new GhostDescription();
 		
 		description.setMspacmanLives(mspacmanLives);
+		description.setMspacmanDistance(mspacmanDistance);
 		description.setScore(score);
 		description.setTime(time);
 		description.setType(type);
 		description.setEdible(edible);
 		description.setEdibleTime(edibleTime);
 		description.setMspacmanToPPill(mspacmanToPPill);
+		description.setPossibleMoves(possibleMoves);
 		description.setUpVector(up);
 		description.setRightVector(right);
 		description.setDownVector(down);
@@ -115,15 +120,17 @@ public class GhostInput extends CBRInput {
 	private void computeNearestGhosts(Game game, MOVE move, ArrayList<Integer> list) {
 		Integer nearestChasing = Integer.MAX_VALUE;
 		Integer nearestEdible = Integer.MAX_VALUE;
-		Integer nearestEdibleTime = Integer.MAX_VALUE;
+		Integer nearestEdibleTime = -1;
+		
+		int nextPos = game.getNeighbour(game.getGhostCurrentNodeIndex(type), move);
 		
 		for(GHOST g: GHOST.values()) {
-			int pos = game.getGhostCurrentNodeIndex(g);
+			int curGhost = game.getGhostCurrentNodeIndex(g);
 			boolean edible = game.isGhostEdible(g);
 			
 			int distance;
-			if(pos != -1 && this.type!=g) 
-				distance = (int)game.getDistance(game.getGhostCurrentNodeIndex(type), pos, DM.PATH);
+			if(game.getGhostLairTime(g)<= 0 && this.type!=g) 
+				distance = (int)game.getShortestPathDistance(nextPos, curGhost, move);
 			else
 				distance = Integer.MAX_VALUE;
 			

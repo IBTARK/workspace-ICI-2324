@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.Vector;
 
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCase;
-import es.ucm.fdi.gaia.jcolibri.cbrcore.CBRCaseBase;
 import es.ucm.fdi.gaia.jcolibri.method.retain.StoreCasesMethod;
 import es.ucm.fdi.ici.c2324.practica3.grupo01.CBRengine.CachedLinearCaseBase;
 import pacman.game.Constants.GHOST;
+import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
 public class GhostStorageManager {
@@ -27,6 +27,7 @@ public class GhostStorageManager {
 	Vector<CBRCase> bufferInky;
 	Vector<CBRCase> bufferSue;
 	
+	// Pending cases of the buffers (in order to give correct IDs)
 	int pendingEdibleCases;
 	int pendingChasingCases;
 	
@@ -59,6 +60,13 @@ public class GhostStorageManager {
 		this.caseBaseChasing = caseBase;
 	}
 	
+	/**
+	 * Stores the newCase in the corresponding buffer and waits for a TIME_WINDOW to execute the revise and retain.
+	 * Incase oldCase is not null, we won't be retaining the newCase, but modifying the oldCase
+	 * 
+	 * @param newCase
+	 * @param oldCase
+	 */
 	public void reviseAndRetain(CBRCase newCase, CBRCase oldCase)
 	{
 		if(oldCase!=null) 
@@ -116,20 +124,33 @@ public class GhostStorageManager {
 		retainCase(bCase);
 	}
 	
+	/**
+	 * The revise method updates the new case's result score given the next equation
+	 * if(pacman has died) score = 80;
+	 * else score = (bCase's distance to mspacman) - (actual distance to mspacman)
+	 * 
+	 * @param bCase
+	 */
 	private void reviseCase(CBRCase bCase) {
-		// En caso de que el CBRCase est� en el mapa de oldCases, no queremos hacer ni el revise ni el retain.
-		//if(oldCases.containsKey(bCase)) return;
-		// Si lo hacemos, porque GhostResult del bCase no esta calculado del todo ?
 		GhostDescription description = (GhostDescription)bCase.getDescription();
-		int oldScore = description.getScore();
 		int oldLives = description.getMspacmanLives();
-		int currentScore = game.getScore();
 		int currentLives = game.getPacmanNumberOfLivesRemaining();
+		
+		int ghost = game.getGhostCurrentNodeIndex(description.getType());
+		int mspacman = game.getPacmanCurrentNodeIndex();
+		MOVE lastMove = game.getGhostLastMoveMade(description.getType());
+		
 		if(currentLives > oldLives) {
 			currentLives = oldLives;
 		}
 		
-		int resultScore = (currentScore - oldScore) / (oldLives - currentLives + 1);
+		int resultScore;
+		if(currentLives < oldLives) {
+			resultScore = 80;
+		}
+		else {
+			resultScore = description.getMspacmanDistance() - game.getShortestPathDistance(ghost, mspacman, lastMove);
+		}
 		
 		GhostResult result = (GhostResult)bCase.getResult();
 		result.setScore(resultScore);	
@@ -137,6 +158,11 @@ public class GhostStorageManager {
 		bCase.setResult(result);
 	}
 	
+	/**
+	 * Removes the case from the corresponding case base
+	 * 
+	 * @param bCase
+	 */
 	public void removeOldCase(CBRCase bCase) {
 		
 		boolean edible = ((GhostDescription) bCase.getDescription()).getEdible();
@@ -150,7 +176,12 @@ public class GhostStorageManager {
 			this.caseBaseChasing.forgetCases(caseToModify);
 	}
 
-	
+	/**
+	 * Retains the newCase if the similarity of the top "reut" neighbor was lower than the RETAIN_SIM_VAL of the CBRengine
+	 * Otherwise it updates the oldCase's score by doing an average of both case's scores, then increments its counter by 1 and stores it back to the case base.
+	 * 
+	 * @param bCase
+	 */
 	private void retainCase(CBRCase bCase)
 	{
 		boolean edible = ((GhostDescription) bCase.getDescription()).getEdible();
@@ -161,9 +192,16 @@ public class GhostStorageManager {
 			
 			// Eliminamos de la base de casos el NN con mayor reut
 			removeOldCase(oldCase);
-			// Incrementamos el contador (numReps)
+			
+			// Incrementamos el contador (numReps) y hacemos la media de la revision y del anterior caso.
 			GhostResult resultToModify = (GhostResult) oldCase.getResult();
+			GhostResult revisedResult = (GhostResult) bCase.getResult();
+			
+			int newScore = (resultToModify.getScore() + revisedResult.getScore()) / 2;
+			resultToModify.setScore(newScore);
+			
 			resultToModify.incrementCounter();
+			
 			oldCase.setResult(resultToModify);
 			// Lo a�adimos de vuelta a la base de casos
 			if(edible)	
@@ -182,6 +220,9 @@ public class GhostStorageManager {
 		
 	}
 
+	/**
+	 * Revises and retains all remaining cases in the buffers
+	 */
 	public void close() {
 		for(CBRCase oldCase: this.bufferBlinky)
 		{
@@ -209,10 +250,20 @@ public class GhostStorageManager {
 		this.bufferSue.removeAllElements();
 	}
 
+	/**
+	 * Gets the number of pending chasing cases in the buffers
+	 * 
+	 * @return
+	 */
 	public int getPendingChasingCases() {
 		return pendingChasingCases;
 	}
 
+	/**
+	 * Gets the number of pending edible cases in the buffers
+	 * 
+	 * @return
+	 */
 	public int getPendingEdibleCases() {
 		return pendingEdibleCases;
 	}

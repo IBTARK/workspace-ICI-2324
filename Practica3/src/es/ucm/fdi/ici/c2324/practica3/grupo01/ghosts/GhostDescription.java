@@ -1,5 +1,7 @@
  package es.ucm.fdi.ici.c2324.practica3.grupo01.ghosts;
 
+import java.util.ArrayList;
+
 import es.ucm.fdi.gaia.jcolibri.cbrcore.Attribute;
 import es.ucm.fdi.gaia.jcolibri.cbrcore.CaseComponent;
 import pacman.game.Constants.GHOST;
@@ -11,12 +13,14 @@ public class GhostDescription implements CaseComponent {
 	private Integer id;
 
 	private Integer mspacmanLives;
+	private Integer mspacmanDistance;
 	private Integer score;
 	private Integer time;
 	private GHOST type;
 	private Boolean edible;
 	private Integer edibleTime;
 	private Integer mspacmanToPPill;		//MsPacMan's distance to its nearest PPill.
+	private ArrayList<MOVE> possibleMoves;  // NO LO VAMOS A GUARDAR. ES PARA HACER CHECKEO RAPIDO
 	
 	private GhostDistanceVector upVector = new GhostDistanceVector(MOVE.UP);
 	private GhostDistanceVector rightVector = new GhostDistanceVector(MOVE.RIGHT);
@@ -40,6 +44,14 @@ public class GhostDescription implements CaseComponent {
 
 	public void setMspacmanLives(Integer mspacmanLives) {
 		this.mspacmanLives = mspacmanLives;
+	}
+
+	public Integer getMspacmanDistance() {
+		return mspacmanDistance;
+	}
+
+	public void setMspacmanDistance(Integer mspacmanDistance) {
+		this.mspacmanDistance = mspacmanDistance;
 	}
 
 	public Integer getScore() {
@@ -93,12 +105,20 @@ public class GhostDescription implements CaseComponent {
 		this.mspacmanToPPill = mspacmanToPPill;
 	}
 
+	public ArrayList<MOVE> getPossibleMoves() {
+		return possibleMoves;
+	}
+
+	public void setPossibleMoves(ArrayList<MOVE> possibleMoves) {
+		this.possibleMoves = new ArrayList<MOVE>(possibleMoves);
+	}
+
 	public GhostDistanceVector getUpVector() {
 		return upVector;
 	}
 
 	public void setUpVector(GhostDistanceVector upVector) {
-		this.upVector = upVector;
+		this.upVector = new GhostDistanceVector(upVector);
 	}
 
 	public GhostDistanceVector getRightVector() {
@@ -106,7 +126,7 @@ public class GhostDescription implements CaseComponent {
 	}
 
 	public void setRightVector(GhostDistanceVector rightVector) {
-		this.rightVector = rightVector;
+		this.rightVector = new GhostDistanceVector(rightVector);
 	}
 
 	public GhostDistanceVector getDownVector() {
@@ -114,7 +134,7 @@ public class GhostDescription implements CaseComponent {
 	}
 
 	public void setDownVector(GhostDistanceVector downVector) {
-		this.downVector = downVector;
+		this.downVector = new GhostDistanceVector(downVector);
 	}
 
 	public GhostDistanceVector getLeftVector() {
@@ -122,7 +142,7 @@ public class GhostDescription implements CaseComponent {
 	}
 
 	public void setLeftVector(GhostDistanceVector leftVector) {
-		this.leftVector = leftVector;
+		this.leftVector = new GhostDistanceVector(leftVector);
 	}
 
 	@Override

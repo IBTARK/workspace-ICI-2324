@@ -42,7 +42,7 @@ public class MsPacManCBRengine implements StandardCBRApplication {
 	final static String TEAM = "grupo01"; 
 	
 	final static String CONNECTOR_FILE_PATH = "es/ucm/fdi/ici/c2324/practica3/"+TEAM+"/mspacman/plaintextconfig.xml";
-	final static String CASE_BASE_PATH = "cbrdata"+File.separator+TEAM+File.separator+"mspacman"+File.separator;
+	final static String CASE_BASE_PATH = "src/es/ucm/fdi/ici/c2324/practica3/"+TEAM+File.separator+"cbrdata"+File.separator+TEAM+File.separator+"mspacman"+File.separator;
 	
 	final static int NUM_NEIGHBORS = 10; //number of neighbors of the KNN
 	final static double SIM_TH = 0.8; 	 //Similarity threshold for a case to be reused

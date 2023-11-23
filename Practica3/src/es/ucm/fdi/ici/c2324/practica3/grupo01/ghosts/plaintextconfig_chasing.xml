@@ -5,6 +5,7 @@
 	<DescriptionMappings>
 		<Map>id</Map>
 		<Map>mspacmanLives</Map>
+		<Map>mspacmanDistance</Map>
 		<Map>score</Map>
 		<Map>time</Map>			
 		<Map>mspacmanToPPill</Map>

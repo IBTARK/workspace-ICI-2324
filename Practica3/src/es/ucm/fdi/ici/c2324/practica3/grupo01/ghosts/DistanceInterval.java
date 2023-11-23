@@ -5,14 +5,15 @@ import es.ucm.fdi.gaia.jcolibri.method.retrieve.NNretrieval.similarity.LocalSimi
 
 /**
  * This function returns the similarity of two number inside an interval.
+ * 
+ * Returns 0 if one of the values is equal to -1 or greater than the interval and the other isn't.
+ * 
  * sim(x,y)=1-(|x-y|/interval)
  * 
  * Now it works with Number values.
  */
 public class DistanceInterval implements LocalSimilarityFunction {
 
-	private static final int MAX_DIST = 250;
-	
 	/** Interval */
 	double _interval;
 
@@ -47,6 +48,7 @@ public class DistanceInterval implements LocalSimilarityFunction {
 		double v1 = i1.doubleValue();
 		double v2 = i2.doubleValue();
 		
+		// If ONLY ONE of the values is out of the range (interval, -1) returns 0, otherwise computes the equation.
 		if(((v1 >= _interval || v1 <= -1) && !(v2 >= _interval || v2 <= -1))
 				|| ((v2 >= _interval || v2 <= -1) && !(v1 >= _interval || v1 <= -1)))
 			return 0;

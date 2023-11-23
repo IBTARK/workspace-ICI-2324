@@ -17,6 +17,16 @@ public class GhostDistanceVector implements es.ucm.fdi.gaia.jcolibri.connector.T
 	public GhostDistanceVector() {
 		distancias = new ArrayList<>();
 	}
+
+	public GhostDistanceVector(GhostDistanceVector g) {
+		try {
+			this.fromString(g.toString());
+		}
+		catch (Exception e) {
+			System.out.println("ERROR CREANDO GHOSTDISTANCEVECTOR");
+			e.printStackTrace();
+		}
+	}
 		
 	public MOVE getMove() {
 		return move;
@@ -31,7 +41,7 @@ public class GhostDistanceVector implements es.ucm.fdi.gaia.jcolibri.connector.T
 	}
 
 	public void setDistancias(ArrayList<Integer> distancias) {
-		this.distancias = distancias;
+		this.distancias = new ArrayList<Integer>(distancias);
 	}
 
 	public GhostDistanceVector(MOVE move) {

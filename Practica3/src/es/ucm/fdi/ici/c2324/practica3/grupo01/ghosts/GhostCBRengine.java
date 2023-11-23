@@ -55,16 +55,18 @@ public class GhostCBRengine implements StandardCBRApplication {
 	
 	final static String TEAM = "grupo01";
 	
+	final static boolean DEBUG_EVALS = false;
 	
 	final static String CONNECTOR_EDIBLE_FILE_PATH = "es/ucm/fdi/ici/c2324/practica3/"+TEAM+"/ghosts/plaintextconfig_edible.xml";
 	final static String CONNECTOR_CHASING_FILE_PATH = "es/ucm/fdi/ici/c2324/practica3/"+TEAM+"/ghosts/plaintextconfig_chasing.xml";
-	final static String  CASE_BASE_EDIBLE_PATH = "cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"edible"+File.separator;
-	final static String  CASE_BASE_CHASING_PATH = "cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"chasing"+File.separator;
+	final static String  CASE_BASE_EDIBLE_PATH = "src/es/ucm/fdi/ici/c2324/practica3/"+TEAM+File.separator+"cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"edible"+File.separator;
+	final static String  CASE_BASE_CHASING_PATH = "src/es/ucm/fdi/ici/c2324/practica3/"+TEAM+File.separator+"cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"chasing"+File.separator;
 	final static String GENERIC_CASE_BASE_NAME = "generic.csv";
 	
 	final static int NUM_NEIGHBORS = 5; //number of neighbors of the KNN
-	final static double MINIMUM_SIM_VAL = 0.7;
-	final static double RETAIN_SIM_VAL = 0.9;
+	// La similitud de los casos va de 1 a 0
+	final static double MINIMUM_SIM_VAL = 0.6;
+	final static double RETAIN_SIM_VAL = 0.80;
 	
 	public GhostCBRengine(GhostStorageManager storageManager) {
 		this.storageManager = storageManager;
@@ -105,31 +107,13 @@ public class GhostCBRengine implements StandardCBRApplication {
 		this.storageManager.setCaseBaseChasing(caseBaseChasing);
 		
 		/*
-		 * HACER 2 SIMCONFIG , UNA EDIBLE OTRA NO Y A LA HORA DE EVALUAR (EN cycle) SE ELIGE LA SIMCONFIg
+		 * We are doing 2 simConfigs
 		 */
-		// Se puede hacer un CaseComponent por cada vector a la hora de almacenar (se tendria que cambiar el mapeo tambi�n en los config.xml
 		simConfigEdible =  new NNConfig();
 		simConfigEdible.setDescriptionSimFunction(new SimGhost());
-		simConfigEdible.addMapping(new Attribute("mspacmanLives", GhostDescription.class), new Interval(2));
-		simConfigEdible.addMapping(new Attribute("score", GhostDescription.class), new Interval(15000));
-		simConfigEdible.addMapping(new Attribute("time", GhostDescription.class),new Interval(4000));
-		simConfigEdible.addMapping(new Attribute("edibleTime", GhostDescription.class),new Interval(650));
-		simConfigEdible.addMapping(new Attribute("mspacmanToPPill", GhostDescription.class),new Interval(650));
-		simConfigEdible.addMapping(new Attribute("upVector",GhostDescription.class), new SimGhostVector());
-		simConfigEdible.addMapping(new Attribute("downVector",GhostDescription.class), new SimGhostVector());
-		simConfigEdible.addMapping(new Attribute("leftVector",GhostDescription.class), new SimGhostVector());
-		simConfigEdible.addMapping(new Attribute("rightVector",GhostDescription.class), new SimGhostVector());
 		
 		simConfigChasing = new NNConfig();
 		simConfigChasing.setDescriptionSimFunction(new SimGhost());
-		simConfigChasing.addMapping(new Attribute("mspacmanLives", GhostDescription.class), new Interval(2));
-		simConfigChasing.addMapping(new Attribute("score", GhostDescription.class), new Interval(15000));
-		simConfigChasing.addMapping(new Attribute("time", GhostDescription.class),new Interval(4000));
-		simConfigChasing.addMapping(new Attribute("mspacmanToPPill", GhostDescription.class),new Interval(650));
-		simConfigChasing.addMapping(new Attribute("upVector",GhostDescription.class), new SimGhostVector());
-		simConfigChasing.addMapping(new Attribute("downVector",GhostDescription.class), new SimGhostVector());
-		simConfigChasing.addMapping(new Attribute("leftVector",GhostDescription.class), new SimGhostVector());
-		simConfigChasing.addMapping(new Attribute("rightVector",GhostDescription.class), new SimGhostVector());
 	}
 
 
@@ -142,30 +126,41 @@ public class GhostCBRengine implements StandardCBRApplication {
 		
 		return caseBaseEdible;
 	}
-
 	@Override
 	public void cycle(CBRQuery query) throws ExecutionException {
 		
 		boolean edible = ((GhostDescription) query.getDescription()).getEdible();
 		this.oldCase = null;
-		// HACER UN IF DONDE VEAMOS SI ES EDIBLE.
-		// ELEGIR DE LA BASE DE CASOS Y ASIGNAR EL SIMCONFIG CORRESPONDIENTE
 		
+		// Retrieves and reuses the opponent's specific cases
 		computeRetrieveAndReuse(caseBaseEdible, caseBaseChasing, query, edible);
 		
-		if(this.action == MOVE.NEUTRAL)
+		if(this.action == MOVE.NEUTRAL) {
+			// In case we have not found a fitting case we retrieve and reuse the generic cases
 			computeRetrieveAndReuse(generalCaseBaseEdible, generalCaseBaseChasing, query, edible);
+			this.oldCase = null;
+		}
 		
 		if(this.action == MOVE.NEUTRAL) {
-			this.action = getRandomMove();
-			System.out.print("MOVIMIENTO ALEATORIO");
+			// In case 
+			this.action = getRandomPossibleMove(query);
 		}
+		
 			//Compute revise & retain
 		CBRCase newCase = createNewCase(query);
 		this.storageManager.reviseAndRetain(newCase, oldCase);
 		
 	}
 
+	/**
+	 * This function checks if the given case bases are empty. Evaluates the similarity if they aren't 
+	 * and, if the top neighbour's similarity surpases MINIMUM_SIM_VAL then it calls the reuse() method.
+	 * 
+	 * @param CBedible case base for edible cases
+	 * @param CBchasing case base for chasing cases
+	 * @param query the query to check
+	 * @param edible if the current query's ghost is edible
+	 */
 	private void computeRetrieveAndReuse(CBRCaseBase CBedible, CBRCaseBase CBchasing, CBRQuery query, boolean edible) {
 		
 		Collection<RetrievalResult> eval;
@@ -189,103 +184,129 @@ public class GhostCBRengine implements StandardCBRApplication {
 			
 			if(neighbors.get(0).getEval() < MINIMUM_SIM_VAL) 
 				this.action = MOVE.NEUTRAL;
-			else
-				this.action = reuse2(eval);
-		}
-		this.oldCase = null;
-	}
-
-	private MOVE reuse(Collection<RetrievalResult> eval)
-	{
-		
-		Iterator<RetrievalResult> topCases = SelectCases.selectTopKRR(eval, NUM_NEIGHBORS).iterator();
-		RetrievalResult topRetrieval = topCases.next();
-		CBRCase retrievedCase = topRetrieval.get_case();
-		double similarity = topRetrieval.getEval();
-		if(similarity < MINIMUM_SIM_VAL) 
-			return MOVE.NEUTRAL;
-		
-		
-		GhostResult result = (GhostResult) retrievedCase.getResult();
-		double minReut = similarity;
-		double curReut;
-		RetrievalResult currentRetrieval;
-
-		// Con este bucle calculamos el caso con MENOR "reut" y lo seleccionamos como topRetrieval para luego elegir su movimiento.
-		while(topCases.hasNext()) {
-			currentRetrieval = topCases.next();
-			result = (GhostResult) currentRetrieval.get_case().getResult();
-			curReut = currentRetrieval.getEval();
-			
-			if(curReut > minReut) {
-				minReut = curReut;
-				topRetrieval = currentRetrieval;
+			else {
+				if(edible) 	this.action = reuseEdible(eval, query);
+				else this.action = reuseChasing(eval, query);
 			}
 		}
 		
-		// Al salir, en topRetrieval tenemos el caso con MENOR "reut", por lo que vemos su similitud y su solution.
-		GhostSolution solution = (GhostSolution) topRetrieval.get_case().getSolution();
-		similarity = topRetrieval.getEval();
+	}
+
+	/**
+	 * Method that given an eval, gets the top NUM_NEIGHBORS and selects the MAXIMUM reut given by the next equation
+	 * reut = "Evaluation of the case" * "result score of the case"
+	 * @param eval
+	 * @param query
+	 * @return (MOVE) the action that the reuse method has chosen
+	 */
+	private MOVE reuseChasing(Collection<RetrievalResult> eval, CBRQuery query)
+	{
+		RetrievalResult topRetrieval = null;
+		GhostResult result = null;
 		
-		if(similarity >= RETAIN_SIM_VAL) {
-			this.oldCase =  topRetrieval.get_case();
+		double maxReut = 0;
+		double curReut;
+		MOVE action = MOVE.NEUTRAL;
+
+		// Con este bucle calculamos el caso con MAYOR "reut" y lo seleccionamos como topRetrieval para luego elegir su movimiento.
+		for(RetrievalResult currentRetrieval : SelectCases.selectTopKRR(eval, NUM_NEIGHBORS)) {
+			GhostSolution solution = (GhostSolution) currentRetrieval.get_case().getSolution();
+			if(moveAvailable(query, solution.getAction())) {
+				result = (GhostResult) currentRetrieval.get_case().getResult();
+				curReut = currentRetrieval.getEval() * result.getScore();
+
+				if(curReut > maxReut) {
+					action = solution.getAction();
+					maxReut = curReut;
+					topRetrieval = currentRetrieval;
+				}
+			}
+		}
+		
+		if(topRetrieval != null) {
+			if(topRetrieval.getEval() >= RETAIN_SIM_VAL) {
+				this.oldCase =  topRetrieval.get_case();
+			}
+			else if (topRetrieval.getEval() <= MINIMUM_SIM_VAL) {
+				action = MOVE.NEUTRAL;
+			}
 		}
 
-		MOVE action = solution.getAction();
 		return action;
 	}
 	
 	/**
-	 * Alternativa de reuse donde escogeremos el movimiento en base a una inspeccion de los movimientos del top 5 y escogiendo
-	 * el movimiento mas usado teniendo en cuenta las similitudes
+	 * Method that given an eval, gets the top NUM_NEIGHBORS and selects the MINIMUM reut given by the next equation
+	 * reut = "Evaluation of the case" * "result score of the case"
 	 * 
 	 * @param eval
+	 * @param query
 	 * @return
 	 */
-	private MOVE reuse2(Collection<RetrievalResult> eval)
+	private MOVE reuseEdible(Collection<RetrievalResult> eval, CBRQuery query)
 	{
-		Iterator<RetrievalResult> topCases = SelectCases.selectTopKRR(eval, NUM_NEIGHBORS).iterator();
-		RetrievalResult topRetrieval = topCases.next();
-		CBRCase retrievedCase = topRetrieval.get_case();
-		double similarity = topRetrieval.getEval();
-		if(similarity < MINIMUM_SIM_VAL) 
-			return MOVE.NEUTRAL;
+		RetrievalResult topRetrieval = null;
+		GhostResult result = null;
 		
-		
-		GhostResult result = (GhostResult) retrievedCase.getResult();
-		double minReut = similarity * Math.sqrt(result.getNumReps()) / (result.getScore() + 1);
+		double minReut = 0;
 		double curReut;
-		RetrievalResult currentRetrieval;
-				
+		MOVE action = MOVE.NEUTRAL;
+
 		// Con este bucle calculamos el caso con MENOR "reut" y lo seleccionamos como topRetrieval para luego elegir su movimiento.
-		while(topCases.hasNext()) {
-			currentRetrieval = topCases.next();
-			result = (GhostResult) currentRetrieval.get_case().getResult();
-			curReut = currentRetrieval.getEval() * Math.sqrt(result.getNumReps()) / result.getScore();
-			
-			if(curReut < minReut) {
-				minReut = curReut;
-				topRetrieval = currentRetrieval;
+		for(RetrievalResult currentRetrieval : SelectCases.selectTopKRR(eval, NUM_NEIGHBORS)) {
+			GhostSolution solution = (GhostSolution) currentRetrieval.get_case().getSolution();
+			if(moveAvailable(query, solution.getAction())) {
+				result = (GhostResult) currentRetrieval.get_case().getResult();
+				curReut = currentRetrieval.getEval() * result.getScore();
+
+				if(curReut < minReut) {
+					action = solution.getAction();
+					minReut = curReut;
+					topRetrieval = currentRetrieval;
+				}
 			}
 		}
 		
-		// Al salir, en topRetrieval tenemos el caso con MENOR "reut", por lo que vemos su similitud y su solution.
-		GhostSolution solution = (GhostSolution) topRetrieval.get_case().getSolution();
-		similarity = topRetrieval.getEval();
-		
-		if(similarity >= RETAIN_SIM_VAL) {
-			this.oldCase =  topRetrieval.get_case();
+		if(topRetrieval != null) {
+			if(topRetrieval.getEval() >= RETAIN_SIM_VAL) {
+				this.oldCase =  topRetrieval.get_case();
+			}
+			else if (topRetrieval.getEval() <= MINIMUM_SIM_VAL) {
+				action = MOVE.NEUTRAL;
+			}
+			
 		}
 
-		MOVE action = solution.getAction();
 		return action;
 	}
 	
-	private MOVE getRandomMove() {
+	/**
+	 * Checks if the given query contains the given MOVE in its "possibleMoves"
+	 * 
+	 * @param query
+	 * @param move
+	 * @return
+	 */
+	private boolean moveAvailable(CBRQuery query, MOVE move) {
+		boolean res;
+		
+		res = (( GhostDescription )query.getDescription()).getPossibleMoves().contains(move);
+		
+		return res;
+	}
+	
+	/**
+	 * Selects a random move from the given query's "possibleMove" attribute
+	 * @param query
+	 * @return
+	 */
+	private MOVE getRandomPossibleMove(CBRQuery query) {
+		ArrayList<MOVE> possibleMoves = (( GhostDescription )query.getDescription()).getPossibleMoves();
 		int index = (int)Math.floor(Math.random()*4);
-		if(MOVE.values()[index]==action) 
-			index= (index+1)%4;
-		return MOVE.values()[index];
+		index= (index+1)%possibleMoves.size();
+		MOVE res = possibleMoves.get(index);
+		
+		return res;
 	}
 	
 	
@@ -319,8 +340,6 @@ public class GhostCBRengine implements StandardCBRApplication {
 		newCase.setDescription(newDescription);
 		newCase.setResult(newResult);
 		newCase.setSolution(newSolution);
-	
-		System.out.println(newDescription.getEdible() + " " + newSolution.toString());
 		
 		return newCase;
 	}
