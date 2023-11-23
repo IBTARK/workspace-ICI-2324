@@ -59,8 +59,8 @@ public class GhostCBRengine implements StandardCBRApplication {
 	final static String GENERIC_CASE_BASE_EDIBLE_PATH = "src/es/ucm/fdi/ici/c2324/practica3/"+TEAM+File.separator+"cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"edible"+File.separator;
 	final static String GENERIC_CASE_BASE_CHASING_PATH = "src/es/ucm/fdi/ici/c2324/practica3/"+TEAM+File.separator+"cbrdata"+File.separator+TEAM+File.separator+"ghosts"+File.separator+"chasing"+File.separator;
 
-	final static String OPPONENT_CASE_BASE_EDIBLE_PATH = "/data/grupo01/ghosts"+File.separator+"edible"+File.separator;
-	final static String OPPONENT_CASE_BASE_CHASING_PATH = "/data/grupo01/ghosts"+File.separator+"chasing"+File.separator;
+	final static String OPPONENT_CASE_BASE_EDIBLE_PATH = "data/grupo01/ghosts"+File.separator+"edible"+File.separator;
+	final static String OPPONENT_CASE_BASE_CHASING_PATH = "data/grupo01/ghosts"+File.separator+"chasing"+File.separator;
 	final static String GENERIC_CASE_BASE_NAME = "generic.csv";
 	
 	final static int NUM_NEIGHBORS = 5; //number of neighbors of the KNN
