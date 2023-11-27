@@ -17,15 +17,15 @@ import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
 public class Ghosts  extends GhostController  {
-	private static final String RULES_PATH = "es"+File.separator+"ucm"+File.separator+"fdi"+File.separator+"ici"+File.separator+"c2324"+File.separator+"practica4"+File.separator+"grupoYY"+File.separator;
+	private static final String RULES_PATH = "es"+File.separator+"ucm"+File.separator+"fdi"+File.separator+"ici"+File.separator+"c2324"+File.separator+"practica4"+File.separator+"grupo01"+File.separator;
 	HashMap<String,RulesAction> map;
 	
 	EnumMap<GHOST,RuleEngine> ghostRuleEngines;
 	
 	
 	public Ghosts() {
-		setName("Ghosts XX");
-		setTeam("Team XX");
+		setName("Ghosts YI-DJ");
+		setTeam("Team 01");
 		
 		map = new HashMap<String,RulesAction>();
 		//Fill Actions
