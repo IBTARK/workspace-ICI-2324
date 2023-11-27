@@ -17,7 +17,7 @@ public class ExecutorTest {
                 .build();
 
         PacmanController pacMan = new PacManRandom();
-        GhostController ghosts = new es.ucm.fdi.ici.c2324.practica4.grupoYY.Ghosts();
+        GhostController ghosts = new es.ucm.fdi.ici.c2324.practica4.grupo01.Ghosts();
         
         System.out.println( 
         		executor.runGame(pacMan, ghosts, 40)

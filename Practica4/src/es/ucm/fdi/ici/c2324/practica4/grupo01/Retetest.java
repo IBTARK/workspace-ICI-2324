@@ -1,4 +1,4 @@
-package es.ucm.fdi.ici.c2324.practica4.grupoYY;
+package es.ucm.fdi.ici.c2324.practica4.grupo01;
 
 import java.io.File;
 import java.util.Iterator;
@@ -10,7 +10,7 @@ import jess.Rete;
 public class Retetest {
 
 	public static void main(String args[]) {
-		String RULES_PATH = "es"+File.separator+"ucm"+File.separator+"fdi"+File.separator+"ici"+File.separator+"practica3"+File.separator+"demorules"+File.separator;
+		String RULES_PATH = "es"+File.separator+"ucm"+File.separator+"fdi"+File.separator+"ici"+File.separator+"practica4"+File.separator+"demorules"+File.separator;
 		String RULES_FILE = "rulestest.clp";
 		String rulesFile = String.format("%s%s", RULES_PATH, RULES_FILE);
 		Rete jess = new Rete();
