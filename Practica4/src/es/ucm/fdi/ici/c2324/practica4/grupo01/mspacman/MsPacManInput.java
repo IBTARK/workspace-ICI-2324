@@ -1,6 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica4.grupo01.mspacman;
 
 import java.util.Collection;
+import java.util.Vector;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -96,49 +97,49 @@ public class MsPacManInput extends RulesInput {
 		
 	}
 	
-	public int dangerLevel() {
-		return dangerLevel;
-	}
-	
-	public boolean danger() {
-		return dangerLevel > 0;
-	}
-	
-	public boolean levelUp() {
-		return levelUp;
-	}
-	
-	public boolean ppillAccessible() {
-		return ppillAccessible;
-	}
-	
-	public boolean attack() {
-		return attack;
-	}
-	
-	public boolean attackClose() {
-		return attackClose;
-	}
-	
-	public int getClosestPPill() {
-		return closestPPill;
-	}
-	
-	public boolean isPPillClose() {
-		return ppillClose;
-	}
-	
-	public boolean combo() {
-		return combo;
-	}
-	
-	public boolean fewPills() {
-		return fewPills;
-	}
-	
-	public boolean isNearestPPillBlocked() {
-		return nearestPPillBlocked;
-	}
+//	public int dangerLevel() {
+//		return dangerLevel;
+//	}
+//	
+//	public boolean danger() {
+//		return dangerLevel > 0;
+//	}
+//	
+//	public boolean levelUp() {
+//		return levelUp;
+//	}
+//	
+//	public boolean ppillAccessible() {
+//		return ppillAccessible;
+//	}
+//	
+//	public boolean attack() {
+//		return attack;
+//	}
+//	
+//	public boolean attackClose() {
+//		return attackClose;
+//	}
+//	
+//	public int getClosestPPill() {
+//		return closestPPill;
+//	}
+//	
+//	public boolean isPPillClose() {
+//		return ppillClose;
+//	}
+//	
+//	public boolean combo() {
+//		return combo;
+//	}
+//	
+//	public boolean fewPills() {
+//		return fewPills;
+//	}
+//	
+//	public boolean isNearestPPillBlocked() {
+//		return nearestPPillBlocked;
+//	}
 	
 	public int getNearestEdibleDistance() {
 		return nearestEdibleDist;
@@ -155,7 +156,19 @@ public class MsPacManInput extends RulesInput {
 
 	@Override
 	public Collection<String> getFacts() {
-		// TODO Auto-generated method stub
-		return null;
+		Vector<String> facts = new Vector<String>();
+		facts.add(String.format("(MSPACMAN (levelUp %b))", this.levelUp));
+		facts.add(String.format("(MSPACMAN (combo %b))", this.combo));
+		facts.add(String.format("(PPILL (closest %d))", this.closestPPill));
+		facts.add(String.format("(PPILL (accessible %b))", this.ppillAccessible));
+		facts.add(String.format("(PPILL (close %b))", this.ppillClose));
+		facts.add(String.format("(PPILL (blocked %b))", this.nearestPPillBlocked));
+		facts.add(String.format("(EDIBLE (nearestDist %d))", this.nearestEdibleDist));
+		facts.add(String.format("(EDIBLE (attack %b))", this.attack));
+		facts.add(String.format("(EDIBLE (attackClose %b))", this.attackClose));
+		facts.add(String.format("(CHASING (dangerLevel %d))", this.dangerLevel));
+		facts.add(String.format("(PILLS (few %b))", this.fewPills));
+		//TODO
+		return facts;
 	}
 }
