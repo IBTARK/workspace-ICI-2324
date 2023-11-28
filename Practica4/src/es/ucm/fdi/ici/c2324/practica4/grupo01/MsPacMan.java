@@ -5,8 +5,10 @@ import java.util.HashMap;
 
 import es.ucm.fdi.ici.c2324.practica4.grupo01.mspacman.MsPacManInput;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.mspacman.actions.ChaseAction;
+import es.ucm.fdi.ici.c2324.practica4.grupo01.mspacman.actions.KamikazeFantasmaAction;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.mspacman.actions.KamikazePillAction;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.mspacman.actions.NeutralAction;
+import es.ucm.fdi.ici.c2324.practica4.grupo01.mspacman.actions.RunAwayAction;
 import es.ucm.fdi.ici.rules.RuleEngine;
 import es.ucm.fdi.ici.rules.RulesAction;
 import es.ucm.fdi.ici.rules.RulesInput;
@@ -32,11 +34,14 @@ public class MsPacMan extends PacmanController {
 		RulesAction chase = new ChaseAction();
 		RulesAction neutral = new NeutralAction();
 		RulesAction kamikazePill = new KamikazePillAction(); 
-		//TODO
+		RulesAction runAway = new RunAwayAction();
+		RulesAction kamikazeFantasma = new KamikazeFantasmaAction();
 		
 		map.put("chase", chase);
 		map.put("neutral", neutral);
 		map.put("kamikazePill", kamikazePill);
+		map.put("Huir", runAway);
+		map.put("KamikazeFantasma", kamikazeFantasma);
 		
 		ruleEngine = new RuleEngine("MsPacManRuleEngine", RULES_PATH, map);
 		

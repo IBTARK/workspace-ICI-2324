@@ -12,7 +12,9 @@
 (deftemplate EDIBLE
 	(slot nearestDist (type NUMBER))
 	(slot attack (type SYMBOL))
-	(slot attackClose (type SYMBOL)))
+	(slot attackClose (type SYMBOL))
+	(slot nearestNextJuntDist (type NUMBER))
+	(slot nextJuntDist (type NUMBER)))
 	
 (deftemplate CHASING
 	(slot dangerLevel (type NUMBER)))

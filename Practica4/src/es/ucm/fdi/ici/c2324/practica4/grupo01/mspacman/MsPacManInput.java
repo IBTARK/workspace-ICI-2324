@@ -141,17 +141,17 @@ public class MsPacManInput extends RulesInput {
 //		return nearestPPillBlocked;
 //	}
 	
-	public int getNearestEdibleDistance() {
-		return nearestEdibleDist;
-	}
+//	public int getNearestEdibleDistance() {
+//		return nearestEdibleDist;
+//	}
 	
-	public int nearestEdibleNextJunctionDistance() {
-		return nearestEdibleNextJunctionDist;
-	}
+//	public int nearestEdibleNextJunctionDistance() {
+//		return nearestEdibleNextJunctionDist;
+//	}
 	
-	public int distOfNearestEdibleToHisNextJunction() {
-		return distOfNearestEdibleToHisNextJunction;
-	}
+//	public int distOfNearestEdibleToHisNextJunction() {
+//		return distOfNearestEdibleToHisNextJunction;
+//	}
 
 
 	@Override
@@ -165,10 +165,12 @@ public class MsPacManInput extends RulesInput {
 		facts.add(String.format("(PPILL (blocked %b))", this.nearestPPillBlocked));
 		facts.add(String.format("(EDIBLE (nearestDist %d))", this.nearestEdibleDist));
 		facts.add(String.format("(EDIBLE (attack %b))", this.attack));
+		facts.add(String.format("(EDIBLE (nearestNextJuntDist %b))", this.nearestEdibleNextJunctionDist));
+		facts.add(String.format("(EDIBLE (nextJuntDist %b))", this.distOfNearestEdibleToHisNextJunction));
 		facts.add(String.format("(EDIBLE (attackClose %b))", this.attackClose));
 		facts.add(String.format("(CHASING (dangerLevel %d))", this.dangerLevel));
 		facts.add(String.format("(PILLS (few %b))", this.fewPills));
-		//TODO
+		
 		return facts;
 	}
 }
