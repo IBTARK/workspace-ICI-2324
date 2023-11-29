@@ -1,0 +1,58 @@
+Acciones:
+a cada una de las acciones en parseFact como minimo tenemos que pasarle 
+el ghostType para indicarle que ghost tiene que realizar la accion
+
+ChaseMspacman(ghostType)
+FlankMspacman(ghostType, indice del junction)
+(Cuando ya funcione perseguir y flanquear) CoverEdible(ghostType, nearestEdible)
+
+RunAway(ghostType)
+(Cuando ya funcione el resto) RunToChasing(ghostType, nearestChasing)
+
+Reglas:
+// Asuncion: el orden en el que se va a ejecutar las reglas BLINKY, INKY, PINKY, SUE
+// Asuncion: el ghostType va a estar en una de las reglas como "currentghost"
+
+Si no estamos vivos ->
+	action -> no hacer nada(ghostType)
+
+
+Si estamos vivos {
+	Si somos edible {
+		assert -> RunAway(ghostType)
+	}
+	Si no somos edible {
+		Si somos el fantasma mas cercano a mspacman {
+			assert -> ChaseMspacman(ghostType)
+		}
+		Si NO {
+			Si somos BLINKY {
+				CALULAR EL JUNCTION MINIMO
+				FlankMspacman(ghostType, junction)
+			}
+			Si somos INKY {
+				VER SI BLINKY NO ERA EL MAS CERCANO
+					CALULAR EL JUNCTION MINIMO DE BLINKY "DESCARTARLO" 
+				CALCULAR EL JUNCTION MINIMO NUESTRO (de los restantes)
+				FlankMspacman(ghostType, junction)
+			}
+			Si somos PINKY {
+				VER SI BLINKY NO ERA EL MAS CERCANO
+					CALULAR EL JUNCTION MINIMO DE BLINKY "DESCARTARLO" 
+				VER SI INKY NO ERA EL MAS CERCANO
+					CALULAR EL JUNCTION MINIMO DE INKY "DESCARTARLO" 
+				CALCULAR EL JUNCTION MINIMO NUESTRO (de los restantes)
+				FlankMspacman(ghostType, junction)
+			}
+			Si somos SUE {
+				VER SI BLINKY NO ERA EL MAS CERCANO
+					CALULAR EL JUNCTION MINIMO DE BLINKY "DESCARTARLO" 
+				VER SI INKY NO ERA EL MAS CERCANO
+					CALULAR EL JUNCTION MINIMO DE INKY "DESCARTARLO"
+				VER SI PINKY NO ERA EL MAS CERCANO
+					CALULAR EL JUNCTION MINIMO DE PINKY "DESCARTARLO" 
+				CALCULAR EL JUNCTION MINIMO NUESTRO (de los restantes)
+				FlankMspacman(ghostType, junction)
+			}
+		}
+	}

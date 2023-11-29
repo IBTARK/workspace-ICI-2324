@@ -7,6 +7,7 @@ import java.util.Vector;
 import es.ucm.fdi.ici.rules.RulesInput;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
+import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
 public class GhostsInput extends RulesInput {
@@ -45,9 +46,21 @@ public class GhostsInput extends RulesInput {
 
 
 	private void computeDistanceToMspacman() {
+		int mspacman = game.getPacmanCurrentNodeIndex();
+		MOVE msLastMove = game.getPacmanLastMoveMade();
 		for(GHOST g : GHOST.values()) {
-			if(game.getGhostLairTime(g) <= 0)
-				distanceToMspacman.put(g, -1);
+			int gIndex = game.getGhostCurrentNodeIndex(g);
+			MOVE gLastMove = game.getGhostLastMoveMade(g);
+			if(game.getGhostLairTime(g) <= 0) {
+				// Primera opcion
+				distanceToMspacman.put(g, game.getShortestPathDistance(
+						mspacman,
+						gIndex,
+						msLastMove));
+				// Segunda opcion
+				// Calular la distancia nuestra hacia ms pacman pero teniendo en cuenta si vamos detras suyo.
+				distanceToMspacman.put(g, GhostsTools.distanceToMspacmanFromFront(game, gIndex, gLastMove, mspacman, msLastMove));
+			}	
 		}
 	}
 
@@ -115,15 +128,8 @@ public class GhostsInput extends RulesInput {
 	@Override
 	public Collection<String> getFacts() {
 		Vector<String> facts = new Vector<String>();
-		/*
-		facts.add(String.format("(BLINKY (edible %s))", this.BLINKYedible));
-		facts.add(String.format("(INKY (edible %s))", this.INKYedible));
-		facts.add(String.format("(PINKY (edible %s))", this.PINKYedible));
-		facts.add(String.format("(SUE (edible %s))", this.SUEedible));
-		facts.add(String.format("(MSPACMAN (mindistancePPill %d))", 
-								(int)this.minPacmanDistancePPill));
-		*/
 		// Hacer un for para añadir estilo:
+		/*
 		for(GHOST g: GHOST.values()) {
 			StringBuilder str = new StringBuilder();
 			
@@ -146,6 +152,7 @@ public class GhostsInput extends RulesInput {
 		
 		facts.add(String.format("(MSPACMAN (mindistancePPill %d))", 
 				(int)this.minPacmanDistancePPill));
+		*/
 
 		return facts;
 	}

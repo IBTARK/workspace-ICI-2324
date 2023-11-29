@@ -1,12 +1,21 @@
 ;FACTS ASSERTED BY GAME INPUT
 (deftemplate CURRENTGHOST
 	(slot tipo (type SYMBOL))
+(deftemplate MSPACMAN 
+    (slot mindistancePPill (type NUMBER))
+    (slot firstJunction (type INTEGER))
+    (slot secondJunction (type INTEGER))
+    (slot thirdJunction (type INTEGER))
+)	
 (deftemplate BLINKY
 	(slot alive (type SYMBOL)) ; Deberiamos poner esto o no poner el resto de slots??
 	(slot edible (type SYMBOL))
 	(slot nearestChasing (type SYMBOL))
 	(slot nearestEdible (type SYMBOL))
-	(slot distanceToMspacman (type INTEGER))	
+	(slot distanceToMspacman (type INTEGER))
+	(slot distanceToFirstJunction (type INTEGER))
+	(slot distanceToSecondJunction (type INTEGER))
+	(slot distanceToThirdJunction (type INTEGER))
 )
 	
 (deftemplate INKY
@@ -29,10 +38,8 @@
 	(slot nearestEdible (type SYMBOL))
 	(slot distanceToMspacman (type INTEGER))
 )
-	
-(deftemplate MSPACMAN 
-    (slot mindistancePPill (type NUMBER)) )
-    
+
+
 ;DEFINITION OF THE ACTION FACT
 (deftemplate ACTION
 	(slot id) (slot info (default "")) (slot priority (type NUMBER) ) ; mandatory slots
