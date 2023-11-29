@@ -50,11 +50,11 @@ public class GhostsTools {
 		//Find the nearest chasing ghost 
 		for (GHOST g : GHOST.values()) {
 			//If the ghost is not on the lair
-			if(game.getGhostLairTime(g) <= 0) {
+			if(game.getGhostLairTime(g) <= 0 && !game.isGhostEdible(g) && !g.equals(ghost)) {
 				int dist = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(ghost), 
 						game.getGhostCurrentNodeIndex(g), 
 						game.getGhostLastMoveMade(ghost));
-				if (!g.equals(ghost) && !game.isGhostEdible(g) && minDist > dist) {
+				if (dist >= 0 && minDist > dist) {
 					minDist = dist;
 					nearest = g;
 				}
@@ -76,11 +76,11 @@ public class GhostsTools {
 		//Find the nearest edible ghost
 		for (GHOST g : GHOST.values()) {
 			//If the ghost is not on the lair
-			if(game.getGhostLairTime(g) <= 0) {
+			if(game.getGhostLairTime(g) <= 0 && !g.equals(ghost) && game.isGhostEdible(g)) {
 				int dist = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(ghost), 
 						game.getGhostCurrentNodeIndex(g), 
 						game.getGhostLastMoveMade(ghost));
-				if (!g.equals(ghost) && game.isGhostEdible(g) && dist >= 0 && minDist > dist) {
+				if (dist >= 0 && minDist > dist) {
 					minDist = dist;
 					nearest = g;
 				}
