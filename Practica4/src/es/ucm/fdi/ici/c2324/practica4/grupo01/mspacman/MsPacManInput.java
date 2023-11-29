@@ -19,6 +19,7 @@ public class MsPacManInput extends RulesInput {
 	private static final int TH_PPILL = 100;
 	private static final int TH_FEWPILLS = 20;
 	private static final int TH_COMBO = 500;
+	private static final int MAX_DIST = 5000;
 	
 	private int dangerLevel;
 	private int closestPPill;
@@ -42,6 +43,17 @@ public class MsPacManInput extends RulesInput {
 	@Override
 	public void parseInput() {
 		dangerLevel = 0;
+		levelUp = false;
+		ppillAccessible = false;
+		ppillClose = false;
+		attack = false;
+		attackClose = false;
+		combo = false;
+		fewPills = false;
+		nearestPPillBlocked = false;
+		nearestEdibleDist = -1;
+		nearestEdibleNextJunctionDist = -1;
+		distOfNearestEdibleToHisNextJunction = -1;
 		for (GHOST g : GHOST.values()) {
 			if (game.getGhostLairTime(g) <= 0) {
 				if (!game.isGhostEdible(g)
@@ -85,88 +97,31 @@ public class MsPacManInput extends RulesInput {
 		
 		//Nearest edible ghost to MsPacMan
 		GHOST nearest = MsPacManTools.getNearestEdible(game, pos, lastMove); //CAREFUL, can return null
-		nearestEdibleDist = nearest == null ? Integer.MAX_VALUE : game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearest), lastMove);
+		nearestEdibleDist = nearest == null ? MAX_DIST : game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearest), lastMove);
 		
 		//Next junction of the edible ghost, it can be null if there is no edible ghost
 		Integer edibleJunction = nearest == null ? null : MsPacManTools.nextJunction(game, game.getGhostCurrentNodeIndex(nearest), game.getGhostLastMoveMade(nearest));
-		nearestEdibleNextJunctionDist = nearest == null ? Integer.MAX_VALUE : game.getShortestPathDistance(pos, edibleJunction, lastMove);
+		nearestEdibleNextJunctionDist = nearest == null ? MAX_DIST : game.getShortestPathDistance(pos, edibleJunction, lastMove);
 		
-		distOfNearestEdibleToHisNextJunction = nearest == null ? Integer.MAX_VALUE : game.getShortestPathDistance(game.getGhostCurrentNodeIndex(nearest), edibleJunction, game.getGhostLastMoveMade(nearest));
 		
 		fewPills = game.getNumberOfActivePills() <= TH_FEWPILLS;
 		
 	}
-	
-//	public int dangerLevel() {
-//		return dangerLevel;
-//	}
-//	
-//	public boolean danger() {
-//		return dangerLevel > 0;
-//	}
-//	
-//	public boolean levelUp() {
-//		return levelUp;
-//	}
-//	
-//	public boolean ppillAccessible() {
-//		return ppillAccessible;
-//	}
-//	
-//	public boolean attack() {
-//		return attack;
-//	}
-//	
-//	public boolean attackClose() {
-//		return attackClose;
-//	}
-//	
-//	public int getClosestPPill() {
-//		return closestPPill;
-//	}
-//	
-//	public boolean isPPillClose() {
-//		return ppillClose;
-//	}
-//	
-//	public boolean combo() {
-//		return combo;
-//	}
-//	
-//	public boolean fewPills() {
-//		return fewPills;
-//	}
-//	
-//	public boolean isNearestPPillBlocked() {
-//		return nearestPPillBlocked;
-//	}
-	
-//	public int getNearestEdibleDistance() {
-//		return nearestEdibleDist;
-//	}
-	
-//	public int nearestEdibleNextJunctionDistance() {
-//		return nearestEdibleNextJunctionDist;
-//	}
-	
-//	public int distOfNearestEdibleToHisNextJunction() {
-//		return distOfNearestEdibleToHisNextJunction;
-//	}
 
 
 	@Override
 	public Collection<String> getFacts() {
 		Vector<String> facts = new Vector<String>();
-		facts.add(String.format("(MSPACMAN (levelUp %b))", this.levelUp));
+//		facts.add(String.format("(MSPACMAN (levelUp %b))", this.levelUp));
 		facts.add(String.format("(MSPACMAN (combo %b))", this.combo));
-		facts.add(String.format("(PPILL (closest %d))", this.closestPPill));
+//		facts.add(String.format("(PPILL (closest %d))", this.closestPPill));
 		facts.add(String.format("(PPILL (accessible %b))", this.ppillAccessible));
 		facts.add(String.format("(PPILL (close %b))", this.ppillClose));
 		facts.add(String.format("(PPILL (blocked %b))", this.nearestPPillBlocked));
 		facts.add(String.format("(EDIBLE (nearestDist %d))", this.nearestEdibleDist));
 		facts.add(String.format("(EDIBLE (attack %b))", this.attack));
-		facts.add(String.format("(EDIBLE (nearestNextJuntDist %b))", this.nearestEdibleNextJunctionDist));
-		facts.add(String.format("(EDIBLE (nextJuntDist %b))", this.distOfNearestEdibleToHisNextJunction));
+		facts.add(String.format("(EDIBLE (nearestNextJunctDist %b))", this.nearestEdibleNextJunctionDist));
+//		facts.add(String.format("(EDIBLE (nextJunctDist %b))", this.distOfNearestEdibleToHisNextJunction));
 		facts.add(String.format("(EDIBLE (attackClose %b))", this.attackClose));
 		facts.add(String.format("(CHASING (dangerLevel %d))", this.dangerLevel));
 		facts.add(String.format("(PILLS (few %b))", this.fewPills));
