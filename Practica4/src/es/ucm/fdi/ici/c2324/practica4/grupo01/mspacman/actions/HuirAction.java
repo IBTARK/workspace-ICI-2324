@@ -9,7 +9,7 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-public class RunAwayAction implements RulesAction{
+public class HuirAction implements RulesAction{
 	enum STRATEGY { HUIR_DE_FANTASMA, HUIR_HACIA_PPILL, HUIR_RODEANDO_PPILL, HUIR_VARIOS_FANTASMAS };
 	STRATEGY runAwayStrategy;
 	

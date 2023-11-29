@@ -34,33 +34,92 @@
 ;MAIN RULES
 
 (defrule neutral
-	
-	=>
-	(assert (ACTION (id neutral) (priority 1)))
+	(assert (ACTION (id neutral) (priority 10)))
 )
 
 (defrule huir
-	
+	(CHASING (danger true))
 	=>
-	(assert (ACTION (id huir) (priority 5)))
+	(assert (ACTION (id huir) (priority 30)))
 )
 
 (defrule perseguir
-	
+	(EDIBLE (attack true))
 	=>
-	(assert (ACTION (id perseguir) (priority 2)))
+	(assert (ACTION (id perseguir) (priority 20)))
 )
 
 (defrule kamikazePill
-	
+	(PILLS (few true))
 	=>
-	(assert (ACTION (id kamikazePill) (priority 3)))
+	(assert (ACTION (id kamikazePill) (priority 40)))
 )
 
 (defrule kamikazeFantasma
-	
+	(MSPACMAN (combo true))
+	(EDIBLE (attackClose true))
 	=>
-	(assert (ACTION (id kamikazeFantasma) (priority 4)))
+	(assert (ACTION (id kamikazeFantasma) (priority 50)))
 )
 
-;STRATEGY RULES
+;HUIR RULES
+
+(defrule huirFantasma
+	(ACTION (id huir) (priority ?p))
+	=>
+	(assert (ACTION (id huir) (priority (+ ?p 1)) (strategy HUIR_DE_FANTASMA)))
+)
+
+(defrule huirVariosFantasmas
+	(ACTION (id huir) (priority ?p))
+	(CHASING (dangerLevel ?dl)) (test (> ?dl 1))
+	=>
+	(assert (ACTION (id huir) (priority (+ ?p 2)) (strategy HUIR_VARIOS_FANTASMAS)))
+)
+
+(defrule huirHaciaPPill
+	(ACTION (id huir) (priority ?p))
+	(CHASING (dangerLevel ?dl)) (test (> ?dl 1))
+	(PPILL (close true) (blocked false))
+	=>
+	(assert (ACTION (id huir) (priority (+ ?p 4)) (strategy HUIR_HACIA_PPILL)))
+)
+
+(defrule huirRodeandoAPPill
+	(ACTION (id huir) (priority ?p))
+	(CHASING (dangerLevel ?dl)) (test (> ?dl 1))
+	(PPILL (close true) (accesible true))
+	=>
+	(assert (ACTION (id huir) (priority (+ ?p 3)) (strategy HUIR_RODEANDO_PPILL)))
+)
+
+;PERSEGUIR RULES
+
+(defrule perseguirDirecto
+	(ACTION (id perseguir) (priority ?p))
+	=>
+	(assert (ACTION (id perseguir) (priority (+ ?p 1)) (strategy PERSEGUIR)))
+)
+
+(defrule flanquear
+	(ACTION (id huir) (priority ?p))
+	(EDIBLE (nearestDist ?nd) (nearestNextJunctDist ?nnjd))
+	(test (>= ?nd ?nnjd))
+	=>
+	(assert (ACTION (id perseguir) (priority (+ ?p 2)) (strategy FLANQUEAR)))
+)
+
+;NEUTRAL RULES
+
+(defrule buscarPills
+	(ACTION (id neutral) (priority ?p))
+	=>
+	(assert (ACTION (id neutral) (priority (+ ?p 1)) (strategy BUSCAR_PILLS)))
+)
+
+(defrule evitarPPill
+	(ACTION (id neutral) (priority ?p))
+	(PPILL (close true))
+	=>
+	(assert (ACTION (id neutral) (priority (+ ?p 2)) (strategy EVITAR_PPILL)))
+)

@@ -3,12 +3,12 @@ package es.ucm.fdi.ici.c2324.practica4.grupo01;
 import java.io.File;
 import java.util.HashMap;
 
+import es.ucm.fdi.ici.c2324.practica4.grupo01.mspacman.actions.HuirAction;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.mspacman.MsPacManInput;
-import es.ucm.fdi.ici.c2324.practica4.grupo01.mspacman.actions.ChaseAction;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.mspacman.actions.KamikazeFantasmaAction;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.mspacman.actions.KamikazePillAction;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.mspacman.actions.NeutralAction;
-import es.ucm.fdi.ici.c2324.practica4.grupo01.mspacman.actions.RunAwayAction;
+import es.ucm.fdi.ici.c2324.practica4.grupo01.mspacman.actions.PerseguirAction;
 import es.ucm.fdi.ici.rules.RuleEngine;
 import es.ucm.fdi.ici.rules.RulesAction;
 import es.ucm.fdi.ici.rules.RulesInput;
@@ -34,7 +34,7 @@ public class MsPacMan extends PacmanController {
 		RulesAction chase = new PerseguirAction();
 		RulesAction neutral = new NeutralAction();
 		RulesAction kamikazePill = new KamikazePillAction(); 
-		RulesAction runAway = new RunAwayAction();
+		RulesAction runAway = new HuirAction();
 		RulesAction kamikazeFantasma = new KamikazeFantasmaAction();
 		
 		map.put("perseguir", chase);
