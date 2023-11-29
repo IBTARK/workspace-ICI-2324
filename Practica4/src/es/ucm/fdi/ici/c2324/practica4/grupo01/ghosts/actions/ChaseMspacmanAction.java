@@ -9,11 +9,11 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-public class Direct2MspacmanAction implements RulesAction {
+public class ChaseMspacmanAction implements RulesAction {
 	
 	GHOST ghost;
     
-    public Direct2MspacmanAction() {
+    public ChaseMspacmanAction() {
    
     }
     

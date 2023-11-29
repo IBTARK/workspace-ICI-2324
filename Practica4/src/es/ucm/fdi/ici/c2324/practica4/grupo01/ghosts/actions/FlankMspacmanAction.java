@@ -26,12 +26,12 @@ public class FlankMspacmanAction implements RulesAction {
 			String stringValue = value.stringValue(null);
 			ghost = GHOST.valueOf(stringValue);
 			
-			// NEARESTCHASING ( en caso de que la strategy sea GOTO_CHASING )
 			value = actionFact.getSlotValue("junction");
 			if(value == null)
 				return;
-			stringValue = value.stringValue(null);
-			junction = Integer.parseInt(stringValue);
+			int intValue;
+			intValue = value.intValue(null);
+			junction = intValue;
 			
 		} catch (JessException e) {
 			e.printStackTrace();

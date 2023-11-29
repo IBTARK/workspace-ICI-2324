@@ -16,7 +16,7 @@ public class GhostsInput extends RulesInput {
 	private static int MAX_DISTANCE_EDIBLE = 20;
 	private static int MAX_DISTANCE_CHASING = 40;
 	
-	// Map que nos facilitará las condiciones de las reglas
+	// Map que nos facilitarï¿½ las condiciones de las reglas
 	private HashMap<GHOST, Boolean> alive;
 	// Maps con informacion util para elegir las actions
 	private HashMap<GHOST, Boolean> edibles;
@@ -27,6 +27,7 @@ public class GhostsInput extends RulesInput {
 	
 	public GhostsInput(Game game) {
 		super(game);
+		
 	}
 
 	@Override
@@ -80,11 +81,11 @@ public class GhostsInput extends RulesInput {
 	}
 
 	private void clearAndInitializeMaps() {
-		alive.clear();
-		edibles.clear();
-		nearestChasing.clear();
-		nearestEdible.clear();
-		distanceToMspacman.clear();
+		alive = new HashMap<>();
+		edibles = new HashMap<>();
+		nearestChasing = new HashMap<>();
+		nearestEdible = new HashMap<>();
+		distanceToMspacman = new HashMap<>();
 		// si las funciones devuelven datos default entonces no hace falta lo siguiente:
 		/*
 		for(GHOST g : GHOST.values()) {
@@ -104,9 +105,10 @@ public class GhostsInput extends RulesInput {
 			}
 			else {
 				alive.put(g, false);
-				// La siguiente linea no hace falta, el <map>.get(<key>) nos devolverá null.
+				// La siguiente linea no hace falta, el <map>.get(<key>) nos devolverï¿½ null.
 				//edibles.put(g, null);
 			}
+			edibles.put(g, game.isGhostEdible(g));
 		}
 		
 	}
@@ -128,14 +130,14 @@ public class GhostsInput extends RulesInput {
 	@Override
 	public Collection<String> getFacts() {
 		Vector<String> facts = new Vector<String>();
-		// Hacer un for para añadir estilo:
+		// Hacer un for para aï¿½adir estilo:
 		/*
 		for(GHOST g: GHOST.values()) {
 			StringBuilder str = new StringBuilder();
 			
 			str.append(String.format("(%s ", g.toString()));
 			str.append(String.format("(alive %s)", alive.get(g)));
-			// eliminar el siguiente if si es neccesario añadir los slots para las condiciones de las reglas
+			// eliminar el siguiente if si es neccesario aï¿½adir los slots para las condiciones de las reglas
 			if(alive.get(g)) {
 				str.append(String.format("(edible %s)", edibles.get(g)));
 				str.append(String.format("(nearestChasing %s)", nearestChasing.get(g).toString()));
@@ -153,7 +155,12 @@ public class GhostsInput extends RulesInput {
 		facts.add(String.format("(MSPACMAN (mindistancePPill %d))", 
 				(int)this.minPacmanDistancePPill));
 		*/
-
+		for(GHOST g: GHOST.values()) {
+			StringBuilder str = new StringBuilder();
+			str.append("(GHOST ");
+			str.append(String.format("(tipo %s) ", g.toString()));
+			str.append(String.format("(edible %s))", edibles.get(g)));
+		}
 		return facts;
 	}
 

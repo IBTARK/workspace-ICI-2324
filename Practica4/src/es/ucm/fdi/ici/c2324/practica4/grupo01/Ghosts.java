@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.GhostsInput;
-import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.Direct2MspacmanAction;
+import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.ChaseMspacmanAction;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.FlankMspacmanAction;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.GoToChasingAction;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.ProtectEdibleAction;
@@ -42,16 +42,16 @@ public class Ghosts  extends GhostController  {
 		RulesAction PINKYrunsAway = new RunAwayAction(GHOST.PINKY);
 		RulesAction SUErunsAway = new RunAwayAction(GHOST.SUE);*/
 		
-		RulesAction Direct2Mspacman = new Direct2MspacmanAction();
+		RulesAction ChaseMspacman = new ChaseMspacmanAction();
 		RulesAction FlankMspacman = new FlankMspacmanAction();
-		RulesAction GoToChasing = new GoToChasingAction();
+		//RulesAction GoToChasing = new GoToChasingAction();
 		// Se añadira mas tarde (cuando todo funcione bien)
 		//RulesAction ProtectEdible = new ProtectEdibleAction();
 		RulesAction RunAway = new RunAwayAction();
 		
-		map.put("Direc2Mspacman", Direct2Mspacman);
+		map.put("ChaseMspacman", ChaseMspacman);
 		map.put("FlankMspacman", FlankMspacman);
-		map.put("GoToChasing", GoToChasing);
+		//map.put("GoToChasing", GoToChasing);
 		//map.put("ProtectEdible", ProtectEdible);
 		map.put("RunAway", RunAway);
 		
@@ -80,7 +80,7 @@ public class Ghosts  extends GhostController  {
 		
 		
 		//add observer only to BLINKY
-		ConsoleRuleEngineObserver observer = new ConsoleRuleEngineObserver("ghosts", true);
+		ConsoleRuleEngineObserver observer = new ConsoleRuleEngineObserver("ghostsEngine", true);
 		ruleEngine.addObserver(observer);
 		
 	}
@@ -107,7 +107,7 @@ public class Ghosts  extends GhostController  {
 			ruleEngine.reset();
 			
 			Vector<String> facts = new Vector<String>();
-			facts.add(String.format("(CURRENTGHOST (type %s))", ghost.toString()));
+			facts.add(String.format("(CURRENTGHOST (tipo %s))", ghost.toString()));
 			ruleEngine.assertFacts(facts);
 			ruleEngine.assertFacts(input.getFacts());
 			MOVE move = ruleEngine.run(game);
