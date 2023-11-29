@@ -37,13 +37,25 @@ public class GhostsTools {
 		return closestPPill;
 	}
 	
+	
 	/**
-	 * Nearest chasing ghost to the given one
+	 * Nearest chasing ghost to the given one.
+	 * Ignores the maxDistance
 	 * @param game
 	 * @param ghost
 	 * @return
 	 */
 	public static GHOST getNearestChasing(Game game, GHOST ghost) {
+		return getNearestChasing(game, ghost, Integer.MAX_VALUE);
+	}
+	
+	/**
+	 * Nearest chasing ghost to the given one that's not farther than maxDistance
+	 * @param game
+	 * @param ghost
+	 * @return
+	 */
+	public static GHOST getNearestChasing(Game game, GHOST ghost, int maxDistance) {
 		GHOST nearest = null;
 		int minDist = Integer.MAX_VALUE;
 		
@@ -64,12 +76,30 @@ public class GhostsTools {
 	}
 	
 	/**
-	 * Nearest edible ghost to the given one
+	 * Nearest edible ghost to the given one.
+	 * Ignores the maxDistance
 	 * @param game
 	 * @param ghost
 	 * @return
 	 */
 	public static GHOST getNearestEdible(Game game, GHOST ghost) {
+		return getNearestEdible(game, ghost, Integer.MAX_VALUE);
+	}
+	
+	/**
+	 * Nearest edible ghost to the given one that does have a distance greater than maxDistance
+	 * @param game
+	 * @param ghost
+	 * @param maxDistance
+	 * @return
+	 */
+	public static GHOST getNearestEdible(Game game, GHOST ghost, int maxDistance) {
+		/*
+		En vez de hacer sobrecarga de metodos se podria hacer por Varargs:
+		GHOST getNearestEdible(Game game, GHOST ghost, Integer... max)
+		Integer maxDistance = max.length == 1 ?  max[0] : Integer.MAX_VALUE;
+		*/
+		
 		GHOST nearest = null;
 		int minDist = Integer.MAX_VALUE;
 		
@@ -80,7 +110,7 @@ public class GhostsTools {
 				int dist = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(ghost), 
 						game.getGhostCurrentNodeIndex(g), 
 						game.getGhostLastMoveMade(ghost));
-				if (dist >= 0 && minDist > dist) {
+				if (dist >= 0 && dist < maxDistance && minDist > dist ) {
 					minDist = dist;
 					nearest = g;
 				}
@@ -100,27 +130,42 @@ public class GhostsTools {
 	
 	public static boolean blocked(Game game, GHOST orig, GHOST dest) {
 		int posOrig = game.getGhostCurrentNodeIndex(orig),
-			posDest = game.getGhostCurrentNodeIndex(dest);
+			posDest = game.getGhostCurrentNodeIndex(dest),
+			pacman = game.getPacmanCurrentNodeIndex();
 		for (int node : game.getShortestPath(posOrig, posDest, game.getGhostLastMoveMade(orig))) 
-			if (game.getPacmanCurrentNodeIndex() == node)
+			if (pacman == node)
 				return true;
 		return false;
 	}
 	
+	
+	
 	/**
 	 * Nearest chasing not blocked ghost to the given one (CAREFUL: it can return null)
+	 * It ignores the maxDistance
 	 * @param game
 	 * @param ghost
 	 * @return
 	 */
 	public static GHOST getNearestChasingNotBlocked(Game game, GHOST ghost) {
+		return getNearestChasingNotBlocked(game, ghost, Integer.MAX_VALUE);
+	}
+	
+	/**
+	 * Nearest chasing not blocked ghost to the given one that's not farther than maxDistance(CAREFUL: it can return null)
+	 * @param game
+	 * @param ghost
+	 * @param maxDistance
+	 * @return
+	 */
+	public static GHOST getNearestChasingNotBlocked(Game game, GHOST ghost, int maxDistance) {
 		GHOST nearest = null;
 		int minDist = Integer.MAX_VALUE;
 		
 		//Find the nearest chasing ghost 
 		for (GHOST g : GHOST.values()) {
-			//If the ghost is not on the lair
-			if(game.getGhostLairTime(g) <= 0) {
+			//If the ghost is not on the lair, g is not ghost, and the target ghost is not edible
+			if(game.getGhostLairTime(g) <= 0 && !g.equals(ghost) && !game.isGhostEdible(g)) {
 				//Index of the given ghost
 				int pos = game.getGhostCurrentNodeIndex(ghost);
 				//Index of the other ghost
@@ -128,9 +173,12 @@ public class GhostsTools {
 				//Last movement of the given ghost
 				MOVE lastMove = game.getGhostLastMoveMade(ghost);
 				
-				int dist = game.getShortestPathDistance(pos, pos2, lastMove);
+				int dist = game.getShortestPathDistance(pos, pos2, lastMove); 
 				
-				if (!g.equals(ghost) && !game.isGhostEdible(g) && !blocked(game, ghost, g) && minDist > dist) {
+				// If its not farther than the imposed maxDistance, 
+				// it is not blocked, 
+				// and its nearer than the minimum distance.
+				if (dist < maxDistance && !blocked(game, ghost, g) && minDist > dist) {
 					minDist = dist;
 					nearest = g;
 				}
