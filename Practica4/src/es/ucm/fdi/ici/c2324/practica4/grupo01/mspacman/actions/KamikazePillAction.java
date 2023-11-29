@@ -10,7 +10,7 @@ public class KamikazePillAction implements RulesAction {
 	
 	@Override
 	public String getActionId() {
-		return "KamikazeAPill";
+		return "kamikazeAPill";
 	}
 
 	@Override

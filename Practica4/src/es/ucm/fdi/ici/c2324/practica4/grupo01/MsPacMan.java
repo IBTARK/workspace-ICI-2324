@@ -40,8 +40,8 @@ public class MsPacMan extends PacmanController {
 		map.put("perseguir", chase);
 		map.put("neutral", neutral);
 		map.put("kamikazePill", kamikazePill);
-		map.put("Huir", runAway);
-		map.put("KamikazeFantasma", kamikazeFantasma);
+		map.put("huir", runAway);
+		map.put("kamikazeFantasma", kamikazeFantasma);
 		
 		ruleEngine = new RuleEngine("MsPacManRuleEngine", RULES_PATH, map);
 		

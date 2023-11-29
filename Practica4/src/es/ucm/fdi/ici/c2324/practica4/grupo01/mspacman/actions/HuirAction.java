@@ -15,13 +15,13 @@ public class HuirAction implements RulesAction{
 	
 	@Override
 	public String getActionId() {
-		return "Huir";
+		return "huir";
 	}
 	
 	@Override
 	public void parseFact(Fact actionFact) {
 		try {
-			Value value = actionFact.getSlotValue("runAwayStrategy");
+			Value value = actionFact.getSlotValue("strategy");
 			if(value == null) return;
 			String strategyValue = value.stringValue(null);
 			runAwayStrategy = STRATEGY.valueOf(strategyValue);

@@ -117,8 +117,8 @@ public class MsPacManInput extends RulesInput {
 //		facts.add(String.format("(PPILL (closest %d))", this.closestPPill));
 		facts.add(String.format("(PPILL (accessible %b) (close %b) (blocked %b))", 
 				this.ppillAccessible, this.ppillClose, this.nearestPPillBlocked));
-		facts.add(String.format("(EDIBLE (nearestDist %d) (attack %b) (nearestNextJunctDist %b) (attackClose %b))", 
-				this.nearestEdibleDist, this.attack, this.nearestEdibleNextJunctionDist, this.attackClose));
+		facts.add(String.format("(EDIBLE (nearestDist %d) (attack %b) (attackClose %b) (nearestNextJunctDist %b))", 
+				this.nearestEdibleDist, this.attack, this.attackClose, this.nearestEdibleNextJunctionDist));
 //		facts.add(String.format("(EDIBLE (nextJunctDist %b))", this.distOfNearestEdibleToHisNextJunction));
 		facts.add(String.format("(CHASING (dangerLevel %d) (danger %b))", this.dangerLevel, this.dangerLevel > 0));
 		facts.add(String.format("(PILLS (few %b))", this.fewPills));

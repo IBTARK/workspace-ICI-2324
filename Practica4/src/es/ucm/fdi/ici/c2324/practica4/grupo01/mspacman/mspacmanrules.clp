@@ -12,7 +12,7 @@
 	(slot nearestDist (type NUMBER))
 	(slot attack (type SYMBOL))
 	(slot attackClose (type SYMBOL))
-	(slot nearestNextJunctDist (type NUMBER))
+	(slot nearestNextJunctDist (type NUMBER)))
 	
 (deftemplate CHASING
 	(slot dangerLevel (type NUMBER))
@@ -43,13 +43,13 @@
 (defrule huir
 	(CHASING (danger true))
 	=>
-	(assert (ACTION (id huir) (priority 30)))
+	(assert (ALMOST_ACTION (id huir) (priority 30)))
 )
 
 (defrule perseguir
 	(EDIBLE (attack true))
 	=>
-	(assert (ACTION (id perseguir) (priority 20)))
+	(assert (ALMOST_ACTION (id perseguir) (priority 20)))
 )
 
 (defrule kamikazePill

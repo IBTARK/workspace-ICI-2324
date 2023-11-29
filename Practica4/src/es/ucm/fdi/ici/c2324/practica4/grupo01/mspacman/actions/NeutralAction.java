@@ -15,7 +15,7 @@ public class NeutralAction implements RulesAction {
 
 	@Override
 	public String getActionId() {
-		return "Neutral";
+		return "neutral";
 	}
 
 	@Override

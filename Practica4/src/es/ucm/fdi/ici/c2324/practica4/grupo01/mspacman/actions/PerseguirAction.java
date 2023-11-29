@@ -29,7 +29,7 @@ public class PerseguirAction implements RulesAction {
 
 	@Override
 	public String getActionId() {
-		return "Perseguir";
+		return "perseguir";
 	}
 
 	@Override
