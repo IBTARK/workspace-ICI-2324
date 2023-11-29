@@ -19,6 +19,7 @@ public class MsPacManInput extends RulesInput {
 	private static final int TH_PPILL = 100;
 	private static final int TH_FEWPILLS = 20;
 	private static final int TH_COMBO = 500;
+	private static final int MAX_DIST = 5000;
 	
 	private int dangerLevel;
 	private int closestPPill;
@@ -42,6 +43,17 @@ public class MsPacManInput extends RulesInput {
 	@Override
 	public void parseInput() {
 		dangerLevel = 0;
+		levelUp = false;
+		ppillAccessible = false;
+		ppillClose = false;
+		attack = false;
+		attackClose = false;
+		combo = false;
+		fewPills = false;
+		nearestPPillBlocked = false;
+		nearestEdibleDist = -1;
+		nearestEdibleNextJunctionDist = -1;
+		distOfNearestEdibleToHisNextJunction = -1;
 		for (GHOST g : GHOST.values()) {
 			if (game.getGhostLairTime(g) <= 0) {
 				if (!game.isGhostEdible(g)
@@ -85,13 +97,12 @@ public class MsPacManInput extends RulesInput {
 		
 		//Nearest edible ghost to MsPacMan
 		GHOST nearest = MsPacManTools.getNearestEdible(game, pos, lastMove); //CAREFUL, can return null
-		nearestEdibleDist = nearest == null ? Integer.MAX_VALUE : game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearest), lastMove);
+		nearestEdibleDist = nearest == null ? MAX_DIST : game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearest), lastMove);
 		
 		//Next junction of the edible ghost, it can be null if there is no edible ghost
 		Integer edibleJunction = nearest == null ? null : MsPacManTools.nextJunction(game, game.getGhostCurrentNodeIndex(nearest), game.getGhostLastMoveMade(nearest));
-		nearestEdibleNextJunctionDist = nearest == null ? Integer.MAX_VALUE : game.getShortestPathDistance(pos, edibleJunction, lastMove);
+		nearestEdibleNextJunctionDist = nearest == null ? MAX_DIST : game.getShortestPathDistance(pos, edibleJunction, lastMove);
 		
-		distOfNearestEdibleToHisNextJunction = nearest == null ? Integer.MAX_VALUE : game.getShortestPathDistance(game.getGhostCurrentNodeIndex(nearest), edibleJunction, game.getGhostLastMoveMade(nearest));
 		
 		fewPills = game.getNumberOfActivePills() <= TH_FEWPILLS;
 		
@@ -110,7 +121,7 @@ public class MsPacManInput extends RulesInput {
 		facts.add(String.format("(EDIBLE (nearestDist %d))", this.nearestEdibleDist));
 		facts.add(String.format("(EDIBLE (attack %b))", this.attack));
 		facts.add(String.format("(EDIBLE (nearestNextJunctDist %b))", this.nearestEdibleNextJunctionDist));
-//		facts.add(String.format("(EDIBLE (nextJuntDist %b))", this.distOfNearestEdibleToHisNextJunction));
+//		facts.add(String.format("(EDIBLE (nextJunctDist %b))", this.distOfNearestEdibleToHisNextJunction));
 		facts.add(String.format("(EDIBLE (attackClose %b))", this.attackClose));
 		facts.add(String.format("(CHASING (dangerLevel %d))", this.dangerLevel));
 		facts.add(String.format("(PILLS (few %b))", this.fewPills));

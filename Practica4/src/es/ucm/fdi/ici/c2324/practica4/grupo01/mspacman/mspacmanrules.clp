@@ -14,11 +14,12 @@
 	(slot nearestDist (type NUMBER))
 	(slot attack (type SYMBOL))
 	(slot attackClose (type SYMBOL))
-	(slot nearestNextJuntDist (type NUMBER))
+	(slot nearestNextJunctDist (type NUMBER))
 	(slot nextJuntDist (type NUMBER)))
 	
 (deftemplate CHASING
-	(slot dangerLevel (type NUMBER)))
+	(slot dangerLevel (type NUMBER))
+	(slot danger (type SYMBOL)))
 	
 (deftemplate PILLS
 	(slot few (type SYMBOL)))
@@ -34,6 +35,7 @@
 ;MAIN RULES
 
 (defrule neutral
+=>
 	(assert (ACTION (id neutral) (priority 10)))
 )
 
@@ -88,7 +90,7 @@
 (defrule huirRodeandoAPPill
 	(ACTION (id huir) (priority ?p))
 	(CHASING (dangerLevel ?dl)) (test (> ?dl 1))
-	(PPILL (close true) (accesible true))
+	(PPILL (close true) (accessible true))
 	=>
 	(assert (ACTION (id huir) (priority (+ ?p 3)) (strategy HUIR_RODEANDO_PPILL)))
 )
@@ -103,7 +105,8 @@
 
 (defrule flanquear
 	(ACTION (id huir) (priority ?p))
-	(EDIBLE (nearestDist ?nd) (nearestNextJunctDist ?nnjd))
+	(EDIBLE (nearestDist ?nd))
+	(EDIBLE (nearestNextJunctDist ?nnjd))
 	(test (>= ?nd ?nnjd))
 	=>
 	(assert (ACTION (id perseguir) (priority (+ ?p 2)) (strategy FLANQUEAR)))
