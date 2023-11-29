@@ -50,8 +50,35 @@ public class RunAwayAction implements RulesAction{
 		return nextMove;
 	}
 
+	/**
+	 * Gets the best movement for MsPacMan to run away from the nearest chasing ghost
+	 * @param game
+	 * @return the best movement for MsPacMan to run away from the nearest chasing ghost 
+	 */
 	private MOVE actHuirDeFantasma(Game game) {
+		int pos = game.getPacmanCurrentNodeIndex();
+		MOVE lastMove = game.getPacmanLastMoveMade();
 		
+		//Nearest chasing ghost to MsPacMan
+		GHOST nearest = MsPacManTools.getNearestChasing(game, pos, lastMove);
+		int posNearest = game.getGhostCurrentNodeIndex(nearest);
+		MOVE lastMoveNearest = game.getGhostLastMoveMade(nearest);
+		
+		
+		int maxDist = Integer.MIN_VALUE;
+		MOVE bestMove = MOVE.NEUTRAL;
+		
+		//Get the movement that maximizes the distance to the nearest chasing ghost
+		for(MOVE m : game.getPossibleMoves(pos, lastMove)) {
+			int nextDist = game.getShortestPathDistance(posNearest, game.getNeighbour(pos, m), lastMoveNearest);
+			
+			if(nextDist > maxDist) {
+				maxDist = nextDist;
+				bestMove = m;
+			}
+		}
+		
+		return bestMove;
 	}
 	
 	/**
