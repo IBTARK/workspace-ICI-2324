@@ -30,14 +30,18 @@
 	(slot priority (type NUMBER))
 	(slot strategy (type SYMBOL)) 
 ) 
+
+(deftemplate ALMOST_ACTION
+	(slot id) 
+	(slot priority (type NUMBER))
+)
 	
+
+(deffacts neutral
+	(ALMOST_ACTION (id neutral) (priority 10))
+)
 	
 ;MAIN RULES
-
-(defrule neutral
-=>
-	(assert (ACTION (id neutral) (priority 10)))
-)
 
 (defrule huir
 	(CHASING (danger true))
@@ -67,20 +71,20 @@
 ;HUIR RULES
 
 (defrule huirFantasma
-	(ACTION (id huir) (priority ?p))
+	(ALMOST_ACTION (id huir) (priority ?p))
 	=>
 	(assert (ACTION (id huir) (priority (+ ?p 1)) (strategy HUIR_DE_FANTASMA)))
 )
 
 (defrule huirVariosFantasmas
-	(ACTION (id huir) (priority ?p))
+	(ALMOST_ACTION (id huir) (priority ?p))
 	(CHASING (dangerLevel ?dl)) (test (> ?dl 1))
 	=>
 	(assert (ACTION (id huir) (priority (+ ?p 2)) (strategy HUIR_VARIOS_FANTASMAS)))
 )
 
 (defrule huirHaciaPPill
-	(ACTION (id huir) (priority ?p))
+	(ALMOST_ACTION (id huir) (priority ?p))
 	(CHASING (dangerLevel ?dl)) (test (> ?dl 1))
 	(PPILL (close true) (blocked false))
 	=>
@@ -88,7 +92,7 @@
 )
 
 (defrule huirRodeandoAPPill
-	(ACTION (id huir) (priority ?p))
+	(ALMOST_ACTION (id huir) (priority ?p))
 	(CHASING (dangerLevel ?dl)) (test (> ?dl 1))
 	(PPILL (close true) (accessible true))
 	=>
@@ -98,13 +102,13 @@
 ;PERSEGUIR RULES
 
 (defrule perseguirDirecto
-	(ACTION (id perseguir) (priority ?p))
+	(ALMOST_ACTION (id perseguir) (priority ?p))
 	=>
 	(assert (ACTION (id perseguir) (priority (+ ?p 1)) (strategy PERSEGUIR)))
 )
 
 (defrule flanquear
-	(ACTION (id huir) (priority ?p))
+	(ALMOST_ACTION (id huir) (priority ?p))
 	(EDIBLE (nearestDist ?nd))
 	(EDIBLE (nearestNextJunctDist ?nnjd))
 	(test (>= ?nd ?nnjd))
@@ -115,14 +119,17 @@
 ;NEUTRAL RULES
 
 (defrule buscarPills
-	(ACTION (id neutral) (priority ?p))
+	(ALMOST_ACTION (id neutral) (priority ?p))
 	=>
 	(assert (ACTION (id neutral) (priority (+ ?p 1)) (strategy BUSCAR_PILLS)))
 )
 
 (defrule evitarPPill
-	(ACTION (id neutral) (priority ?p))
+	(ALMOST_ACTION (id neutral) (priority ?p))
 	(PPILL (close true))
 	=>
 	(assert (ACTION (id neutral) (priority (+ ?p 2)) (strategy EVITAR_PPILL)))
 )
+
+
+;DEBUG FACTS

@@ -10,7 +10,7 @@ import jess.Rete;
 public class Retetest {
 
 	public static void main(String args[]) {
-		String RULES_PATH = "es"+File.separator+"ucm"+File.separator+"fdi"+File.separator+"ici"+File.separator+"practica4"+File.separator+"demorules"+File.separator;
+		String RULES_PATH = "es"+File.separator+"ucm"+File.separator+"fdi"+File.separator+"ici"+File.separator+"c2324"+File.separator+"practica4"+File.separator+"grupo01"+File.separator;
 		String RULES_FILE = "rulestest.clp";
 		String rulesFile = String.format("%s%s", RULES_PATH, RULES_FILE);
 		Rete jess = new Rete();
