@@ -1,3 +1,4 @@
+;FACTS ASSERTED BY GAME INPUT
 
 (deftemplate MSPACMAN
 	(slot levelUp (type SYMBOL))
@@ -21,3 +22,45 @@
 	
 (deftemplate PILLS
 	(slot few (type SYMBOL)))
+	
+(deftemplate ACTION
+	(slot id) 
+	(slot info (default ""))
+	(slot priority (type NUMBER))
+	(slot strategy (type SYMBOL)) 
+) 
+	
+	
+;MAIN RULES
+
+(defrule neutral
+	
+	=>
+	(assert (ACTION (id neutral) (priority 1)))
+)
+
+(defrule huir
+	
+	=>
+	(assert (ACTION (id huir) (priority 5)))
+)
+
+(defrule perseguir
+	
+	=>
+	(assert (ACTION (id perseguir) (priority 2)))
+)
+
+(defrule kamikazePill
+	
+	=>
+	(assert (ACTION (id kamikazePill) (priority 3)))
+)
+
+(defrule kamikazeFantasma
+	
+	=>
+	(assert (ACTION (id kamikazeFantasma) (priority 4)))
+)
+
+;STRATEGY RULES

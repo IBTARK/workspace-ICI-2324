@@ -21,7 +21,7 @@ public class NeutralAction implements RulesAction {
 	@Override
 	public void parseFact(Fact actionFact) {
 		try {
-			Value value = actionFact.getSlotValue("neutralStrategy");
+			Value value = actionFact.getSlotValue("strategy");
 			if(value == null) return;
 			String strategyValue = value.stringValue(null);
 			neutralStrategy = STRATEGY.valueOf(strategyValue);

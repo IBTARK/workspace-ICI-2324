@@ -31,13 +31,13 @@ public class MsPacMan extends PacmanController {
 		
 		map = new HashMap<String,RulesAction>();
 		//Fill Actions
-		RulesAction chase = new ChaseAction();
+		RulesAction chase = new PerseguirAction();
 		RulesAction neutral = new NeutralAction();
 		RulesAction kamikazePill = new KamikazePillAction(); 
 		RulesAction runAway = new RunAwayAction();
 		RulesAction kamikazeFantasma = new KamikazeFantasmaAction();
 		
-		map.put("chase", chase);
+		map.put("perseguir", chase);
 		map.put("neutral", neutral);
 		map.put("kamikazePill", kamikazePill);
 		map.put("Huir", runAway);

@@ -9,7 +9,7 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-public class ChaseAction implements RulesAction {
+public class PerseguirAction implements RulesAction {
 
     enum STRATEGY { PERSEGUIR, FLANQUEAR };
     STRATEGY chaseStrategy; 
@@ -17,7 +17,7 @@ public class ChaseAction implements RulesAction {
 	@Override
 	public void parseFact(Fact actionFact) {
 		try {
-			Value value = actionFact.getSlotValue("chaseStrategy");
+			Value value = actionFact.getSlotValue("strategy");
 			if(value == null)
 				return;
 			String strategyValue = value.stringValue(null);
