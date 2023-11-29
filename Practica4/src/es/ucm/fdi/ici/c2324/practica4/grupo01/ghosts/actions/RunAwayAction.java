@@ -12,8 +12,9 @@ import pacman.game.Game;
 public class RunAwayAction implements RulesAction {
 
     GHOST ghost;
-    enum STRATEGY {RANDOM, CORNER, JAIL};
+    enum STRATEGY {AWAY, GOTO_CHASING};
     STRATEGY runAwayStrategy; 
+    GHOST nearestChasing;
 	public RunAwayAction(GHOST ghost) {
 		this.ghost = ghost;
 	}
@@ -21,11 +22,19 @@ public class RunAwayAction implements RulesAction {
 	@Override
 	public void parseFact(Fact actionFact) {
 		try {
+			// RUNAWAYSTRATEGY
 			Value value = actionFact.getSlotValue("runawaystrategy");
 			if(value == null)
 				return;
-			String strategyValue = value.stringValue(null);
-			runAwayStrategy = STRATEGY.valueOf(strategyValue);
+			String stringValue = value.stringValue(null);
+			runAwayStrategy = STRATEGY.valueOf(stringValue);
+			
+			// NEARESTCHASING ( en caso de que la strategy sea GOTO_CHASING )
+			value = actionFact.getSlotValue("nearestChasing");
+			if(value == null)
+				return;
+			stringValue = value.stringValue(null);
+			nearestChasing = GHOST.valueOf(stringValue);
 		} catch (JessException e) {
 			e.printStackTrace();
 		}
@@ -34,19 +43,39 @@ public class RunAwayAction implements RulesAction {
 	
 	@Override
 	public MOVE execute(Game game) {
-        /*****************************************************************************/
-		//Here you can use the runAwayStrategy value obtained from the asserted fact
-		/*****************************************************************************/
+		MOVE nextMove = MOVE.NEUTRAL;
 		
 		if (game.doesGhostRequireAction(ghost))        //if it requires an action
         {
-                return game.getApproximateNextMoveAwayFromTarget(game.getGhostCurrentNodeIndex(ghost),
-                        game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(ghost), DM.PATH);
+			switch (runAwayStrategy) {
+			case AWAY:
+				nextMove = actHuirDeMsPacman(game);
+				break;
+			case GOTO_CHASING:
+				nextMove = actHuirHaciaChasing(game);
+				break;
+			}
         }
             
-        return MOVE.NEUTRAL;	
+        return nextMove;	
 	}
 	
+	private MOVE actHuirHaciaChasing(Game game) {
+		return game.getApproximateNextMoveTowardsTarget(
+				game.getGhostCurrentNodeIndex(ghost), 
+				game.getGhostCurrentNodeIndex(nearestChasing), 
+				game.getGhostLastMoveMade(ghost), 
+				DM.PATH);
+	}
+
+	private MOVE actHuirDeMsPacman(Game game) {
+		return game.getApproximateNextMoveAwayFromTarget(
+				game.getGhostCurrentNodeIndex(ghost), 
+				game.getPacmanCurrentNodeIndex(), 
+				game.getGhostLastMoveMade(ghost), 
+				DM.PATH);
+	}
+
 	@Override
 	public String getActionId() {
 		return ghost+ "runsAway";
