@@ -160,7 +160,10 @@ public class GhostsInput extends RulesInput {
 			str.append("(GHOST ");
 			str.append(String.format("(tipo %s) ", g.toString()));
 			str.append(String.format("(edible %s))", edibles.get(g).toString()));
+			
+			facts.add(str.toString());
 		}
+		
 		return facts;
 	}
 
