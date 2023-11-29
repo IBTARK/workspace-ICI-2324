@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.GhostsInput;
-import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.ChaseAction;
+import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.Direct2MspacmanAction;
+import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.FlankMspacmanAction;
+import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.GoToChasingAction;
+import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.ProtectEdibleAction;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.RunAwayAction;
 import es.ucm.fdi.ici.rules.RuleEngine;
 import es.ucm.fdi.ici.rules.RulesAction;
@@ -30,23 +33,27 @@ public class Ghosts  extends GhostController  {
 		
 		map = new HashMap<String,RulesAction>();
 		//Fill Actions
-		RulesAction BLINKYchases = new ChaseAction(GHOST.BLINKY);
+		/*RulesAction BLINKYchases = new ChaseAction(GHOST.BLINKY);
 		RulesAction INKYchases = new ChaseAction(GHOST.INKY);
 		RulesAction PINKYchases = new ChaseAction(GHOST.PINKY);
 		RulesAction SUEchases = new ChaseAction(GHOST.SUE);
 		RulesAction BLINKYrunsAway = new RunAwayAction(GHOST.BLINKY);
 		RulesAction INKYrunsAway = new RunAwayAction(GHOST.INKY);
 		RulesAction PINKYrunsAway = new RunAwayAction(GHOST.PINKY);
-		RulesAction SUErunsAway = new RunAwayAction(GHOST.SUE);
+		RulesAction SUErunsAway = new RunAwayAction(GHOST.SUE);*/
 		
-		map.put("BLINKYchases", BLINKYchases);
-		map.put("INKYchases", INKYchases);
-		map.put("PINKYchases", PINKYchases);
-		map.put("SUEchases", SUEchases);	
-		map.put("BLINKYrunsAway", BLINKYrunsAway);
-		map.put("INKYrunsAway", INKYrunsAway);
-		map.put("PINKYrunsAway", PINKYrunsAway);
-		map.put("SUErunsAway", SUErunsAway);
+		RulesAction Direct2Mspacman = new Direct2MspacmanAction();
+		RulesAction FlankMspacman = new FlankMspacmanAction();
+		RulesAction GoToChasing = new GoToChasingAction();
+		// Se añadira mas tarde (cuando todo funcione bien)
+		//RulesAction ProtectEdible = new ProtectEdibleAction();
+		RulesAction RunAway = new RunAwayAction();
+		
+		map.put("Direc2Mspacman", Direct2Mspacman);
+		map.put("FlankMspacman", FlankMspacman);
+		map.put("GoToChasing", GoToChasing);
+		//map.put("ProtectEdible", ProtectEdible);
+		map.put("RunAway", RunAway);
 		
 		
 		/**

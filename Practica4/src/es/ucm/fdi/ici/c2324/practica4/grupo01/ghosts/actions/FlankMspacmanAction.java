@@ -9,13 +9,13 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-public class RunAwayAction implements RulesAction {
+public class FlankMspacmanAction implements RulesAction {
 
-	GHOST ghost;
-	
-	public RunAwayAction() {
-		
-	}
+    GHOST ghost;
+    int junction;
+    
+	public FlankMspacmanAction() {}
+
 	@Override
 	public void parseFact(Fact actionFact) {
 		try {
@@ -26,6 +26,12 @@ public class RunAwayAction implements RulesAction {
 			String stringValue = value.stringValue(null);
 			ghost = GHOST.valueOf(stringValue);
 			
+			// NEARESTCHASING ( en caso de que la strategy sea GOTO_CHASING )
+			value = actionFact.getSlotValue("junction");
+			if(value == null)
+				return;
+			stringValue = value.stringValue(null);
+			junction = Integer.parseInt(stringValue);
 			
 		} catch (JessException e) {
 			e.printStackTrace();
@@ -39,9 +45,9 @@ public class RunAwayAction implements RulesAction {
 		
 		if (game.doesGhostRequireAction(ghost))        //if it requires an action
         {
-			nextMove = game.getApproximateNextMoveAwayFromTarget(
+			nextMove = game.getApproximateNextMoveTowardsTarget(
 					game.getGhostCurrentNodeIndex(ghost), 
-					game.getPacmanCurrentNodeIndex(), 
+					junction, 
 					game.getGhostLastMoveMade(ghost), 
 					DM.PATH);
         }
@@ -51,7 +57,6 @@ public class RunAwayAction implements RulesAction {
 
 	@Override
 	public String getActionId() {
-		return "RunAwayAction";
+		return "flankMspacman";
 	}
-
 }

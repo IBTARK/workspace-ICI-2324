@@ -1,6 +1,5 @@
 package es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions;
 
-import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.RunAwayAction.STRATEGY;
 import es.ucm.fdi.ici.rules.RulesAction;
 import jess.Fact;
 import jess.JessException;
@@ -10,14 +9,15 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-public class FlankMspacman implements RulesAction {
-
-    GHOST ghost;
-    int junction;
+public class Direct2MspacmanAction implements RulesAction {
+	
+	GHOST ghost;
     
-	public FlankMspacman() {}
-
-	@Override
+    public Direct2MspacmanAction() {
+   
+    }
+    
+    @Override
 	public void parseFact(Fact actionFact) {
 		try {
 			// GHOST_TYPE (NECESARIO EN TODAS LAS ACTIONS)
@@ -26,13 +26,6 @@ public class FlankMspacman implements RulesAction {
 				return;
 			String stringValue = value.stringValue(null);
 			ghost = GHOST.valueOf(stringValue);
-			
-			// NEARESTCHASING ( en caso de que la strategy sea GOTO_CHASING )
-			value = actionFact.getSlotValue("junction");
-			if(value == null)
-				return;
-			stringValue = value.stringValue(null);
-			junction = Integer.parseInt(stringValue);
 			
 		} catch (JessException e) {
 			e.printStackTrace();
@@ -48,7 +41,7 @@ public class FlankMspacman implements RulesAction {
         {
 			nextMove = game.getApproximateNextMoveTowardsTarget(
 					game.getGhostCurrentNodeIndex(ghost), 
-					junction, 
+					game.getPacmanCurrentNodeIndex(), 
 					game.getGhostLastMoveMade(ghost), 
 					DM.PATH);
         }
@@ -58,6 +51,7 @@ public class FlankMspacman implements RulesAction {
 
 	@Override
 	public String getActionId() {
-		return "flankMspacman";
+		return "Direct2Mspacman";
 	}
+
 }
