@@ -115,15 +115,12 @@ public class MsPacManInput extends RulesInput {
 //		facts.add(String.format("(MSPACMAN (levelUp %b))", this.levelUp));
 		facts.add(String.format("(MSPACMAN (combo %b))", this.combo));
 //		facts.add(String.format("(PPILL (closest %d))", this.closestPPill));
-		facts.add(String.format("(PPILL (accessible %b))", this.ppillAccessible));
-		facts.add(String.format("(PPILL (close %b))", this.ppillClose));
-		facts.add(String.format("(PPILL (blocked %b))", this.nearestPPillBlocked));
-		facts.add(String.format("(EDIBLE (nearestDist %d))", this.nearestEdibleDist));
-		facts.add(String.format("(EDIBLE (attack %b))", this.attack));
-		facts.add(String.format("(EDIBLE (nearestNextJunctDist %b))", this.nearestEdibleNextJunctionDist));
+		facts.add(String.format("(PPILL (accessible %b) (close %b) (blocked %b))", 
+				this.ppillAccessible, this.ppillClose, this.nearestPPillBlocked));
+		facts.add(String.format("(EDIBLE (nearestDist %d) (attack %b) (nearestNextJunctDist %b) (attackClose %b))", 
+				this.nearestEdibleDist, this.attack, this.nearestEdibleNextJunctionDist, this.attackClose));
 //		facts.add(String.format("(EDIBLE (nextJunctDist %b))", this.distOfNearestEdibleToHisNextJunction));
-		facts.add(String.format("(EDIBLE (attackClose %b))", this.attackClose));
-		facts.add(String.format("(CHASING (dangerLevel %d))", this.dangerLevel));
+		facts.add(String.format("(CHASING (dangerLevel %d) (danger %b))", this.dangerLevel, this.dangerLevel > 0));
 		facts.add(String.format("(PILLS (few %b))", this.fewPills));
 		
 		return facts;

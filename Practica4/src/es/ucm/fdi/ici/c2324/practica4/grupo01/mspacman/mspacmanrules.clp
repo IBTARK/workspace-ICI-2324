@@ -1,11 +1,9 @@
 ;FACTS ASSERTED BY GAME INPUT
 
 (deftemplate MSPACMAN
-	(slot levelUp (type SYMBOL))
 	(slot combo (type SYMBOL)))
 	
 (deftemplate PPILL
-	(slot closest (type NUMBER))
 	(slot accessible (type SYMBOL))
 	(slot close (type SYMBOL))
 	(slot blocked (type SYMBOL)))
@@ -15,7 +13,6 @@
 	(slot attack (type SYMBOL))
 	(slot attackClose (type SYMBOL))
 	(slot nearestNextJunctDist (type NUMBER))
-	(slot nextJuntDist (type NUMBER)))
 	
 (deftemplate CHASING
 	(slot dangerLevel (type NUMBER))
@@ -108,7 +105,7 @@
 )
 
 (defrule flanquear
-	(ALMOST_ACTION (id huir) (priority ?p))
+	(ALMOST_ACTION (id perseguir) (priority ?p))
 	(EDIBLE (nearestDist ?nd))
 	(EDIBLE (nearestNextJunctDist ?nnjd))
 	(test (>= ?nd ?nnjd))
