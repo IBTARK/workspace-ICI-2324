@@ -46,7 +46,7 @@
 	(GHOST (tipo ?ghostType) (edible true)) 
 	=>  
 	(assert 
-		(ACTION (id RunAway) (info "?ghostType Comestible --> huir") (priority 30) 
+		(ACTION (id RunAway) (info "Comestible --> huir") (priority 30) 
 			(ghostType ?ghostType)
 		)
 	)
@@ -56,7 +56,7 @@
 	(GHOST (tipo ?ghostType) (edible false)) 
 	=> 
 	(assert 
-		(ACTION (id ChaseMspacman) (info "?ghostType No comestible --> perseguir")  (priority 10) 
+		(ACTION (id ChaseMspacman) (info "No comestible --> perseguir")  (priority 10) 
 			(ghostType ?ghostType)
 		)
 	)
