@@ -128,6 +128,29 @@ public class GhostsTools {
 		return pos;
 	}
 	
+	public static int[] nextJunctions(Game game, int pos, MOVE lastMove) {
+		int[] nextJunctions = new int[3];
+		
+		MOVE move = lastMove;
+		while (!game.isJunction(pos)) {
+			move = game.getPossibleMoves(pos, move)[0];
+			pos = game.getNeighbour(pos, move);
+		}
+		
+		// Una vez tenemos el primer junction (puede coincidir con la posicion de mspacman)
+		int firstJunction = pos;
+		int i = 0;
+		for(MOVE m: game.getPossibleMoves(firstJunction, move)) {
+			move = m;
+			pos = firstJunction;
+			pos = game.getNeighbour(pos, move);
+			nextJunctions[i] = nextJunction(game, pos, move);
+			i++;
+		}
+		
+		return nextJunctions;
+	}
+	
 	public static boolean blocked(Game game, GHOST orig, GHOST dest) {
 		int posOrig = game.getGhostCurrentNodeIndex(orig),
 			posDest = game.getGhostCurrentNodeIndex(dest),
@@ -198,5 +221,14 @@ public class GhostsTools {
 			}
 		}
 		return bestMove;
+	}
+
+	public static Integer distanceToMspacmanFromFront(Game game, int gIndex, MOVE gLastMove, int mspacman,
+			MOVE msLastMove) {
+		
+		
+
+		
+		return null;
 	}
 }
