@@ -1,5 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts;
 
+import java.util.ArrayList;
+
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
@@ -119,36 +121,52 @@ public class GhostsTools {
 		return nearest;
 	}
 	
-	public static int nextJunction(Game game, int pos, MOVE lastMove) {
+	public static Integer[] nextJunctionPath(Game game, int pos, MOVE lastMove) {
+		ArrayList<Integer> path = new ArrayList<Integer>();
+		path.add(pos);
 		MOVE move = lastMove;
 		while (!game.isJunction(pos)) {
 			move = game.getPossibleMoves(pos, move)[0];
 			pos = game.getNeighbour(pos, move);
+			path.add(pos);
 		}
-		return pos;
+		return path.toArray(new Integer[path.size()]);
 	}
 	
-	public static int[] nextJunctions(Game game, int pos, MOVE lastMove) {
-		int[] nextJunctions = new int[3];
+	public static int nextJunction(Game game, int pos, MOVE lastMove) {
+		Integer path[] = nextJunctionPath(game, pos, lastMove);
+		return path[path.length-1];
+	}
+	
+	/**
+	 * Nos devuelve nextJunction en el primer indice, 
+	 * y el resto de indices (min 2 max 3 más) tienen los level2Junctions
+	 * 
+	 * @param game
+	 * @param pos
+	 * @param lastMove
+	 * @return
+	 */
+	public static Integer[] nextJunctions(Game game, int pos, MOVE lastMove) {
+		ArrayList<Integer> nextJunctions = new ArrayList<Integer>();
 		
 		MOVE move = lastMove;
 		while (!game.isJunction(pos)) {
 			move = game.getPossibleMoves(pos, move)[0];
 			pos = game.getNeighbour(pos, move);
 		}
-		
-		// Una vez tenemos el primer junction (puede coincidir con la posicion de mspacman)
-		int firstJunction = pos;
-		int i = 0;
+		Integer njPath[] = nextJunctionPath(game, pos, lastMove);
+		move = njPath.length == 1 ? lastMove 
+				: game.getMoveToMakeToReachDirectNeighbour(njPath[njPath.length-2], njPath[njPath.length-1]);
+		int firstJunction = njPath[njPath.length-1];
+		nextJunctions.add(firstJunction);
+		// Una vez tenemos el primer junction (puede coincidir con la posicion de mspacman) calculamos los junctions de nivel 2
 		for(MOVE m: game.getPossibleMoves(firstJunction, move)) {
-			move = m;
-			pos = firstJunction;
-			pos = game.getNeighbour(pos, move);
-			nextJunctions[i] = nextJunction(game, pos, move);
-			i++;
+			pos = game.getNeighbour(firstJunction, m);
+			nextJunctions.add(nextJunction(game, pos, m));
 		}
 		
-		return nextJunctions;
+		return nextJunctions.toArray(new Integer[nextJunctions.size()]);
 	}
 	
 	public static boolean blocked(Game game, GHOST orig, GHOST dest) {
