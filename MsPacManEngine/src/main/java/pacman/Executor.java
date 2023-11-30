@@ -369,7 +369,7 @@ public class Executor {
         System.out.println(game.getScore());
         
         postcompute(pacManController, ghostController);
-
+        gv.closeGame();
         return game.getScore();
     }
     

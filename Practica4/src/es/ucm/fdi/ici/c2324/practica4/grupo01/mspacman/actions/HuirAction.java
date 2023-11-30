@@ -11,7 +11,7 @@ import pacman.game.Game;
 
 public class HuirAction implements RulesAction{
 	enum STRATEGY { HUIR_DE_FANTASMA, HUIR_HACIA_PPILL, HUIR_RODEANDO_PPILL, HUIR_VARIOS_FANTASMAS };
-	STRATEGY runAwayStrategy;
+	STRATEGY strategy;
 	
 	@Override
 	public String getActionId() {
@@ -21,10 +21,10 @@ public class HuirAction implements RulesAction{
 	@Override
 	public void parseFact(Fact actionFact) {
 		try {
-			Value value = actionFact.getSlotValue("runAwayStrategy");
+			Value value = actionFact.getSlotValue("strategy");
 			if(value == null) return;
 			String strategyValue = value.stringValue(null);
-			runAwayStrategy = STRATEGY.valueOf(strategyValue);
+			strategy = STRATEGY.valueOf(strategyValue);
 		} catch (JessException e) {
 			e.printStackTrace();
 		}
@@ -33,7 +33,7 @@ public class HuirAction implements RulesAction{
 	@Override
 	public MOVE execute(Game game) {
 		MOVE nextMove = null;
-		switch (runAwayStrategy) {
+		switch (strategy) {
 		case HUIR_DE_FANTASMA:
 			nextMove = actHuirDeFantasma(game);
 			break;
