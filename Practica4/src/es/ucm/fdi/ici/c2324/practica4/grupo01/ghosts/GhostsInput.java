@@ -16,18 +16,25 @@ public class GhostsInput extends RulesInput {
 	private static int MAX_DISTANCE_EDIBLE = 20;
 	private static int MAX_DISTANCE_CHASING = 40;
 	
-	// Map que nos facilitarï¿½ las condiciones de las reglas
-	private HashMap<GHOST, Boolean> alive;
-	// Maps con informacion util para elegir las actions
-	private HashMap<GHOST, Boolean> edibles;
-	private HashMap<GHOST, GHOST> nearestChasing;
-	private HashMap<GHOST, GHOST> nearestEdible;
-	private HashMap<GHOST, Integer> distanceToMspacman;
-	private double minPacmanDistancePPill;
+	// Datos a asertar sobre CADA fantasma:
+	private HashMap<GHOST, Boolean> alive;						// Si estamos vivos o no
+	private HashMap<GHOST, Boolean> edibles;					// Si somos comestibles o no
+	private HashMap<GHOST, GHOST> nearestChasing;				// El fantasma chasing mas cercano (dentro del rango de MAX_DISTANCE_CHASING)
+	private HashMap<GHOST, GHOST> nearestEdible;				// El fantasma edible mas cercano (dentro del rango de MAX_DISTANCE_EDIBLE)
+	private HashMap<GHOST, Integer> distanceToMspacman;			// La distancia a mspacman
+	private HashMap<GHOST, Integer> distanceToMsNextJunction; 	// La distancia al siguiente junction de mspacman
+	private HashMap<GHOST, Integer[]> distanceToLevel2Junctions;// La distancia a los siguientes junctions de mspacman
+	
+	// Datos a asertar sobre el pacman:
+	private double minPacmanDistancePPill;	// Su distancia al powerpill
+	private int msNextJunction;				// El indice del siguiente junction del pacman (puede coincidir con el indice de pacman
+	private int msNextJunctionDistance;		// La distancia de pacman a su siguiente junction (puede ser 0 indicando que está ya ahi)
+	private static String level2JunctionNames[] = {"firstJunction", "secondJunction", "thirdJunction"};
+	private int level2Junctions[];			// Los siguientes junctions despues del siguiente junction de mspacman (nivel 2)
+	private int msToLvl2Junctions[];		// La distancia de mspacman a cada uno de los junctions
 	
 	public GhostsInput(Game game) {
 		super(game);
-		
 	}
 
 	@Override
@@ -43,15 +50,44 @@ public class GhostsInput extends RulesInput {
 		computeDistanceToMspacman();	
 		
 		computeMinPacmanDistancePPill();
+		
+		computeMsNextJunctionIndexesAndDistances();
+		
+		computeGhostsDistancesToNextJunctions();
 	}
 
+
+	private void computeGhostsDistancesToNextJunctions() {
+		
+		
+	}
+
+	private void computeMsNextJunctionIndexesAndDistances() {
+		int mspacman = game.getPacmanCurrentNodeIndex();
+		MOVE msLastMove = game.getPacmanLastMoveMade();
+		
+		// Calculamos los indices de los siguientes junctions de mspacman
+		Integer nextAndLvl2Junctions[] = GhostsTools.nextJunctions(game, mspacman, msLastMove);
+		msNextJunction = nextAndLvl2Junctions[0];
+		level2Junctions = new int[nextAndLvl2Junctions.length-1];
+		for(int i = 1; i < nextAndLvl2Junctions.length; i++)  {
+			level2Junctions[i-1] = nextAndLvl2Junctions[i];
+		}
+		
+		// Una vez tenemos los indices, calculamos las distancias a esos indices.
+		msToLvl2Junctions = new int[level2Junctions.length];
+		msNextJunctionDistance = game.getShortestPathDistance(mspacman, msNextJunction, msLastMove);
+		for(int i = 0; i < level2Junctions.length; i++) {
+			msToLvl2Junctions[i] = game.getShortestPathDistance(mspacman, level2Junctions[i], msLastMove);
+		}
+	}
 
 	private void computeDistanceToMspacman() {
 		int mspacman = game.getPacmanCurrentNodeIndex();
 		MOVE msLastMove = game.getPacmanLastMoveMade();
 		for(GHOST g : GHOST.values()) {
 			int gIndex = game.getGhostCurrentNodeIndex(g);
-			MOVE gLastMove = game.getGhostLastMoveMade(g);
+			// MOVE gLastMove = game.getGhostLastMoveMade(g);
 			if(game.getGhostLairTime(g) <= 0) {
 				// Primera opcion
 				distanceToMspacman.put(g, game.getShortestPathDistance(
@@ -60,7 +96,7 @@ public class GhostsInput extends RulesInput {
 						msLastMove));
 				// Segunda opcion
 				// Calular la distancia nuestra hacia ms pacman pero teniendo en cuenta si vamos detras suyo.
-				distanceToMspacman.put(g, GhostsTools.distanceToMspacmanFromFront(game, gIndex, gLastMove, mspacman, msLastMove));
+				// distanceToMspacman.put(g, GhostsTools.distanceToMspacmanFromFront(game, gIndex, gLastMove, mspacman, msLastMove));
 			}	
 		}
 	}
@@ -131,18 +167,20 @@ public class GhostsInput extends RulesInput {
 	public Collection<String> getFacts() {
 		Vector<String> facts = new Vector<String>();
 		// Hacer un for para aï¿½adir estilo:
-		/*
+		int mspacman = game.getPacmanCurrentNodeIndex();
+		
 		for(GHOST g: GHOST.values()) {
 			StringBuilder str = new StringBuilder();
 			
-			str.append(String.format("(%s ", g.toString()));
+			str.append("(GHOST ");
+			str.append(String.format("(tipo %s)", g.toString()));
 			str.append(String.format("(alive %s)", alive.get(g)));
 			// eliminar el siguiente if si es neccesario aï¿½adir los slots para las condiciones de las reglas
 			if(alive.get(g)) {
 				str.append(String.format("(edible %s)", edibles.get(g)));
-				str.append(String.format("(nearestChasing %s)", nearestChasing.get(g).toString()));
-				str.append(String.format("(nearestEdible %s)", nearestEdible.get(g).toString()));
-				str.append(String.format("(distanceToMspacman %i)", distanceToMspacman.get(g)));
+				str.append(String.format("(nearestChasing %s)", nearestChasing.get(g)));
+				str.append(String.format("(nearestEdible %s)", nearestEdible.get(g)));
+				str.append(String.format("(INDEX (assert (INDEX (name %s) (index %d) (distance %d))))", "mspacman", mspacman, distanceToMspacman.get(g)));
 			}
 			str.append(")");
 			
@@ -152,9 +190,7 @@ public class GhostsInput extends RulesInput {
 			facts.add(str.toString());
 		}
 		
-		facts.add(String.format("(MSPACMAN (mindistancePPill %d))", 
-				(int)this.minPacmanDistancePPill));
-		*/
+		/*
 		for(GHOST g: GHOST.values()) {
 			StringBuilder str = new StringBuilder();
 			str.append("(GHOST ");
@@ -163,6 +199,7 @@ public class GhostsInput extends RulesInput {
 			
 			facts.add(str.toString());
 		}
+		*/
 		
 		return facts;
 	}
