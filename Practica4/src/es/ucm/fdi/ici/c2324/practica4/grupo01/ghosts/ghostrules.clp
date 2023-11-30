@@ -1,13 +1,17 @@
 ;FACTS ASSERTED BY GAME INPUT
 (deftemplate CURRENTGHOST
-	(slot tipo (type SYMBOL))
+	(slot tipo (type SYMBOL)))
+(deftemplate NEWGHOST ; para el cambio de ghost
+	(slot tipo (type SYMBOL)))
+
+(deftemplate INDEX
+	(slot name (type SYMBOL))  ; nombre del junction (no tiene por que ser junction)
+	(slot index (type INTEGER)) ; el indice in game del junction
+	(slot distance (type INTEGER)) ; la distancia que tenemos hasta ese index
 )
 	
 (deftemplate MSPACMAN 
-    (slot mindistancePPill (type NUMBER))
-    (slot firstJunction (type INTEGER))
-    (slot secondJunction (type INTEGER))
-    (slot thirdJunction (type INTEGER))
+    (multislot INDEX) ; tendremos mindistancePPill, nextJunction, firstJunction, secondJunction, thirdJunction (opcional)
 )	
 (deftemplate GHOST
 	(slot tipo (type SYMBOL))
@@ -15,10 +19,7 @@
 	(slot edible (type SYMBOL))
 	(slot nearestChasing (type SYMBOL))
 	(slot nearestEdible (type SYMBOL))
-	(slot distanceToMspacman (type INTEGER))
-	(slot distanceToFirstJunction (type INTEGER))
-	(slot distanceToSecondJunction (type INTEGER))
-	(slot distanceToThirdJunction (type INTEGER))
+	(multislot INDEX) ; tendremos mspacman, msNextJunction, msFirstJunction, msSecondJunction, msThirdJunction (opcional)
 )
 
 ;DEFINITION OF THE ACTION FACT
@@ -30,7 +31,30 @@
 	(slot nearestChasing (type SYMBOL)) ; El ghost chasing mas cercano en caso de que sea GoToChasingAction
 ) 
 
-;RULES 
+
+; RULES DE PRUEBA
+(defrule delete-old-action
+	?newGhost <- (NEWGHOST (tipo ?newType))
+	?oldAction <- (ACTION (id ?id))
+	=>
+	(retract ?oldAction)
+)
+
+(defrule change-current-ghost
+	?newGhost <- (NEWGHOST (tipo ?newType))
+	?curGhost <- (CURRENTGHOST (tipo ?curType))
+	=>
+	(modify ?curGhost (tipo ?newType))
+	(retract ?newGhost)
+)
+
+;(defrule delete-all-indexes-with-same-name
+;	(GHOST (INDEX ?duck))
+;	=>
+;	(retract ?duck)
+;)
+
+;ACTION RULES
 ;(defrule BLINKYrunsAwayMSPACMANclosePPill
 ;	(MSPACMAN (mindistancePPill ?d)) (test (<= ?d 30)) 
 ;	=>  
