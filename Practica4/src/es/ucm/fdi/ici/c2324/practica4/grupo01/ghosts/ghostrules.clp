@@ -5,41 +5,46 @@
 	(slot tipo (type SYMBOL)))
 
 (deftemplate INDEX
-	(slot name (type SYMBOL))  ; nombre del junction (no tiene por que ser junction)
+	(slot owner (type SYMBOL))  ; owner del INDEX: MSPACMAN, BLINKY, PINKY, INKY, SUE
 	(slot index (type INTEGER)) ; el indice in game del junction
 	(slot distance (type INTEGER)) ; la distancia que tenemos hasta ese index
 )
 	
 (deftemplate MSPACMAN 
-    (multislot INDEX) ; tendremos mindistancePPill, nextJunction, firstJunction, secondJunction, thirdJunction (opcional)
-)	
+	(slot ppill (type INTEGER))
+)
+
 (deftemplate GHOST
 	(slot tipo (type SYMBOL))
 	(slot alive (type SYMBOL)) ; Deberiamos poner esto o no poner el resto de slots??
 	(slot edible (type SYMBOL))
 	(slot nearestChasing (type SYMBOL))
 	(slot nearestEdible (type SYMBOL))
-	(multislot INDEX) ; tendremos mspacman, msNextJunction, msFirstJunction, msSecondJunction, msThirdJunction (opcional)
+	(slot mspacman (type INTEGER))
 )
 
 ;DEFINITION OF THE ACTION FACT
 (deftemplate ACTION
 	(slot id) (slot info (default "")) (slot priority (type NUMBER) ) ; mandatory slots
 	(slot ghostType (type SYMBOL)) ; Slot for the ghostType
-	(slot junction (type INTEGER)) ; The junction where the ghost flanks mspacman
+	(slot junction (type INTEGER)) ; The junction where the ghost goes to flank mspacman
 	(slot nearestEdible (type SYMBOL)) ; El ghost edible mas cercano en caso de que sea ProtectEdibleAction
 	(slot nearestChasing (type SYMBOL)) ; El ghost chasing mas cercano en caso de que sea GoToChasingAction
 ) 
 
 
-; RULES DE PRUEBA
+; REGLAS DE UTILIDAD QUE NO ASERTAN ACTIONS
+
+
+; ANTES DE HACER EL CAMBIO DE GHOST, ELIMINAMOS LOS ACTIONS ASERTADOS EN EL ANTERIOR TURNO.
 (defrule delete-old-action
-	?newGhost <- (NEWGHOST (tipo ?newType))
+	(NEWGHOST (tipo ?newType))
 	?oldAction <- (ACTION (id ?id))
 	=>
 	(retract ?oldAction)
 )
 
+; CAMBIAMOS DE CURRENTGHOST
 (defrule change-current-ghost
 	?newGhost <- (NEWGHOST (tipo ?newType))
 	?curGhost <- (CURRENTGHOST (tipo ?curType))
@@ -48,26 +53,12 @@
 	(retract ?newGhost)
 )
 
-;(defrule delete-all-indexes-with-same-name
-;	(GHOST (INDEX ?duck))
-;	=>
-;	(retract ?duck)
-;)
 
-;ACTION RULES
-;(defrule BLINKYrunsAwayMSPACMANclosePPill
-;	(MSPACMAN (mindistancePPill ?d)) (test (<= ?d 30)) 
-;	=>  
-;	(assert 
-;		(ACTION (id BLINKYrunsAway) (info "MSPacMan cerca PPill") (priority 50) 
-;			(runawaystrategy AWAY)
-;		)
-;	)
-;)
+;RULES QUE ASERTAN ACTION
 
 (defrule runsAway
 	(CURRENTGHOST (tipo ?ghostType))
-	(GHOST (tipo ?ghostType) (edible true)) 
+	(GHOST (tipo ?ghostType) (edible true))
 	=>  
 	(assert 
 		(ACTION (id RunAway) (info "Comestible --> huir") (priority 30) 
@@ -77,15 +68,44 @@
 )
 (defrule chases
 	(CURRENTGHOST (tipo ?ghostType))
-	(GHOST (tipo ?ghostType) (edible false)) 
+	; SI SOMOS EL GHOST MAS CERCANO A MSPACMAN
+	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1)) 
+	(not (GHOST (edible false) (mspacman ?d2&:(< ?d2 ?d1)))) 
 	=> 
 	(assert 
-		(ACTION (id ChaseMspacman) (info "No comestible --> perseguir")  (priority 10) 
+		(ACTION (id ChaseMspacman) (info "No comestible --> perseguir")  (priority 50) 
 			(ghostType ?ghostType)
 		)
 	)
-	
-
 )	
-	
+
+(defrule flanks
+	(not (ACTION))
+	(CURRENTGHOST (tipo ?ghostType))
+	(GHOST (tipo ?ghostType) (edible false))
+	; SI NO SOMOS EL GHOST MAS CERCANO 
+	; ESTAS 2 LINEAS HACEN QUE NO FUNCIONE??
+	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1)) 
+	(GHOST (edible false) (mspacman ?d2&:(< ?d2 ?d1)))
+	; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
+	(INDEX (owner ?ghostType) (index ?index) (distance ?d1))
+	(not (INDEX (owner ?ghostType) (distance ?d2&:(< ?d2 ?d1))))
+	=>
+	(assert
+		(ACTION (id FlankMspacman) (info "No comestible --> Flankear")  (priority 10) 
+				(ghostType ?ghostType)
+				(junction ?index)
+		)
+	)
+)
+
+; ULTIMA REGLA
+; NOS SIRVE PARA ELIMINAR TODOS LOS JUNCTIONS DEL MISMO INDICE QUE EL JUNCTION QUE LE HEMOS PASADO A LA ACCION
+(defrule delete-all-indexes-with-same-index-if-action-has-junction
+	(ACTION (junction ?junction))
+	(test (neq ?junction nil))
+	?duck <- (INDEX (index ?junction))
+	=>
+	(retract ?duck)
+)
 	
