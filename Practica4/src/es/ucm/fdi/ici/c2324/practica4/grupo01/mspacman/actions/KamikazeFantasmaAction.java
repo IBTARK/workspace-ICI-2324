@@ -11,7 +11,7 @@ public class KamikazeFantasmaAction implements RulesAction {
 	
 	@Override
 	public String getActionId() {
-		return "KamikazeFantasma";
+		return "kamikazeFantasma";
 	}
 
 	@Override

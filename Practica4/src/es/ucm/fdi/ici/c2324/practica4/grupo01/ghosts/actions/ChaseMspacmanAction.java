@@ -9,14 +9,15 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-public class RunAwayAction implements RulesAction {
-
-	GHOST ghost;
+public class ChaseMspacmanAction implements RulesAction {
 	
-	public RunAwayAction() {
-		
-	}
-	@Override
+	GHOST ghost;
+    
+    public ChaseMspacmanAction() {
+   
+    }
+    
+    @Override
 	public void parseFact(Fact actionFact) {
 		try {
 			// GHOST_TYPE (NECESARIO EN TODAS LAS ACTIONS)
@@ -25,7 +26,6 @@ public class RunAwayAction implements RulesAction {
 				return;
 			String stringValue = value.stringValue(null);
 			ghost = GHOST.valueOf(stringValue);
-			
 			
 		} catch (JessException e) {
 			e.printStackTrace();
@@ -39,7 +39,7 @@ public class RunAwayAction implements RulesAction {
 		
 		if (game.doesGhostRequireAction(ghost))        //if it requires an action
         {
-			nextMove = game.getApproximateNextMoveAwayFromTarget(
+			nextMove = game.getApproximateNextMoveTowardsTarget(
 					game.getGhostCurrentNodeIndex(ghost), 
 					game.getPacmanCurrentNodeIndex(), 
 					game.getGhostLastMoveMade(ghost), 
@@ -51,7 +51,7 @@ public class RunAwayAction implements RulesAction {
 
 	@Override
 	public String getActionId() {
-		return "RunAwayAction";
+		return "Direct2Mspacman";
 	}
 
 }

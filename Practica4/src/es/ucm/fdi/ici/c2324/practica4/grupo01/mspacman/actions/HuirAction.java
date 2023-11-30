@@ -15,7 +15,7 @@ public class HuirAction implements RulesAction{
 	
 	@Override
 	public String getActionId() {
-		return "Huir";
+		return "huir";
 	}
 	
 	@Override
