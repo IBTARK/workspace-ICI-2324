@@ -21,7 +21,7 @@ import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
 public class Ghosts  extends GhostController  {
-	private static final String RULES_PATH = "es"+File.separator+"ucm"+File.separator+"fdi"+File.separator+"ici"+File.separator+"c2324"+File.separator+"practica4"+File.separator+"grupo01"+File.separator;
+	private static final String RULES_PATH = "es"+File.separator+"ucm"+File.separator+"fdi"+File.separator+"ici"+File.separator+"c2324"+File.separator+"practica4"+File.separator+"grupo01"+File.separator+"ghosts"+File.separator;
 	HashMap<String,RulesAction> map;
 	
 	RuleEngine ruleEngine;
@@ -102,14 +102,16 @@ public class Ghosts  extends GhostController  {
 		 * PINKY <- 
 		 * SUE
 		 */
+		ruleEngine.reset();
+		Vector<String> facts = new Vector<String>();
+		facts.add("(CURRENTGHOST (tipo BLINKY))");
+		ruleEngine.assertFacts(facts);
+		ruleEngine.assertFacts(input.getFacts());
 		for(GHOST ghost: GHOST.values())
-		{
-			ruleEngine.reset();
-			
-			Vector<String> facts = new Vector<String>();
-			facts.add(String.format("(CURRENTGHOST (tipo %s))", ghost.toString()));
+		{			
+			facts = new Vector<String>();
+			facts.add(String.format("(NEWGHOST (tipo %s))", ghost.toString()));
 			ruleEngine.assertFacts(facts);
-			ruleEngine.assertFacts(input.getFacts());
 			MOVE move = ruleEngine.run(game);
 			result.put(ghost, move);
 		}
