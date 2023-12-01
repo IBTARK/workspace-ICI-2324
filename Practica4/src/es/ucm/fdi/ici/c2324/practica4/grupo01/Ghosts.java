@@ -51,8 +51,8 @@ public class Ghosts  extends GhostController  {
 		ruleEngine = new RuleEngine("ghostsEngine",rulesFile, map);
 		
 		// Add an observer to the current ruleEngine (one for all ghosts)
-		ConsoleRuleEngineObserver observer = new ConsoleRuleEngineObserver("ghostsEngine", false);
-		//ruleEngine.addObserver(observer);
+		ConsoleRuleEngineObserver observer = new ConsoleRuleEngineObserver("ghostsEngine", true);
+		ruleEngine.addObserver(observer);
 	}
 
 	@Override
@@ -66,17 +66,13 @@ public class Ghosts  extends GhostController  {
 		// We reset the rule engine once per getMove() is called
 		ruleEngine.reset();
 		
-		// Assert all facts
-		Vector<String> facts = new Vector<String>();
-		// It doesn't matter the type of the currentghost we put here
-		facts.add("(CURRENTGHOST (tipo BLINKY))");
-		ruleEngine.assertFacts(facts);
+		// Assert input facts
 		ruleEngine.assertFacts(input.getFacts());
 		
 		// Once all facts are asserted, we then will ask for the action of each ghost
 		for(GHOST ghost: GHOST.values())
 		{			
-			facts = new Vector<String>();
+			Vector<String> facts = new Vector<String>();
 			// We add the "NEWGHOST", where a set of rules will:
 			//  	- Delete the previous asserted ACTION
 			// 		- Change the CURRENTGHOST to the type of the NEWGHOST

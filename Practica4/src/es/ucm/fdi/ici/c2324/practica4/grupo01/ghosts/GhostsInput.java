@@ -169,6 +169,9 @@ public class GhostsInput extends RulesInput {
 	@Override
 	public Collection<String> getFacts() {
 		Vector<String> facts = new Vector<String>();
+		facts.add("(CURRENTGHOST (tipo nil))");
+		facts.add("(NEARESTGHOST (tipo nil))");
+		
 		// Hacer un for para aï¿½adir estilo:
 		int mspacman = game.getPacmanCurrentNodeIndex();
 		
@@ -184,23 +187,29 @@ public class GhostsInput extends RulesInput {
 				str.append(String.format("(edible %s)", edibles.get(g)));
 				str.append(String.format("(nearestChasing %s)", nearestChasing.get(g)));
 				str.append(String.format("(nearestEdible %s)", nearestEdible.get(g)));
-				//str.append(String.format("(INDEX (assert (INDEX (name %s) (index %d) (distance %d))))", "mspacman", mspacman, distanceToMspacman.get(g)));
+				
+				// Distancia a mspacman
 				str.append(String.format("(mspacman %d))", distanceToMspacman.get(g)));
-				facts.add(String.format("(INDEX (owner %s) (index %d) (distance %d))", g.toString(), msNextJunction, distanceToMsNextJunction.get(g)));
+				
+				// VAMOS A ASERTAR LOS INDICES DE CADA GHOST
+				// El unico junction de nivel 1 que tiene pacman (puede ser igual que su posicion en el caso de que esté justo en el junction)
+				facts.add(String.format("(INDEX (owner %s) (lvl 1) (index %d) (previousIndex %d) (distance %d))", g.toString(), msNextJunction, mspacman, distanceToMsNextJunction.get(g)));
+				// Junctions de nivel 2
 				Integer distanceToLvl2[] = distanceToLevel2Junctions.get(g);
 				for(int i = 0; i < distanceToLvl2.length; i++) {
-					facts.add(String.format("(INDEX (owner %s) (index %d) (distance %d))", g.toString(), level2Junctions[i], distanceToLvl2[i]));
+					facts.add(String.format("(INDEX (owner %s) (lvl 2) (index %d) (previousIndex %d) (distance %d))", g.toString(), level2Junctions[i], msNextJunction, distanceToLvl2[i]));
 				}
+				// Junctions de nivel 3
 			}
 			str.append(")");
 			
 			facts.add(str.toString());
 		}
 		
-		// VAMOS A ASERTAR LOS INDICES
-		facts.add(String.format("(INDEX (owner MSPACMAN) (index %d) (distance %d)))", msNextJunction, msNextJunctionDistance));
+		// VAMOS A ASERTAR LOS INDEX DE MSPACMAN
+		facts.add(String.format("(INDEX (owner MSPACMAN) (lvl 1) (index %d) (previousIndex %d) (distance %d)))", msNextJunction, mspacman, msNextJunctionDistance));
 		for(int i = 0; i < level2Junctions.length; i++ ) {
-			facts.add(String.format("(INDEX (owner MSPACMAN) (index %d) (distance %d)))", level2Junctions[i], msToLvl2Junctions[i]));
+			facts.add(String.format("(INDEX (owner MSPACMAN) (lvl 2) (index %d) (previousIndex %d) (distance %d)))", level2Junctions[i], msNextJunction, msToLvl2Junctions[i]));
 		}
 		facts.add(String.format("(MSPACMAN (ppill %d))", minPacmanDistancePPill));
 		
