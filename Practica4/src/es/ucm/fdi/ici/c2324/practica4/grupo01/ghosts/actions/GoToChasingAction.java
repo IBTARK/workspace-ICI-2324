@@ -58,7 +58,7 @@ public class GoToChasingAction implements RulesAction {
 
 	@Override
 	public String getActionId() {
-		return "GoToChasingAction";
+		return "GoToChasing";
 	}
 
 }

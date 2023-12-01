@@ -57,6 +57,6 @@ public class FlankMspacmanAction implements RulesAction {
 
 	@Override
 	public String getActionId() {
-		return "flankMspacman";
+		return "FlankMspacman";
 	}
 }

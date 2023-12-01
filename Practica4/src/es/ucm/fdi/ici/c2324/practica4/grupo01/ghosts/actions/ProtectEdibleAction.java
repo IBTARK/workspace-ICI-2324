@@ -58,7 +58,7 @@ public class ProtectEdibleAction implements RulesAction {
 
 	@Override
 	public String getActionId() {
-		return "Direct2Mspacman";
+		return "ProtectEdible";
 	}
 
 }

@@ -51,7 +51,7 @@ public class ChaseMspacmanAction implements RulesAction {
 
 	@Override
 	public String getActionId() {
-		return "Direct2Mspacman";
+		return "ChaseMspacman";
 	}
 
 }
