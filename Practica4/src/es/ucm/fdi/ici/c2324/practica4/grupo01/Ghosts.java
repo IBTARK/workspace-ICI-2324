@@ -8,6 +8,7 @@ import java.util.Vector;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.GhostsInput;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.ChaseMspacmanAction;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.FlankMspacmanAction;
+import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.GoToChasingAction;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.RunAwayAction;
 import es.ucm.fdi.ici.rules.RuleEngine;
 import es.ucm.fdi.ici.rules.RulesAction;
@@ -36,13 +37,13 @@ public class Ghosts  extends GhostController  {
 		RulesAction FlankMspacman = new FlankMspacmanAction();
 		RulesAction RunAway = new RunAwayAction();
 		// Se annadiran mas tarde (cuando todo funcione bien)
-		//RulesAction GoToChasing = new GoToChasingAction();
+		RulesAction GoToChasing = new GoToChasingAction();
 		//RulesAction ProtectEdible = new ProtectEdibleAction();
 		
 		map.put("ChaseMspacman", ChaseMspacman);
 		map.put("FlankMspacman", FlankMspacman);
 		map.put("RunAway", RunAway);
-		//map.put("GoToChasing", GoToChasing);
+		map.put("GoToChasing", GoToChasing);
 		//map.put("ProtectEdible", ProtectEdible);
 		
 		
@@ -50,7 +51,7 @@ public class Ghosts  extends GhostController  {
 		ruleEngine = new RuleEngine("ghostsEngine",rulesFile, map);
 		
 		// Add an observer to the current ruleEngine (one for all ghosts)
-		ConsoleRuleEngineObserver observer = new ConsoleRuleEngineObserver("ghostsEngine", true);
+		ConsoleRuleEngineObserver observer = new ConsoleRuleEngineObserver("ghostsEngine", false);
 		ruleEngine.addObserver(observer);
 	}
 

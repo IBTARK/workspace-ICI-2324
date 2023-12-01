@@ -12,7 +12,7 @@ import pacman.game.Game;
 public class GoToChasingAction implements RulesAction {
 
 	GHOST ghost;
-	int nearestChasing;
+	GHOST nearestChasing;
 	
 	public GoToChasingAction() {
 		
@@ -32,7 +32,7 @@ public class GoToChasingAction implements RulesAction {
 			if(value == null)
 				return;
 			stringValue = value.stringValue(null);
-			nearestChasing = Integer.parseInt(stringValue);
+			nearestChasing = GHOST.valueOf(stringValue);
 			
 		} catch (JessException e) {
 			e.printStackTrace();
@@ -48,7 +48,7 @@ public class GoToChasingAction implements RulesAction {
         {
 			nextMove = game.getApproximateNextMoveTowardsTarget(
 					game.getGhostCurrentNodeIndex(ghost), 
-					nearestChasing, 
+					game.getGhostCurrentNodeIndex(nearestChasing), 
 					game.getGhostLastMoveMade(ghost), 
 					DM.PATH);
         }

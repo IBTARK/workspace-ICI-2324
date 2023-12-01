@@ -60,11 +60,24 @@
 (defrule runsAway
 	(not (NEWGHOST))
 	(CURRENTGHOST (tipo ?ghostType))
-	(GHOST (tipo ?ghostType) (edible true))
+	(GHOST (tipo ?ghostType) (edible true) (nearestChasing null))
 	=>  
 	(assert 
 		(ACTION (id RunAway) (info "Comestible --> huir") (priority 30) 
 			(ghostType ?ghostType)
+		)
+	)
+)
+
+(defrule goToChasing
+	(not (NEWGHOST))
+	(CURRENTGHOST (tipo ?ghostType))
+	(GHOST (tipo ?ghostType) (edible true) (nearestChasing ?nearestChasing&:(neq ?nearestChasing null)))
+	=>  
+	(assert 
+		(ACTION (id GoToChasing) (info "Comestible --> huir") (priority 40) 
+			(ghostType ?ghostType)
+			(nearestChasing ?nearestChasing)
 		)
 	)
 )
@@ -95,7 +108,7 @@
 	(not (INDEX (owner ?ghostType) (distance ?id2&:(< ?id2 ?id1))))
 	=>
 	(assert
-		(ACTION (id FlankMspacman) (info "No comestible --> Flankear")  (priority 10) 
+		(ACTION (id FlankMspacman) (info "No comestible --> Flankear")  (priority 20) 
 			(ghostType ?ghostType)
 			(junction ?index)
 		)
@@ -109,7 +122,7 @@
 	(GHOST (tipo ?ghostType) (edible false))
 	=>
 	(assert
-		(ACTION (id ChaseMspacman) (info "No tenemos junction --> Chase") (priority 5)
+		(ACTION (id ChaseMspacman) (info "No tenemos junction --> Chase") (priority 10)
 			(ghostType ?ghostType)
 		)
 	)

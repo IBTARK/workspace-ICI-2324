@@ -43,15 +43,12 @@ public class FlankMspacmanAction implements RulesAction {
 	public MOVE execute(Game game) {
 		MOVE nextMove = MOVE.NEUTRAL;
 		
-		if (game.doesGhostRequireAction(ghost))        //if it requires an action
-        {
-			nextMove = game.getApproximateNextMoveTowardsTarget(
-					game.getGhostCurrentNodeIndex(ghost), 
-					junction, 
-					game.getGhostLastMoveMade(ghost), 
-					DM.PATH);
-        }
-            
+		nextMove = game.getApproximateNextMoveTowardsTarget(
+				game.getGhostCurrentNodeIndex(ghost), 
+				junction, 
+				game.getGhostLastMoveMade(ghost), 
+				DM.PATH);
+        
         return nextMove;	
 	}
 
