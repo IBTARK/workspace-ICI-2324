@@ -13,13 +13,13 @@ import pacman.game.Game;
 public class MsPacManInput extends RulesInput {
 	
 	// Thresholds
-	private static final int TH_CHASING_GHOST = 80; 
-	private static final int TH_EDIBLE_GHOST = 370;
-	private static final int TH_EDIBLE_GHOST_CLOSE = 170;
-	private static final int TH_PPILL = 100;
-	private static final int TH_FEWPILLS = 20;
-	private static final int TH_COMBO = 500;
-	private static final int MAX_DIST = 5000;
+	private static final int TH_CHASING_GHOST = 100; //mejor 80 
+	private static final int TH_EDIBLE_GHOST = 270; //mejor 370
+	private static final int TH_EDIBLE_GHOST_CLOSE = 170; //mejor 170
+	private static final int TH_PPILL = 100; //mejor 100
+	private static final int TH_FEWPILLS = 20; //mejor 20
+	private static final int TH_COMBO = 500; //mejor 500
+	private static final int MAX_DIST = 1000; //mejor 5000
 	
 	private int dangerLevel;
 	private int closestPPill;

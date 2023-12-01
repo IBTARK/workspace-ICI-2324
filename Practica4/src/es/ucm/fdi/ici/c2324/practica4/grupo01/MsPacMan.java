@@ -46,7 +46,7 @@ public class MsPacMan extends PacmanController {
 		ruleEngine = new RuleEngine("MsPacManRuleEngine", RULES_PATH, map);
 		
 		ConsoleRuleEngineObserver observer = new ConsoleRuleEngineObserver(ruleEngine.toString(), true);
-		ruleEngine.addObserver(observer);
+		//ruleEngine.addObserver(observer);
 	}
 
 	@Override

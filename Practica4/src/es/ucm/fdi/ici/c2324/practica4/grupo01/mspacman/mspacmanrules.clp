@@ -32,6 +32,7 @@
 	(slot id) 
 	(slot priority (type NUMBER))
 )
+
 	
 	
 ;INITIAL FACTS
@@ -75,25 +76,38 @@
 	(assert (ACTION (id huir) (priority (+ ?p 1)) (strategy HUIR_DE_FANTASMA)))
 )
 
+(defrule variosFantasmas
+	(CHASING (dangerLevel ?dl)) (test (> ?dl 1))
+	=>
+	(assert (VARIOSFANTASMAS))
+)
+
 (defrule huirVariosFantasmas
 	(ALMOST_ACTION (id huir) (priority ?p))
-	(CHASING (dangerLevel ?dl)) (test (> ?dl 1))
+	(VARIOSFANTASMAS)
 	=>
 	(assert (ACTION (id huir) (priority (+ ?p 2)) (strategy HUIR_VARIOS_FANTASMAS)))
 )
 
+(defrule preAttack
+	(VARIOSFANTASMAS)
+	(PPILL (close true))
+	=>
+	(assert (PREATTACK))
+)
+
 (defrule huirHaciaPPill
 	(ALMOST_ACTION (id huir) (priority ?p))
-	(CHASING (dangerLevel ?dl)) (test (> ?dl 1))
-	(PPILL (close true) (blocked false))
+	(PPILL (blocked false))
+	(PREATTACK)
 	=>
 	(assert (ACTION (id huir) (priority (+ ?p 4)) (strategy HUIR_HACIA_PPILL)))
 )
 
 (defrule huirRodeandoAPPill
 	(ALMOST_ACTION (id huir) (priority ?p))
-	(CHASING (dangerLevel ?dl)) (test (> ?dl 1))
-	(PPILL (close true) (accessible true))
+	(PPILL (accessible true))
+	(PREATTACK)
 	=>
 	(assert (ACTION (id huir) (priority (+ ?p 3)) (strategy HUIR_RODEANDO_PPILL)))
 )
@@ -106,11 +120,17 @@
 	(assert (ACTION (id perseguir) (priority (+ ?p 1)) (strategy PERSEGUIR)))
 )
 
-(defrule flanquear
-	(ALMOST_ACTION (id perseguir) (priority ?p))
+(defrule preFlanquear
 	(EDIBLE (nearestDist ?nd)) (!= ?nd nil)
 	(EDIBLE (nearestNextJunctDist ?nnjd)) (!= ?nnjd nil)
 	(test (>= ?nd ?nnjd))
+	=>
+	(assert (ATAJAR))
+)
+
+(defrule flanquear
+	(ALMOST_ACTION (id perseguir) (priority ?p))
+	(ATAJAR)
 	=>
 	(assert (ACTION (id perseguir) (priority (+ ?p 2)) (strategy FLANQUEAR)))
 )

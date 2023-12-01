@@ -3,6 +3,7 @@
 import java.util.LinkedList;
 import java.util.Queue;
 
+import es.ucm.fdi.ici.c2324.practica4.grupo01.Ghosts;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.MsPacMan;
 import pacman.Executor;
 import pacman.controllers.GhostController;
@@ -25,9 +26,9 @@ public class ExecutorTest {
         	for(int i = 0; i < 300; i++) {
         		System.out.println(i);
         		PacmanController pacMan = new MsPacMan();
-    		    GhostController ghosts = new GhostsRandom();
+    		    GhostController ghosts = new Ghosts();
     		    
-    		    int score = executor.runGame(pacMan, ghosts, 0); //last parameter defines speed
+    		    int score = executor.runGame(pacMan, ghosts, 10); //last parameter defines speed
     		    System.out.println();
     		    
     		    cola.add(score);

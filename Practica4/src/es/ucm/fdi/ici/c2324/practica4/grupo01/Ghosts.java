@@ -52,7 +52,7 @@ public class Ghosts  extends GhostController  {
 		
 		// Add an observer to the current ruleEngine (one for all ghosts)
 		ConsoleRuleEngineObserver observer = new ConsoleRuleEngineObserver("ghostsEngine", false);
-		ruleEngine.addObserver(observer);
+		//ruleEngine.addObserver(observer);
 	}
 
 	@Override
