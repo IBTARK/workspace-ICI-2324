@@ -3,10 +3,14 @@
 	(slot tipo (type SYMBOL)))
 (deftemplate NEWGHOST ; para el cambio de ghost
 	(slot tipo (type SYMBOL)))
+(deftemplate NEARESTGHOST
+	(slot tipo (type SYMBOL)))
 
 (deftemplate INDEX
 	(slot owner (type SYMBOL))  ; owner del INDEX: MSPACMAN, BLINKY, PINKY, INKY, SUE
+	(slot lvl (type INTEGER)) ; nivel
 	(slot index (type INTEGER)) ; el indice in game del junction
+	(slot previousIndex (type INTEGER)) ; el indice o junction de donde viene
 	(slot distance (type INTEGER)) ; la distancia que tenemos hasta ese index
 )
 	
@@ -33,8 +37,53 @@
 ) 
 
 
+; FUNCTIONS DE UTILIDAD
+(deffunction calcular-closest-distance-index-menor-que-mspacman (?ghostType ?lvl)
+	(INDEX (owner MSPACMAN) (lvl ?lvl) (index ?index) (distance ?idms))
+	(INDEX (owner ?ghostType) (lvl ?lvl) (index ?index) (distance ?id1&:(<= ?id1 ?idms)))
+	(not (INDEX (owner ?ghostType) (distance ?id2&:(< ?id2 ?id1))))
+	(return ?index)
+)
+
+(deffunction elegir-index-o-previous (?ghostType ?lvl ?index)
+	(INDEX (owner ?ghostType) (lvl ?lvl) (index ?index) (previousIndex ?pri) (distance ?dist))
+	(if (= ?dist 0) then
+		(return ?pri)
+	)
+	(if (> ?dist 0) then
+		(return ?index)
+	)
+)
+
+(deffunction devolver-index-objetivo (?ghostType ?lvl)
+	(bind ?index (calcular-closest-distance-index-menor-que-mspacman ?ghostType ?lvl))
+	(test (neq ?index nil))
+	(bind ?indexObjetivo (elegir-index-o-previous ?ghostType ?lvl ?index))
+	(return ?indexObjetivo)
+)
+
+; EL USO DE LA FUNCION ANTERIOR SERIA DE LA SIGUIENTE MANERA
+; (bind ?objetivo (devolver-index-objetivo ?ghostType ?lvl))
+
+
+;(deffunction calcular-closest-distance-index (?ghostType ?lvl ?returnIndex)
+;	(INDEX (owner ?ghostType) (index ?index) (distance ?id))
+;	(not (INDEX (owner ?ghostType) (distance ?id2&:(< ?id2 ?id1))))
+;	(bind ?returnIndex ?index)
+;)
+	
+
 ; REGLAS DE UTILIDAD QUE NO ASERTAN ACTIONS
 
+(defrule calcular-nearest-ghost
+	(NEWGHOST )
+	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1)) 
+	(not (GHOST (edible false) (mspacman ?d2&:(< ?d2 ?d1))))
+	?curNearest <- (NEARESTGHOST )
+	=>
+	(modify ?curNearest (tipo ?ghostType))
+)
+	
 
 ; ANTES DE HACER EL CAMBIO DE GHOST, ELIMINAMOS LOS ACTIONS ASERTADOS EN EL ANTERIOR TURNO.
 (defrule delete-old-action
@@ -82,6 +131,8 @@
 	)
 )
 
+
+
 (defrule chases
 	(not (NEWGHOST))
 	(CURRENTGHOST (tipo ?ghostType))
@@ -96,7 +147,7 @@
 	)
 )	
 
-(defrule flanks
+(defrule flank-lvl2-junctions
 	(not (ACTION))
 	(not (NEWGHOST))
 	(CURRENTGHOST (tipo ?ghostType))
@@ -104,8 +155,29 @@
 	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1))
 	(GHOST (tipo ?another&:(neq ?another ?ghostType)) (edible false) (mspacman ?d2&:(< ?d2 ?d1)))
 	; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
-	(INDEX (owner ?ghostType) (index ?index) (distance ?id1&:(> ?id1 0)))
+	(INDEX (owner MSPACMAN) (index ?index) (distance ?idms))
+	(INDEX (owner ?ghostType) (index ?index) (distance ?id1&:(> ?id1 0)&:(<= ?id1 ?idms)))
 	(not (INDEX (owner ?ghostType) (distance ?id2&:(< ?id2 ?id1))))
+	=>
+	(assert
+		(ACTION (id FlankMspacman) (info "No comestible --> Flankear")  (priority 30) 
+			(ghostType ?ghostType)
+			(junction ?index)
+		)
+	)
+)
+
+(defrule flank-lvl3-junctions
+	(not (ACTION))
+	(not (NEWGHOST))
+	(CURRENTGHOST (tipo ?ghostType))
+	; SI !NO! SOMOS EL GHOST MAS CERCANO A MSPACMAN
+	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1))
+	(GHOST (tipo ?another&:(neq ?another ?ghostType)) (edible false) (mspacman ?d2&:(< ?d2 ?d1)))
+	; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
+	(INDEX (owner MSPACMAN) (lvl 3) (index ?index) (distance ?idms))
+	(INDEX (owner ?ghostType) (lvl 3) (index ?index) (distance ?id1&:(<= ?id1 ?idms)))
+	(not (INDEX (owner ?ghostType) (lvl 3) (distance ?id2&:(< ?id2 ?id1))))
 	=>
 	(assert
 		(ACTION (id FlankMspacman) (info "No comestible --> Flankear")  (priority 20) 
@@ -114,6 +186,7 @@
 		)
 	)
 )
+
 
 (defrule ultimo-fantasma-no-tiene-index-para-asignar
 	(not (INDEX))
@@ -129,11 +202,10 @@
 )
 
 ; ULTIMA REGLA
-; NOS SIRVE PARA ELIMINAR TODOS LOS JUNCTIONS DEL MISMO INDICE QUE EL JUNCTION QUE LE HEMOS PASADO A LA ACCION
 (defrule delete-all-indexes-with-same-index-if-action-has-junction
 	(not (NEWGHOST))
-	(ACTION (junction ?junction))
-	(test (neq ?junction nil))
+	(ACTION (junction ?junction&:(neq ?junction nil)) (priority ?p1))
+	(not (ACTION (priority ?p2&:(> ?p2 ?p1))))
 	?duck <- (INDEX (index ?junction))
 	=>
 	(retract ?duck)
