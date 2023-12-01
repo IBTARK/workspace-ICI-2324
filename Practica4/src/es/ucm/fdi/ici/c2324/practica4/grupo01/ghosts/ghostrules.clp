@@ -56,7 +56,9 @@
 
 ;RULES QUE ASERTAN ACTION
 
+
 (defrule runsAway
+	(not (NEWGHOST))
 	(CURRENTGHOST (tipo ?ghostType))
 	(GHOST (tipo ?ghostType) (edible true))
 	=>  
@@ -66,7 +68,9 @@
 		)
 	)
 )
+
 (defrule chases
+	(not (NEWGHOST))
 	(CURRENTGHOST (tipo ?ghostType))
 	; SI SOMOS EL GHOST MAS CERCANO A MSPACMAN
 	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1)) 
@@ -81,20 +85,32 @@
 
 (defrule flanks
 	(not (ACTION))
+	(not (NEWGHOST))
 	(CURRENTGHOST (tipo ?ghostType))
-	(GHOST (tipo ?ghostType) (edible false))
-	; SI NO SOMOS EL GHOST MAS CERCANO 
-	; ESTAS 2 LINEAS HACEN QUE NO FUNCIONE??
-	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1)) 
-	(GHOST (edible false) (mspacman ?d2&:(< ?d2 ?d1)))
+	; SI !NO! SOMOS EL GHOST MAS CERCANO A MSPACMAN
+	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1))
+	(GHOST (tipo ?another&:(neq ?another ?ghostType)) (edible false) (mspacman ?d2&:(< ?d2 ?d1)))
 	; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
-	(INDEX (owner ?ghostType) (index ?index) (distance ?d1))
-	(not (INDEX (owner ?ghostType) (distance ?d2&:(< ?d2 ?d1))))
+	(INDEX (owner ?ghostType) (index ?index) (distance ?id1&:(> ?id1 0)))
+	(not (INDEX (owner ?ghostType) (distance ?id2&:(< ?id2 ?id1))))
 	=>
 	(assert
 		(ACTION (id FlankMspacman) (info "No comestible --> Flankear")  (priority 10) 
-				(ghostType ?ghostType)
-				(junction ?index)
+			(ghostType ?ghostType)
+			(junction ?index)
+		)
+	)
+)
+
+(defrule ultimo-fantasma-no-tiene-index-para-asignar
+	(not (INDEX))
+	(not (NEWGHOST))
+	(CURRENTGHOST (tipo ?ghostType))
+	(GHOST (tipo ?ghostType) (edible false))
+	=>
+	(assert
+		(ACTION (id ChaseMspacman) (info "No tenemos junction --> Chase") (priority 5)
+			(ghostType ?ghostType)
 		)
 	)
 )
@@ -102,6 +118,7 @@
 ; ULTIMA REGLA
 ; NOS SIRVE PARA ELIMINAR TODOS LOS JUNCTIONS DEL MISMO INDICE QUE EL JUNCTION QUE LE HEMOS PASADO A LA ACCION
 (defrule delete-all-indexes-with-same-index-if-action-has-junction
+	(not (NEWGHOST))
 	(ACTION (junction ?junction))
 	(test (neq ?junction nil))
 	?duck <- (INDEX (index ?junction))
