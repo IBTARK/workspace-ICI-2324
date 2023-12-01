@@ -36,14 +36,22 @@
 	(slot nearestChasing (type SYMBOL)) ; El ghost chasing mas cercano en caso de que sea GoToChasingAction
 ) 
 
-
 ; FUNCTIONS DE UTILIDAD
+; Nos devuelve el INDEX con distancia minima (de nivel ?lvl) del ?ghostType que tiene menor distancia que el equivalente de mspacman
 (deffunction calcular-closest-distance-index-menor-que-mspacman (?ghostType ?lvl)
 	(INDEX (owner MSPACMAN) (lvl ?lvl) (index ?index) (distance ?idms))
 	(INDEX (owner ?ghostType) (lvl ?lvl) (index ?index) (distance ?id1&:(<= ?id1 ?idms)))
 	(not (INDEX (owner ?ghostType) (distance ?id2&:(< ?id2 ?id1))))
 	(return ?index)
 )
+
+; UNUSED
+; Nos devuelve el INDEX con distancia minima (de nivel ?lvl) del ?ghostType
+;(deffunction calcular-closest-distance-index (?ghostType ?lvl ?returnIndex)
+;	(INDEX (owner ?ghostType) (index ?index) (distance ?id))
+;	(not (INDEX (owner ?ghostType) (distance ?id2&:(< ?id2 ?id1))))
+;	(bind ?returnIndex ?index)
+;)
 
 (deffunction elegir-index-o-previous (?ghostType ?lvl ?index)
 	(INDEX (owner ?ghostType) (lvl ?lvl) (index ?index) (previousIndex ?pri) (distance ?dist))
@@ -56,27 +64,22 @@
 )
 
 (deffunction devolver-index-objetivo (?ghostType ?lvl)
-	(bind ?index (calcular-closest-distance-index-menor-que-mspacman ?ghostType ?lvl))
+	(bind ?index =(calcular-closest-distance-index-menor-que-mspacman ?ghostType ?lvl))
 	(test (neq ?index nil))
-	(bind ?indexObjetivo (elegir-index-o-previous ?ghostType ?lvl ?index))
+	(bind ?indexObjetivo =(elegir-index-o-previous ?ghostType ?lvl ?index))
 	(return ?indexObjetivo)
 )
 
 ; EL USO DE LA FUNCION ANTERIOR SERIA DE LA SIGUIENTE MANERA
 ; (bind ?objetivo (devolver-index-objetivo ?ghostType ?lvl))
-
-
-;(deffunction calcular-closest-distance-index (?ghostType ?lvl ?returnIndex)
-;	(INDEX (owner ?ghostType) (index ?index) (distance ?id))
-;	(not (INDEX (owner ?ghostType) (distance ?id2&:(< ?id2 ?id1))))
-;	(bind ?returnIndex ?index)
-;)
+; en ?objetivo guardaremos el return de la funcion
 	
 
 ; REGLAS DE UTILIDAD QUE NO ASERTAN ACTIONS
 
+; En el caso de que nearestghost sea null lo calculamos
 (defrule calcular-nearest-ghost
-	(NEWGHOST )
+	(NEARESTGHOST (tipo nil))
 	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1)) 
 	(not (GHOST (edible false) (mspacman ?d2&:(< ?d2 ?d1))))
 	?curNearest <- (NEARESTGHOST )
@@ -107,6 +110,7 @@
 
 
 (defrule runsAway
+	(not (ACTION))
 	(not (NEWGHOST))
 	(CURRENTGHOST (tipo ?ghostType))
 	(GHOST (tipo ?ghostType) (edible true) (nearestChasing null))
@@ -119,6 +123,7 @@
 )
 
 (defrule goToChasing
+	(not (ACTION))
 	(not (NEWGHOST))
 	(CURRENTGHOST (tipo ?ghostType))
 	(GHOST (tipo ?ghostType) (edible true) (nearestChasing ?nearestChasing&:(neq ?nearestChasing null)))
@@ -142,22 +147,29 @@
 	=> 
 	(assert 
 		(ACTION (id ChaseMspacman) (info "No comestible --> perseguir")  (priority 50) 
+)
+
+(defrule flank-lvl1-junctions
+	(not (ACTION))
+	(not (NEWGHOST))
+	(CURRENTGHOST (tipo ?ghostType)) 
+	(NEARESTGHOST (tipo ?other&:(neq ?ghostType ?other))) ; SI !NO! SOMOS EL GHOST MAS CERCANO A MSPACMAN
+	(bind ?index =(devolver-index-objetivo ?ghostType 1)) ; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
+	=>
+	(assert
+		(ACTION (id FlankMspacman) (info "No comestible --> Flankear")  (priority 20) 
 			(ghostType ?ghostType)
+			(junction ?index)
 		)
 	)
-)	
+)
 
 (defrule flank-lvl2-junctions
 	(not (ACTION))
 	(not (NEWGHOST))
 	(CURRENTGHOST (tipo ?ghostType))
-	; SI !NO! SOMOS EL GHOST MAS CERCANO A MSPACMAN
-	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1))
-	(GHOST (tipo ?another&:(neq ?another ?ghostType)) (edible false) (mspacman ?d2&:(< ?d2 ?d1)))
-	; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
-	(INDEX (owner MSPACMAN) (index ?index) (distance ?idms))
-	(INDEX (owner ?ghostType) (index ?index) (distance ?id1&:(> ?id1 0)&:(<= ?id1 ?idms)))
-	(not (INDEX (owner ?ghostType) (distance ?id2&:(< ?id2 ?id1))))
+	(NEARESTGHOST (tipo ?other&:(neq ?ghostType ?other))) ; SI !NO! SOMOS EL GHOST MAS CERCANO A MSPACMAN
+	(bind ?index =(devolver-index-objetivo ?ghostType 2)) ; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
 	=>
 	(assert
 		(ACTION (id FlankMspacman) (info "No comestible --> Flankear")  (priority 30) 
@@ -170,14 +182,9 @@
 (defrule flank-lvl3-junctions
 	(not (ACTION))
 	(not (NEWGHOST))
-	(CURRENTGHOST (tipo ?ghostType))
-	; SI !NO! SOMOS EL GHOST MAS CERCANO A MSPACMAN
-	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1))
-	(GHOST (tipo ?another&:(neq ?another ?ghostType)) (edible false) (mspacman ?d2&:(< ?d2 ?d1)))
-	; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
-	(INDEX (owner MSPACMAN) (lvl 3) (index ?index) (distance ?idms))
-	(INDEX (owner ?ghostType) (lvl 3) (index ?index) (distance ?id1&:(<= ?id1 ?idms)))
-	(not (INDEX (owner ?ghostType) (lvl 3) (distance ?id2&:(< ?id2 ?id1))))
+	(CURRENTGHOST (tipo ?ghostType)) 
+	(NEARESTGHOST (tipo ?other&:(neq ?ghostType ?other))) ; SI !NO! SOMOS EL GHOST MAS CERCANO A MSPACMAN
+	(bind ?index =(devolver-index-objetivo ?ghostType 3)) ; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
 	=>
 	(assert
 		(ACTION (id FlankMspacman) (info "No comestible --> Flankear")  (priority 20) 
@@ -201,12 +208,21 @@
 	)
 )
 
-; ULTIMA REGLA
-(defrule delete-all-indexes-with-same-index-if-action-has-junction
+; ESTAS 2 ULTIMAS REGLAS SIRVEN PARA ELIMINAR LOS INDEXES DE LA LISTA DE POSIBLES INDICES DE CADA FANTASMA
+(defrule retract-indices-escogidos-por-action
 	(not (NEWGHOST))
 	(ACTION (junction ?junction&:(neq ?junction nil)) (priority ?p1))
 	(not (ACTION (priority ?p2&:(> ?p2 ?p1))))
 	?duck <- (INDEX (index ?junction))
+	=>
+	(retract ?duck)
+)
+
+(defrule retract-indices-si-previo-es-eliminado
+	(not (NEWGHOST))
+	(ACTION (junction ?junction&:(neq ?junction nil)) (priority ?p1))
+	(not (ACTION (priority ?p2&:(> ?p2 ?p1))))
+	?duck <- (INDEX (previousIndex ?junction))
 	=>
 	(retract ?duck)
 )
