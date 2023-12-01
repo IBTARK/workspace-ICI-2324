@@ -8,8 +8,6 @@ import java.util.Vector;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.GhostsInput;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.ChaseMspacmanAction;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.FlankMspacmanAction;
-import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.GoToChasingAction;
-import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.ProtectEdibleAction;
 import es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts.actions.RunAwayAction;
 import es.ucm.fdi.ici.rules.RuleEngine;
 import es.ucm.fdi.ici.rules.RulesAction;
@@ -32,57 +30,28 @@ public class Ghosts  extends GhostController  {
 		setTeam("Team 01");
 		
 		map = new HashMap<String,RulesAction>();
-		//Fill Actions
-		/*RulesAction BLINKYchases = new ChaseAction(GHOST.BLINKY);
-		RulesAction INKYchases = new ChaseAction(GHOST.INKY);
-		RulesAction PINKYchases = new ChaseAction(GHOST.PINKY);
-		RulesAction SUEchases = new ChaseAction(GHOST.SUE);
-		RulesAction BLINKYrunsAway = new RunAwayAction(GHOST.BLINKY);
-		RulesAction INKYrunsAway = new RunAwayAction(GHOST.INKY);
-		RulesAction PINKYrunsAway = new RunAwayAction(GHOST.PINKY);
-		RulesAction SUErunsAway = new RunAwayAction(GHOST.SUE);*/
+		
 		
 		RulesAction ChaseMspacman = new ChaseMspacmanAction();
 		RulesAction FlankMspacman = new FlankMspacmanAction();
-		//RulesAction GoToChasing = new GoToChasingAction();
-		// Se añadira mas tarde (cuando todo funcione bien)
-		//RulesAction ProtectEdible = new ProtectEdibleAction();
 		RulesAction RunAway = new RunAwayAction();
+		// Se annadiran mas tarde (cuando todo funcione bien)
+		//RulesAction GoToChasing = new GoToChasingAction();
+		//RulesAction ProtectEdible = new ProtectEdibleAction();
 		
 		map.put("ChaseMspacman", ChaseMspacman);
 		map.put("FlankMspacman", FlankMspacman);
+		map.put("RunAway", RunAway);
 		//map.put("GoToChasing", GoToChasing);
 		//map.put("ProtectEdible", ProtectEdible);
-		map.put("RunAway", RunAway);
-		
-		
-		/**
-		 * HACER UN SOLO CLP CON LAS ACCIONES "GENERICAS" DONDE LE PASEMOS EL FANTASMA 
-		 * DONDE EN EL CLP TENDREMOS:
-		 * 	PARA PACMAN:
-		 * 		SU POSICION,
-		 * 		SUS TRES (MAX) SIGUIENTES JUNCTIONS
-		 *	PARA CADA FANTASMA:
-		 *		DISTANCIA A MSPACMAN
-		 *		DISTANCIA A CADA UNO DE LOS JUNCTIONS
-		 *		+ INFORMACION QUE TENEMOS YA
-		 *
-		 * VER EXPLICACION EN EL SIGUIENTE METODO
-		 * PARA ELEGIR EL MOVIMIENTO DE CADA FANTASMA TENDREMOS QUE ASERTAR EN EL INPUT.GETFACTS EL CURRENT GHOST
-		 * Y TENER EN LAS REGLAS CONDICIONES "GENERICAS" Y ACCIONES GENERICAS DONDE LE PASEMOS POR PARAMETRO (A LAS ACCIONES)
-		 * EL FANTASMA QUE TIENE QUE REALIZARLAS
-		 */
-		
 		
 		
 		String rulesFile = String.format("%sghostrules.clp", RULES_PATH);
 		ruleEngine = new RuleEngine("ghostsEngine",rulesFile, map);
 		
-		
-		//add observer only to BLINKY
+		// Add an observer to the current ruleEngine (one for all ghosts)
 		ConsoleRuleEngineObserver observer = new ConsoleRuleEngineObserver("ghostsEngine", true);
 		ruleEngine.addObserver(observer);
-		
 	}
 
 	@Override
@@ -90,26 +59,27 @@ public class Ghosts  extends GhostController  {
 		
 		//Process input
 		RulesInput input = new GhostsInput(game);
-		//load facts
-		//reset the rule engines
+		
 		EnumMap<GHOST,MOVE> result = new EnumMap<GHOST,MOVE>(GHOST.class);	
-		/**
-		 * chequear si somos el fantasma mas cercano a mspacman
-		 * si no lo somos (somos pinky)
-		 * 
-		 * BLINKY (es el mas cercano)
-		 * INKY (va al segundo junction)
-		 * PINKY <- 
-		 * SUE
-		 */
+
+		// We reset the rule engine once per getMove() is called
 		ruleEngine.reset();
+		
+		// Assert all facts
 		Vector<String> facts = new Vector<String>();
+		// It doesn't matter the type of the currentghost we put here
 		facts.add("(CURRENTGHOST (tipo BLINKY))");
 		ruleEngine.assertFacts(facts);
 		ruleEngine.assertFacts(input.getFacts());
+		
+		// Once all facts are asserted, we then will ask for the action of each ghost
 		for(GHOST ghost: GHOST.values())
 		{			
 			facts = new Vector<String>();
+			// We add the "NEWGHOST", where a set of rules will:
+			//  	- Delete the previous asserted ACTION
+			// 		- Change the CURRENTGHOST to the type of the NEWGHOST
+			// 		- Assing the ACTION to the newly modified CURRENTGHOST
 			facts.add(String.format("(NEWGHOST (tipo %s))", ghost.toString()));
 			ruleEngine.assertFacts(facts);
 			MOVE move = ruleEngine.run(game);
