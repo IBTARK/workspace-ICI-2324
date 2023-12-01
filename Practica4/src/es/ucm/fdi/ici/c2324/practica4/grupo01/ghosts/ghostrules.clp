@@ -34,58 +34,21 @@
 	(slot junction (type INTEGER)) ; The junction where the ghost goes to flank mspacman
 	(slot nearestEdible (type SYMBOL)) ; El ghost edible mas cercano en caso de que sea ProtectEdibleAction
 	(slot nearestChasing (type SYMBOL)) ; El ghost chasing mas cercano en caso de que sea GoToChasingAction
-) 
-
-; FUNCTIONS DE UTILIDAD
-; Nos devuelve el INDEX con distancia minima (de nivel ?lvl) del ?ghostType que tiene menor distancia que el equivalente de mspacman
-(deffunction calcular-closest-distance-index-menor-que-mspacman (?ghostType ?lvl)
-	(INDEX (owner MSPACMAN) (lvl ?lvl) (index ?index) (distance ?idms))
-	(INDEX (owner ?ghostType) (lvl ?lvl) (index ?index) (distance ?id1&:(<= ?id1 ?idms)))
-	(not (INDEX (owner ?ghostType) (distance ?id2&:(< ?id2 ?id1))))
-	(return ?index)
 )
 
-; UNUSED
-; Nos devuelve el INDEX con distancia minima (de nivel ?lvl) del ?ghostType
-;(deffunction calcular-closest-distance-index (?ghostType ?lvl ?returnIndex)
-;	(INDEX (owner ?ghostType) (index ?index) (distance ?id))
-;	(not (INDEX (owner ?ghostType) (distance ?id2&:(< ?id2 ?id1))))
-;	(bind ?returnIndex ?index)
-;)
 
-(deffunction elegir-index-o-previous (?ghostType ?lvl ?index)
-	(INDEX (owner ?ghostType) (lvl ?lvl) (index ?index) (previousIndex ?pri) (distance ?dist))
-	(if (= ?dist 0) then
-		(return ?pri)
-	)
-	(if (> ?dist 0) then
-		(return ?index)
-	)
-)
-
-(deffunction devolver-index-objetivo (?ghostType ?lvl)
-	(bind ?index =(calcular-closest-distance-index-menor-que-mspacman ?ghostType ?lvl))
-	(test (neq ?index nil))
-	(bind ?indexObjetivo =(elegir-index-o-previous ?ghostType ?lvl ?index))
-	(return ?indexObjetivo)
-)
-
-; EL USO DE LA FUNCION ANTERIOR SERIA DE LA SIGUIENTE MANERA
-; (bind ?objetivo (devolver-index-objetivo ?ghostType ?lvl))
-; en ?objetivo guardaremos el return de la funcion
-	
 
 ; REGLAS DE UTILIDAD QUE NO ASERTAN ACTIONS
 
 ; En el caso de que nearestghost sea null lo calculamos
-(defrule calcular-nearest-ghost
-	(NEARESTGHOST (tipo nil))
-	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1)) 
-	(not (GHOST (edible false) (mspacman ?d2&:(< ?d2 ?d1))))
-	?curNearest <- (NEARESTGHOST )
-	=>
-	(modify ?curNearest (tipo ?ghostType))
-)
+;(defrule calcular-nearest-ghost
+;	(NEARESTGHOST (tipo nil))
+;	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1)) 
+;	(not (GHOST (edible false) (mspacman ?d2&:(< ?d2 ?d1))))
+;	?curNearest <- (NEARESTGHOST )
+;	=>
+;	(modify ?curNearest (tipo ?ghostType))
+;)
 	
 
 ; ANTES DE HACER EL CAMBIO DE GHOST, ELIMINAMOS LOS ACTIONS ASERTADOS EN EL ANTERIOR TURNO.
@@ -110,7 +73,6 @@
 
 
 (defrule runsAway
-	(not (ACTION))
 	(not (NEWGHOST))
 	(CURRENTGHOST (tipo ?ghostType))
 	(GHOST (tipo ?ghostType) (edible true) (nearestChasing null))
@@ -123,7 +85,6 @@
 )
 
 (defrule goToChasing
-	(not (ACTION))
 	(not (NEWGHOST))
 	(CURRENTGHOST (tipo ?ghostType))
 	(GHOST (tipo ?ghostType) (edible true) (nearestChasing ?nearestChasing&:(neq ?nearestChasing null)))
@@ -138,6 +99,7 @@
 
 
 
+
 (defrule chases
 	(not (NEWGHOST))
 	(CURRENTGHOST (tipo ?ghostType))
@@ -147,82 +109,130 @@
 	=> 
 	(assert 
 		(ACTION (id ChaseMspacman) (info "No comestible --> perseguir")  (priority 50) 
-)
-
-(defrule flank-lvl1-junctions
-	(not (ACTION))
-	(not (NEWGHOST))
-	(CURRENTGHOST (tipo ?ghostType)) 
-	(NEARESTGHOST (tipo ?other&:(neq ?ghostType ?other))) ; SI !NO! SOMOS EL GHOST MAS CERCANO A MSPACMAN
-	(bind ?index =(devolver-index-objetivo ?ghostType 1)) ; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
-	=>
-	(assert
-		(ACTION (id FlankMspacman) (info "No comestible --> Flankear")  (priority 20) 
 			(ghostType ?ghostType)
-			(junction ?index)
+		)
+	)
+)	
+
+(defrule ir-a-junction-lvl1
+	(not (NEWGHOST))
+	(not (ACTION))
+	(CURRENTGHOST (tipo ?ghostType))
+	; SI !NO! SOMOS EL GHOST MAS CERCANO A MSPACMAN
+	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1))
+	(GHOST (tipo ?another&:(neq ?another ?ghostType)) (edible false) (mspacman ?d2&:(< ?d2 ?d1)))
+	; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
+	(INDEX (owner MSPACMAN) (lvl 1) (index ?index) (distance ?idms))
+	(INDEX (owner ?ghostType) (lvl 1) (index ?index) (previousIndex ?pri) (distance ?id1&:(<= ?id1 ?idms)))
+	=>
+	(if (> ?id1 0)
+		then
+		(assert
+			(ACTION (id FlankMspacman) (info "No comestible --> Flankear junction")  (priority 30) 
+				(ghostType ?ghostType)
+				(junction ?index)
+			)
+		)
+		else
+		(assert
+			(ACTION (id ChaseMspacman) (info "No comestible --> Flankear junction previo mspacman")  (priority 30) 
+				(ghostType ?ghostType)
+				(junction ?index) ; Esta linea es para borrar el resto de junctions
+			)
 		)
 	)
 )
 
 (defrule flank-lvl2-junctions
-	(not (ACTION))
 	(not (NEWGHOST))
+	(not (ACTION))
 	(CURRENTGHOST (tipo ?ghostType))
-	(NEARESTGHOST (tipo ?other&:(neq ?ghostType ?other))) ; SI !NO! SOMOS EL GHOST MAS CERCANO A MSPACMAN
-	(bind ?index =(devolver-index-objetivo ?ghostType 2)) ; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
+	; SI !NO! SOMOS EL GHOST MAS CERCANO A MSPACMAN
+	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1))
+	(GHOST (tipo ?another&:(neq ?another ?ghostType)) (edible false) (mspacman ?d2&:(< ?d2 ?d1)))
+	; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
+	;(INDEX (owner MSPACMAN) (lvl 2) (index ?index) (distance ?idms))
+	;(INDEX (owner ?ghostType) (lvl 2) (index ?index) (previousIndex ?pri) (distance ?id1&:(<= ?id1 ?idms)))
+	(INDEX (owner ?ghostType) (lvl 2) (index ?index) (previousIndex ?pri) (distance ?id1))
+	(not (INDEX (owner ?ghostType) (lvl 2) (distance ?id2&:(< ?id2 ?id1))))
 	=>
-	(assert
-		(ACTION (id FlankMspacman) (info "No comestible --> Flankear")  (priority 30) 
-			(ghostType ?ghostType)
-			(junction ?index)
+	(if (> ?id1 0)
+		then
+		(assert
+			(ACTION (id FlankMspacman) (info "No comestible --> Flankear junction lvl2")  (priority 20) 
+				(ghostType ?ghostType)
+				(junction ?index)
+			)
+		)
+		else
+		(assert
+			(ACTION (id FlankMspacman) (info "No comestible --> Flankear junction previo lvl1")  (priority 20) 
+				(ghostType ?ghostType)
+				(junction ?pri)
+			)
 		)
 	)
 )
 
 (defrule flank-lvl3-junctions
-	(not (ACTION))
-	(not (NEWGHOST))
-	(CURRENTGHOST (tipo ?ghostType)) 
-	(NEARESTGHOST (tipo ?other&:(neq ?ghostType ?other))) ; SI !NO! SOMOS EL GHOST MAS CERCANO A MSPACMAN
-	(bind ?index =(devolver-index-objetivo ?ghostType 3)) ; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
-	=>
-	(assert
-		(ACTION (id FlankMspacman) (info "No comestible --> Flankear")  (priority 20) 
-			(ghostType ?ghostType)
-			(junction ?index)
-		)
-	)
-)
-
-
-(defrule ultimo-fantasma-no-tiene-index-para-asignar
-	(not (INDEX))
 	(not (NEWGHOST))
 	(CURRENTGHOST (tipo ?ghostType))
-	(GHOST (tipo ?ghostType) (edible false))
+	; SI !NO! SOMOS EL GHOST MAS CERCANO A MSPACMAN
+	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1))
+	(GHOST (tipo ?another&:(neq ?another ?ghostType)) (edible false) (mspacman ?d2&:(< ?d2 ?d1)))
+	; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
+	(INDEX (owner ?ghostType) (lvl 3) (index ?index) (previousIndex ?pri) (distance ?id1))
+	(not (INDEX (owner ?ghostType) (lvl 3) (distance ?id2&:(< ?id2 ?id1))))
 	=>
-	(assert
-		(ACTION (id ChaseMspacman) (info "No tenemos junction --> Chase") (priority 10)
-			(ghostType ?ghostType)
+	(if (> ?id1 0)
+		then
+		(assert
+			(ACTION (id FlankMspacman) (info "No comestible --> Flankear junction lvl3")  (priority 10) 
+				(ghostType ?ghostType)
+				(junction ?index)
+			)
+		)
+		else
+		(assert
+			(ACTION (id FlankMspacman) (info "No comestible --> Flankear junction previo lvl2")  (priority 10) 
+				(ghostType ?ghostType)
+				(junction ?pri)
+			)
 		)
 	)
 )
 
-; ESTAS 2 ULTIMAS REGLAS SIRVEN PARA ELIMINAR LOS INDEXES DE LA LISTA DE POSIBLES INDICES DE CADA FANTASMA
-(defrule retract-indices-escogidos-por-action
-	(not (NEWGHOST))
-	(ACTION (junction ?junction&:(neq ?junction nil)) (priority ?p1))
-	(not (ACTION (priority ?p2&:(> ?p2 ?p1))))
-	?duck <- (INDEX (index ?junction))
-	=>
-	(retract ?duck)
-)
 
+;(defrule ultimo-fantasma-no-tiene-index-para-asignar
+;	(not (INDEX))
+;	(not (NEWGHOST))
+;	(CURRENTGHOST (tipo ?ghostType))
+;	(GHOST (tipo ?ghostType) (edible false))
+;	=>
+;	(assert
+;		(ACTION (id ChaseMspacman) (info "No tenemos junction --> Chase") (priority 10)
+;			(ghostType ?ghostType)
+;		)
+;	)
+;)
+
+; ESTAS 2 ULTIMAS REGLAS SIRVEN PARA ELIMINAR LOS INDEXES DE LA LISTA DE POSIBLES INDICES DE CADA FANTASMA
 (defrule retract-indices-si-previo-es-eliminado
 	(not (NEWGHOST))
 	(ACTION (junction ?junction&:(neq ?junction nil)) (priority ?p1))
 	(not (ACTION (priority ?p2&:(> ?p2 ?p1))))
-	?duck <- (INDEX (previousIndex ?junction))
+	(INDEX (lvl ?lvl) (index ?junction))
+	?duck <- (INDEX (lvl =(+ ?lvl 1)) (previousIndex ?junction))
+	=>
+	(retract ?duck)
+)
+
+(defrule retract-indices-escogidos-por-action
+	(not (NEWGHOST))
+	(ACTION (junction ?junction&:(neq ?junction nil)) (priority ?p1))
+	(not (ACTION (priority ?p2&:(> ?p2 ?p1))))
+	?duck <- (INDEX (lvl ?lvl) (index ?junction))
+	(not (INDEX (lvl =(+ ?lvl 1)) (previousIndex ?junction)))
 	=>
 	(retract ?duck)
 )
