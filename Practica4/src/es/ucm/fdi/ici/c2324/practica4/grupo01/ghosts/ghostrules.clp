@@ -86,6 +86,19 @@
 	)
 )
 
+(defrule MSPACMANclosePPill-runaway
+	(not (NEWGHOST))
+	(CURRENTGHOST (tipo ?ghostType))
+	(GHOST (tipo ?ghostType) (edible false))
+	(MSPACMAN (ppill ?d)) (test (<= ?d 30)) 
+	=>  
+	(assert 
+		(ACTION (id RunAway) (info "MSPacMan cerca PPill") (priority 50) 
+			(ghostType ?ghostType)
+		)
+	)
+)
+
 (defrule goToChasing
 	(not (NEWGHOST))
 	(CURRENTGHOST (tipo ?ghostType))
