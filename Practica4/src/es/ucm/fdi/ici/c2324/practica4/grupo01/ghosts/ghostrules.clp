@@ -32,6 +32,8 @@
 	(slot id) (slot info (default "")) (slot priority (type NUMBER) ) ; mandatory slots
 	(slot ghostType (type SYMBOL)) ; Slot for the ghostType
 	(slot junction (type INTEGER)) ; The junction where the ghost goes to flank mspacman
+	(slot borrar (type INTEGER)) ; informacion extra para la mejor sincronizacion de los fantasmas
+	(slot lvl (type INTEGER)) 	 ; informacion extra para la mejor sincronizacion de los fantasmas
 	(slot nearestEdible (type SYMBOL)) ; El ghost edible mas cercano en caso de que sea ProtectEdibleAction
 	(slot nearestChasing (type SYMBOL)) ; El ghost chasing mas cercano en caso de que sea GoToChasingAction
 )
@@ -131,13 +133,13 @@
 			(ACTION (id FlankMspacman) (info "No comestible --> Flankear junction")  (priority 30) 
 				(ghostType ?ghostType)
 				(junction ?index)
+				(lvl 1)
 			)
 		)
 		else
 		(assert
 			(ACTION (id ChaseMspacman) (info "No comestible --> Flankear junction previo mspacman")  (priority 30) 
 				(ghostType ?ghostType)
-				(junction ?index) ; Esta linea es para borrar el resto de junctions
 			)
 		)
 	)
@@ -156,23 +158,27 @@
 	(INDEX (owner ?ghostType) (lvl 2) (index ?index) (previousIndex ?pri) (distance ?id1))
 	(not (INDEX (owner ?ghostType) (lvl 2) (distance ?id2&:(< ?id2 ?id1))))
 	=>
-	(if (> ?id1 0)
-		then
+	(if (> ?id1 0) then
 		(assert
 			(ACTION (id FlankMspacman) (info "No comestible --> Flankear junction lvl2")  (priority 20) 
 				(ghostType ?ghostType)
 				(junction ?index)
+				(borrar ?index)
+				(lvl 2)
 			)
 		)
-		else
+	else
 		(assert
 			(ACTION (id FlankMspacman) (info "No comestible --> Flankear junction previo lvl1")  (priority 20) 
 				(ghostType ?ghostType)
 				(junction ?pri)
+				(borrar ?index)
+				(lvl 2)
 			)
 		)
 	)
 )
+
 
 (defrule flank-lvl3-junctions
 	(not (NEWGHOST))
@@ -190,6 +196,8 @@
 			(ACTION (id FlankMspacman) (info "No comestible --> Flankear junction lvl3")  (priority 10) 
 				(ghostType ?ghostType)
 				(junction ?index)
+				(borrar ?index)
+				(lvl 3)
 			)
 		)
 		else
@@ -197,6 +205,8 @@
 			(ACTION (id FlankMspacman) (info "No comestible --> Flankear junction previo lvl2")  (priority 10) 
 				(ghostType ?ghostType)
 				(junction ?pri)
+				(borrar ?index)
+				(lvl 3)
 			)
 		)
 	)
@@ -216,24 +226,24 @@
 ;	)
 ;)
 
-; ESTAS 2 ULTIMAS REGLAS SIRVEN PARA ELIMINAR LOS INDEXES DE LA LISTA DE POSIBLES INDICES DE CADA FANTASMA
-(defrule retract-indices-si-previo-es-eliminado
+
+; estas ultimas reglas se encargan de eliminar los indices cuyo index ?index y previousIndex ?index y el lvl es acorde
+(defrule retract-previous-indices
 	(not (NEWGHOST))
-	(ACTION (junction ?junction&:(neq ?junction nil)) (priority ?p1))
+	(ACTION (borrar ?index&:(neq ?index nil)) (lvl ?lvl) (priority ?p1))
 	(not (ACTION (priority ?p2&:(> ?p2 ?p1))))
-	(INDEX (lvl ?lvl) (index ?junction))
-	?duck <- (INDEX (lvl =(+ ?lvl 1)) (previousIndex ?junction))
+	?duck <- (INDEX (previousIndex ?index) (lvl ?nextLvl&:(> ?nextLvl ?lvl)))
 	=>
 	(retract ?duck)
 )
 
-(defrule retract-indices-escogidos-por-action
+(defrule retract-indices
 	(not (NEWGHOST))
-	(ACTION (junction ?junction&:(neq ?junction nil)) (priority ?p1))
+	(ACTION (borrar ?index&:(neq ?index nil)) (lvl ?lvl) (priority ?p1))
 	(not (ACTION (priority ?p2&:(> ?p2 ?p1))))
-	?duck <- (INDEX (lvl ?lvl) (index ?junction))
-	(not (INDEX (lvl =(+ ?lvl 1)) (previousIndex ?junction)))
+	?duck <- (INDEX (index ?index) (lvl ?lvl))
 	=>
 	(retract ?duck)
 )
+	
 	
