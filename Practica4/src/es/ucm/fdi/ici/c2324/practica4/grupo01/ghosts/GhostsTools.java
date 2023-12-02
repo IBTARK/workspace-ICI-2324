@@ -1,6 +1,8 @@
 package es.ucm.fdi.ici.c2324.practica4.grupo01.ghosts;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
@@ -147,23 +149,42 @@ public class GhostsTools {
 	 * @param lastMove
 	 * @return
 	 */
-	public static Integer[] nextJunctions(Game game, int pos, MOVE lastMove) {
+	public static Integer[] nextJunctions(Game game, int pos, MOVE lastMove, Map<Integer, Integer[]> lvl3Junctions) {
+		// Contiene en el primer spot el firstJunction y en los siguientes los junctions de nivel 2
 		ArrayList<Integer> nextJunctions = new ArrayList<Integer>();
 		
-		MOVE move = lastMove;
-		while (!game.isJunction(pos)) {
-			move = game.getPossibleMoves(pos, move)[0];
-			pos = game.getNeighbour(pos, move);
-		}
+		// Junction de primer nivel (puede coincidir con mspacman)
 		Integer njPath[] = nextJunctionPath(game, pos, lastMove);
-		move = njPath.length == 1 ? lastMove 
+		pos = njPath[njPath.length-1];
+		MOVE move = njPath.length == 1 ? lastMove 
 				: game.getMoveToMakeToReachDirectNeighbour(njPath[njPath.length-2], njPath[njPath.length-1]);
-		int firstJunction = njPath[njPath.length-1];
+		
+		int firstJunction = pos;
 		nextJunctions.add(firstJunction);
+		
+		// lvl2 y lvl3 junctions
+		ArrayList<Integer> lvl3 = new ArrayList<>();
 		// Una vez tenemos el primer junction (puede coincidir con la posicion de mspacman) calculamos los junctions de nivel 2
+		// Junctions de nivel 2
+		int lvl2Junction;
 		for(MOVE m: game.getPossibleMoves(firstJunction, move)) {
 			pos = game.getNeighbour(firstJunction, m);
-			nextJunctions.add(nextJunction(game, pos, m));
+			
+			njPath =nextJunctionPath(game, pos, m);
+			pos = njPath[njPath.length-1];
+			m = game.getMoveToMakeToReachDirectNeighbour(njPath[njPath.length-2], njPath[njPath.length-1]);
+			
+			lvl2Junction = pos;
+			nextJunctions.add(lvl2Junction);
+			
+			// Calulamos los junctions de nivel 3
+			lvl3.clear();
+			for(MOVE mtolvl3: game.getPossibleMoves(lvl2Junction, m)) {
+				pos = game.getNeighbour(lvl2Junction, mtolvl3);
+				
+				lvl3.add(nextJunction(game, pos, mtolvl3));
+			}
+			lvl3Junctions.put(lvl2Junction, lvl3.toArray(new Integer[lvl3.size()]));
 		}
 		
 		return nextJunctions.toArray(new Integer[nextJunctions.size()]);
