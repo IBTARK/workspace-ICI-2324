@@ -90,7 +90,7 @@
 	(not (NEWGHOST))
 	(CURRENTGHOST (tipo ?ghostType))
 	(GHOST (tipo ?ghostType) (edible false))
-	(MSPACMAN (ppill ?d)) (test (<= ?d 30)) 
+	(MSPACMAN (ppill ?d)) (test (<= ?d 20)) 
 	=>  
 	(assert 
 		(ACTION (id RunAway) (info "MSPacMan cerca PPill") (priority 50) 
@@ -115,30 +115,17 @@
 
 
 
-(defrule chases
-	(not (NEWGHOST))
-	(CURRENTGHOST (tipo ?ghostType))
-	; SI SOMOS EL GHOST MAS CERCANO A MSPACMAN
-	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1)) 
-	(not (GHOST (edible false) (mspacman ?d2&:(< ?d2 ?d1)))) 
-	=> 
-	(assert 
-		(ACTION (id ChaseMspacman) (info "No comestible --> perseguir")  (priority 50) 
-			(ghostType ?ghostType)
-		)
-	)
-)	
+
 
 (defrule ir-a-junction-lvl1
 	(not (NEWGHOST))
 	(not (ACTION))
 	(CURRENTGHOST (tipo ?ghostType))
 	; SI !NO! SOMOS EL GHOST MAS CERCANO A MSPACMAN
-	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1))
-	(GHOST (tipo ?another&:(neq ?another ?ghostType)) (edible false) (mspacman ?d2&:(< ?d2 ?d1)))
+	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1)) 
+	(not (GHOST (edible false) (mspacman ?d2&:(< ?d2 ?d1)))) 
 	; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
-	(INDEX (owner MSPACMAN) (lvl 1) (index ?index) (distance ?idms))
-	(INDEX (owner ?ghostType) (lvl 1) (index ?index) (previousIndex ?pri) (distance ?id1&:(<= ?id1 ?idms)))
+	(INDEX (owner ?ghostType) (lvl 1) (index ?index) (previousIndex ?pri) (distance ?id1))
 	=>
 	(if (> ?id1 0)
 		then
@@ -166,9 +153,9 @@
 	(GHOST (tipo ?ghostType) (edible false) (mspacman ?d1))
 	(GHOST (tipo ?another&:(neq ?another ?ghostType)) (edible false) (mspacman ?d2&:(< ?d2 ?d1)))
 	; CALCULAMOS EL INDEX (owner ?ghostType) con distancia minima.
-	;(INDEX (owner MSPACMAN) (lvl 2) (index ?index) (distance ?idms))
-	;(INDEX (owner ?ghostType) (lvl 2) (index ?index) (previousIndex ?pri) (distance ?id1&:(<= ?id1 ?idms)))
-	(INDEX (owner ?ghostType) (lvl 2) (index ?index) (previousIndex ?pri) (distance ?id1))
+	(INDEX (owner MSPACMAN) (lvl 2) (index ?index) (distance ?idms))
+	(INDEX (owner ?ghostType) (lvl 2) (index ?index) (previousIndex ?pri) (distance ?id1&:(<= ?id1 ?idms)))
+	;(INDEX (owner ?ghostType) (lvl 2) (index ?index) (previousIndex ?pri) (distance ?id1))
 	(not (INDEX (owner ?ghostType) (lvl 2) (distance ?id2&:(< ?id2 ?id1))))
 	=>
 	(if (> ?id1 0) then

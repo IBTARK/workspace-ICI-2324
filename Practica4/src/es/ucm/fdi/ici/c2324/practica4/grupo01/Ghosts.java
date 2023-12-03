@@ -51,8 +51,8 @@ public class Ghosts  extends GhostController  {
 		ruleEngine = new RuleEngine("ghostsEngine",rulesFile, map);
 		
 		// Add an observer to the current ruleEngine (one for all ghosts)
-		ConsoleRuleEngineObserver observer = new ConsoleRuleEngineObserver("ghostsEngine", true);
-		ruleEngine.addObserver(observer);
+		//ConsoleRuleEngineObserver observer = new ConsoleRuleEngineObserver("ghostsEngine", true);
+		//ruleEngine.addObserver(observer);
 	}
 
 	@Override

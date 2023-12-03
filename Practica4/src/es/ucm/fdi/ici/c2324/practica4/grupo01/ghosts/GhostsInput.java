@@ -208,6 +208,7 @@ public class GhostsInput extends RulesInput {
 		
 		// Hacer un for para a�adir estilo:
 		int mspacman = game.getPacmanCurrentNodeIndex();
+		Integer[] lvl3;
 		
 		StringBuilder str;
 		for(GHOST g: GHOST.values()) {
@@ -230,8 +231,18 @@ public class GhostsInput extends RulesInput {
 				facts.add(String.format("(INDEX (owner %s) (lvl 1) (index %d) (previousIndex %d) (distance %d))", g.toString(), msNextJunction, mspacman, distanceToMsNextJunction.get(g)));
 				// Junctions de nivel 2
 				Integer distanceToLvl2[] = distanceToLevel2Junctions.get(g);
+				Map<Integer, Integer[]> ghostMapToLvl3 = distanceToLevel3Junctions.get(g);
+				Integer[] ghostDistToLvl3;
 				for(int i = 0; i < distanceToLvl2.length; i++) {
-					facts.add(String.format("(INDEX (owner %s) (lvl 2) (index %d) (previousIndex %d) (distance %d))", g.toString(), level2Junctions[i], msNextJunction, distanceToLvl2[i]));
+					int lvl2Junction = level2Junctions[i];
+					facts.add(String.format("(INDEX (owner %s) (lvl 2) (index %d) (previousIndex %d) (distance %d))", g.toString(), lvl2Junction, msNextJunction, distanceToLvl2[i]));
+				
+					// Junctions de nivel 3
+					lvl3 = level3Junctions.get(lvl2Junction);
+					ghostDistToLvl3 = ghostMapToLvl3.get(lvl2Junction);
+					for(int j = 0; j < lvl3.length; j++) {
+						facts.add(String.format("(INDEX (owner %s) (lvl 3) (index %d) (previousIndex %d) (distance %d)))", g.toString(), lvl3[j], lvl2Junction, ghostDistToLvl3[j]));
+					}
 				}
 				// Junctions de nivel 3
 			}
@@ -242,7 +253,7 @@ public class GhostsInput extends RulesInput {
 		
 		// VAMOS A ASERTAR LOS INDEX DE MSPACMAN
 		facts.add(String.format("(INDEX (owner MSPACMAN) (lvl 1) (index %d) (previousIndex %d) (distance %d)))", msNextJunction, mspacman, msNextJunctionDistance));
-		Integer[] lvl3, msDistToLvl3;
+		Integer[] msDistToLvl3;
 		for(int i = 0; i < level2Junctions.length; i++ ) {
 			int lvl2Junction = level2Junctions[i];
 			facts.add(String.format("(INDEX (owner MSPACMAN) (lvl 2) (index %d) (previousIndex %d) (distance %d)))", lvl2Junction, msNextJunction, msToLvl2Junctions[i]));
