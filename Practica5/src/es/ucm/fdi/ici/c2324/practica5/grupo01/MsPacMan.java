@@ -1,24 +1,24 @@
-package es.ucm.fdi.ici.c2324.practica5.grupoYY;
+package es.ucm.fdi.ici.c2324.practica5.grupo01;
 
 import java.io.File;
 import java.util.HashMap;
 
 import es.ucm.fdi.ici.Action;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.MaxActionSelector;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.MsPacManFuzzyMemory;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.MsPacManInput;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions.GoToPPillAction;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions.RunAwayAction;
 import es.ucm.fdi.ici.fuzzy.ActionSelector;
 import es.ucm.fdi.ici.fuzzy.FuzzyEngine;
 import es.ucm.fdi.ici.fuzzy.observers.ConsoleFuzzyEngineObserver;
-import es.ucm.fdi.ici.c2324.practica5.grupoYY.mspacman.MaxActionSelector;
-import es.ucm.fdi.ici.c2324.practica5.grupoYY.mspacman.MsPacManFuzzyMemory;
-import es.ucm.fdi.ici.c2324.practica5.grupoYY.mspacman.MsPacManInput;
-import es.ucm.fdi.ici.c2324.practica5.grupoYY.mspacman.actions.GoToPPillAction;
-import es.ucm.fdi.ici.c2324.practica5.grupoYY.mspacman.actions.RunAwayAction;
 import pacman.controllers.PacmanController;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
 public class MsPacMan extends PacmanController {
 
-	private static final String RULES_PATH = "bin"+File.separator+"es"+File.separator+"ucm"+File.separator+"fdi"+File.separator+"ici"+File.separator+"c2324"+File.separator+"practica5"+File.separator+"grupoYY"+File.separator+"mspacman"+File.separator;
+	private static final String RULES_PATH = "bin"+File.separator+"es"+File.separator+"ucm"+File.separator+"fdi"+File.separator+"ici"+File.separator+"c2324"+File.separator+"practica5"+File.separator+"grupo01"+File.separator+"mspacman"+File.separator;
 	FuzzyEngine fuzzyEngine;
 	MsPacManFuzzyMemory fuzzyMemory;
 	
