@@ -1,5 +1,6 @@
 package es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import es.ucm.fdi.ici.fuzzy.FuzzyInput;
@@ -13,7 +14,7 @@ public class GhostsInput extends FuzzyInput {
 	}
 
 	@Override
-	public Map<String, Double> getFuzzyValues() {
+	public HashMap<String, Double> getFuzzyValues() {
 		// TODO Auto-generated method stub
 		return null;
 	}

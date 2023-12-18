@@ -1,0 +1,41 @@
+FUNCTION_BLOCK FuzzyBlinky	// Block definition (there may be more than one block per file)
+
+VAR_INPUT				// Define input variables
+	MSTOPPILLdistance : REAL;
+	MSPACMANdistance : REAL;
+	MSFIRSTJUNCTIONdistance : REAL;
+	DISTANCESconfidence: REAL;
+END_VAR
+
+VAR_OUTPUT				// Define output variable
+	Runaway : REAL;
+	GoToPPill: REAL;
+END_VAR
+
+FUZZIFY MSPACMANdistance			// Fuzzify input variable 'service': {'poor', 'good' , 'excellent'}
+	TERM near := (0, 1) (35, 0) ; 
+	TERM medium := gauss 45 15;
+	TERM far := (55, 0) (90, 1) (200, 1);
+END_FUZZIFY
+
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK FuzzyPinky	// Block definition (there may be more than one block per file)
+
+
+
+END_FUNCTION_BLOCK
+
+
+FUNCTION_BLOCK FuzzyInky	// Block definition (there may be more than one block per file)
+
+
+END_FUNCTION_BLOCK
+
+
+FUNCTION_BLOCK FuzzySue	// Block definition (there may be more than one block per file)
+
+
+END_FUNCTION_BLOCK
+
+
