@@ -10,7 +10,9 @@ import pacman.game.Constants.GHOST;
 
 public class GhostsInput extends FuzzyInput {
 	
-	private double[] distance;
+	private int msToPPill;
+	private double[] msDistance;
+	private double[] msFirstJunctionDistance;
 
 	public GhostsInput(Game game) {
 		super(game);

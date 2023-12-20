@@ -9,6 +9,8 @@ import es.ucm.fdi.ici.Action;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsActionSelector;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsFuzzyMemory;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsInput;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.ChaseMspacman;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.GoToFirstJunction;
 import es.ucm.fdi.ici.fuzzy.ActionSelector;
 import es.ucm.fdi.ici.fuzzy.FuzzyEngine;
 import es.ucm.fdi.ici.fuzzy.observers.ConsoleFuzzyEngineObserver;
@@ -40,13 +42,17 @@ public class Ghosts extends GhostController {
 		fuzzyEngines = new EnumMap<GHOST, FuzzyEngine>(GHOST.class);
 		
 		
-		Action[] actions = {/*new GoToPPillAction(), new RunAwayAction()*/};
+		//Action[] actions = {/*new GoToPPillAction(), new RunAwayAction()*/};
 		
 		
-		ActionSelector actionSelector = new GhostsActionSelector(actions);
+		//ActionSelector actionSelector = new GhostsActionSelector(actions);
 		
 		FuzzyEngine ghostFuzzyEngine;
+		ActionSelector actionSelector;
 		for(GHOST g: GHOST.values()) {
+			
+			Action[] actions = {new ChaseMspacman(g), new GoToFirstJunction(g)};
+			actionSelector = new GhostsActionSelector(actions);
 			
 			ghostFuzzyEngine = new FuzzyEngine(g.toString(),
 					RULES_PATH+"ghosts.fcl",
