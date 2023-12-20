@@ -64,7 +64,7 @@ public class MsPacManInput extends FuzzyInput {
 		
 		combo = (double) game.getGhostCurrentEdibleScore();
 		
-		int pos = game.getPacmanCurrentNodeIndex(), ppill = MsPacManTools.closestPPill(game);
+		int pos = game.getPacmanCurrentNodeIndex(), ppill = closestPPill(game);
 		MOVE lastMove = game.getPacmanLastMoveMade();
 		
 		
@@ -81,7 +81,7 @@ public class MsPacManInput extends FuzzyInput {
 		}
 		
 		//Nearest edible ghost to MsPacMan
-		GHOST nearest = MsPacManTools.getNearestEdible(game, pos, lastMove); //CAREFUL, can return null
+		GHOST nearest = getNearestEdible(game, pos, lastMove); //CAREFUL, can return null
 		nearestEdibleDist = (double) (nearest == null ? INVISIBLE : game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearest), lastMove));
 		
 		//Next junction of the edible ghost, it can be null if there is no edible ghost
@@ -105,5 +105,33 @@ public class MsPacManInput extends FuzzyInput {
 		vars.put("nearestEdibleNextJunctionDist", nearestEdibleNextJunctionDist);
 		vars.put("distOfNearestEdibleToHisNextJunction", distOfNearestEdibleToHisNextJunction);
 		return vars;
+	}
+	
+	private int closestPPill(Game game) {
+		int node = -1, dist = Integer.MAX_VALUE;
+		for (int p : game.getActivePowerPillsIndices()) {
+			int aux = game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), 
+			 									   p, game.getPacmanLastMoveMade());
+			if (dist > aux) {
+				node = p;
+				dist = aux;
+			}
+		}
+		return node;
+	}
+	
+	private GHOST getNearestEdible(Game game, int pos, MOVE lastMove) {
+		GHOST nearest = null;
+		int minDist = Integer.MAX_VALUE;
+		for (GHOST g : GHOST.values()) {
+			if(game.getGhostLairTime(g) <= 0 && game.isGhostEdible(g)) {
+				int dist = game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(g), lastMove);
+				if (minDist > dist) {
+					minDist = dist;
+					nearest = g;
+				}
+			}
+		}
+		return nearest;
 	}
 }
