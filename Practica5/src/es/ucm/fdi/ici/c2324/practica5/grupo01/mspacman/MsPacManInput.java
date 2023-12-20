@@ -1,6 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman;
 
 import java.util.HashMap;
+
 import org.apache.commons.lang.ArrayUtils;
 
 import es.ucm.fdi.ici.fuzzy.FuzzyInput;
@@ -88,15 +89,12 @@ public class MsPacManInput extends FuzzyInput {
 		
 		
 		numPills = game.getNumberOfActivePills();
-		
 	}
 	
 	public boolean isVisible(GHOST ghost)
 	{
 		return distance[ghost.ordinal()]!=-1;
 	}
-	
-	
 
 	@Override
 	public HashMap<String, Double> getFuzzyValues() {
@@ -112,5 +110,4 @@ public class MsPacManInput extends FuzzyInput {
 		vars.put("distOfNearestEdibleToHisNextJunction", distOfNearestEdibleToHisNextJunction);
 		return vars;
 	}
-
 }
