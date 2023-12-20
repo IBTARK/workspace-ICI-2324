@@ -11,13 +11,8 @@ import pacman.game.Game;
 
 public class MsPacManInput extends FuzzyInput {
 	
-	private static final Double MAX_DIST = Double.MAX_VALUE;
-	
-	private boolean isChasing1Seen;
-	private boolean isChasing2Seen;
-	private boolean isEdibleSeen;
+	private static final Double INVISIBLE = null;
 
-	private Double distance[];
 	private Double ppillDistance;
 	private Double combo;
 	private Double numPills;
@@ -32,45 +27,37 @@ public class MsPacManInput extends FuzzyInput {
 		super(game);
 	}
 	
-	public MsPacManInput(Game game, HashMap<String, Double> lastValues) {
-		super(game);
-		updateNonVisible(lastValues);
-	}
-	
 	@Override
 	public void parseInput() {
-		distance = new Double[4];
 		combo = 0.0;
-		numPills = MAX_DIST;
-		ppillDistance = MAX_DIST;
-		nearestEdibleDist = MAX_DIST;
-		nearestChasingDist = MAX_DIST;
-		nearestChasingDist2 = MAX_DIST;
-		nearestEdibleNextJunctionDist = MAX_DIST;
-		distOfNearestEdibleToHisNextJunction = MAX_DIST;
+		numPills = INVISIBLE;
+		ppillDistance = INVISIBLE;
+		nearestEdibleDist = INVISIBLE;
+		nearestChasingDist = INVISIBLE;
+		nearestChasingDist2 = INVISIBLE;
+		nearestEdibleNextJunctionDist = INVISIBLE;
+		distOfNearestEdibleToHisNextJunction = INVISIBLE;
 		nearestPPillBlocked = 0.0;//Treat as boolean
-		isEdibleSeen = false;
-		isChasing1Seen = false;
-		isChasing2Seen = false;
 		
 		for (GHOST g : GHOST.values()) {
-			double dist = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), 
-					   game.getPacmanCurrentNodeIndex(), 
-					   game.getGhostLastMoveMade(g));
-			distance[g.ordinal()] = dist;
-			
-			if (game.getGhostLairTime(g) <= 0) {
-				if (!game.isGhostEdible(g)) {
-					if (dist < nearestChasingDist) {
-						nearestChasingDist2 = nearestChasingDist;
-						nearestChasingDist = dist;
+			if (game.getGhostCurrentNodeIndex(g) >= 0) {
+				double dist = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), 
+						   game.getPacmanCurrentNodeIndex(), 
+						   game.getGhostLastMoveMade(g));
+				
+				if (game.getGhostLairTime(g) <= 0) {
+					if (!game.isGhostEdible(g)) {
+						if (nearestChasingDist == INVISIBLE || dist < nearestChasingDist) {
+							nearestChasingDist2 = nearestChasingDist;
+							nearestChasingDist = dist;
+						}
+						else if (nearestChasingDist == INVISIBLE || dist < nearestChasingDist2)
+							nearestChasingDist2 = dist;
 					}
-					else if (dist < nearestChasingDist2)
-						nearestChasingDist2 = dist;
-				}
-				else {
-					if (dist < nearestEdibleDist)
-						nearestEdibleDist = dist;
+					else {
+						if (nearestChasingDist == INVISIBLE || dist < nearestEdibleDist)
+							nearestEdibleDist = dist;
+					}
 				}
 			}
 		}
@@ -95,19 +82,14 @@ public class MsPacManInput extends FuzzyInput {
 		
 		//Nearest edible ghost to MsPacMan
 		GHOST nearest = MsPacManTools.getNearestEdible(game, pos, lastMove); //CAREFUL, can return null
-		nearestEdibleDist = (double) (nearest == null ? Integer.MAX_VALUE : game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearest), lastMove));
+		nearestEdibleDist = (double) (nearest == null ? INVISIBLE : game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(nearest), lastMove));
 		
 		//Next junction of the edible ghost, it can be null if there is no edible ghost
 		Integer edibleJunction = nearest == null ? null : MsPacManTools.nextJunction(game, game.getGhostCurrentNodeIndex(nearest), game.getGhostLastMoveMade(nearest));
-		nearestEdibleNextJunctionDist = (double) (nearest == null ? Integer.MAX_VALUE : game.getShortestPathDistance(pos, edibleJunction, lastMove));
+		nearestEdibleNextJunctionDist = (double) (nearest == null ? INVISIBLE : game.getShortestPathDistance(pos, edibleJunction, lastMove));
 		
 		
 		numPills = (double) game.getNumberOfActivePills();
-	}
-	
-	public boolean isVisible(GHOST ghost)
-	{
-		return distance[ghost.ordinal()]!=-1;
 	}
 
 	@Override
@@ -123,23 +105,5 @@ public class MsPacManInput extends FuzzyInput {
 		vars.put("nearestEdibleNextJunctionDist", nearestEdibleNextJunctionDist);
 		vars.put("distOfNearestEdibleToHisNextJunction", distOfNearestEdibleToHisNextJunction);
 		return vars;
-	}
-	
-	private void updateNonVisible(HashMap<String, Double> lastValues) {
-		if (nearestEdibleDist >= MAX_DIST) {
-			nearestEdibleDist = lastValues.get("nearestEdibleDist");
-		}
-		if (nearestChasingDist >= MAX_DIST) {
-			nearestChasingDist = lastValues.get("nearestChasingDist");
-			nearestChasingDist2 = lastValues.get("nearestChasingDist2");
-		}
-	}
-	
-	public int numChasingSeen() {
-		return numChasingSeen;
-	}
-	
-	public boolean isEdibleSeen() {
-		return isEdibleSeen;
 	}
 }

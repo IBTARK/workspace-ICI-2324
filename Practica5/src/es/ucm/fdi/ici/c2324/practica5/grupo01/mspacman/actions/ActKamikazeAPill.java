@@ -25,7 +25,7 @@ public class ActKamikazeAPill implements Action {
 			return game.getPossibleMoves(pos, lastMove)[0];
 		
 		//Get the closest pill to MsPacMan
-		int pill = MsPacManTools.closestPill(game);
+		int pill = MsPacManTools.closestPill(game); // TODO quizás sacar de data (no debería hacer falta)
 		
 		//Returns the movement that makes MsPacMan move toward the pill
 		return MsPacManTools.goTo(game, pos, pill, lastMove);

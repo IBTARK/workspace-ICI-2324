@@ -28,7 +28,7 @@ public class ActHuirVariosFantasmas implements Action {
 			return game.getPossibleMoves(pos, lastMove)[0];
 		
 		//Closest ghost to MsPacMan
-		GHOST closestGhost =  MsPacManTools.getNearestChasing(game, pos, lastMove);
+		GHOST closestGhost =  MsPacManTools.getNearestChasing(game, pos, lastMove); // TODO sacar del data (usar nodo)
 		//Index and last movement of the closest ghost
 		int closestGhostIndex = game.getGhostCurrentNodeIndex(closestGhost);
 		MOVE closestGhostLastMove = game.getGhostLastMoveMade(closestGhost);
@@ -41,21 +41,21 @@ public class ActHuirVariosFantasmas implements Action {
 			int nextPos = game.getNeighbour(pos, m), dists = 0;
 			int nextJunction = MsPacManTools.nextJunction(game, nextPos, m);
 			
-			GHOST closestGhostJunction = MsPacManTools.getNearestChasing(game, nextJunction, m);
+			GHOST closestGhostJunction = MsPacManTools.getNearestChasing(game, nextJunction, m); // TODO sacar del data (usar nodo)
 			
 			//int distBtwNextJuntNextPos = game.getShortestPathDistance(nextPos, nextJunction);
 			
-			for(GHOST g : GHOST.values()) {
-				if(!game.isGhostEdible(g) && MsPacManTools.isGhostClose(game, g)) {
+			for(GHOST g : GHOST.values()) {	
+				if(game.getGhostCurrentNodeIndex(g) >= 0 && !game.isGhostEdible(g)) {
 					//Actual distances
-					if(g == closestGhost) {
+					if(g == closestGhost) { //TODO usar nodo
 						dists += 10 * game.getShortestPathDistance(closestGhostIndex, nextPos, closestGhostLastMove); 
 					}
 					else {
 						dists += game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), nextPos, game.getGhostLastMoveMade(g));
 					}
 					//Future distances
-					if(g == closestGhostJunction) {
+					if(g == closestGhostJunction) { //TODO usar nodo
 						dists += 10 * game.getShortestPathDistance(game.getGhostCurrentNodeIndex(closestGhostJunction), nextJunction);
 					}
 					else {

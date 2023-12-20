@@ -24,8 +24,8 @@ public class ActHuirDeFantasma implements Action {
 		
 		//Nearest chasing ghost to MsPacMan
 		GHOST nearest = MsPacManTools.getNearestChasing(game, pos, lastMove);
-		int posNearest = game.getGhostCurrentNodeIndex(nearest);
-		MOVE lastMoveNearest = game.getGhostLastMoveMade(nearest);
+		int posNearest = game.getGhostCurrentNodeIndex(nearest); // TODO sacar del data (añadirlo al data y al input)
+		MOVE lastMoveNearest = game.getGhostLastMoveMade(nearest);// TODO sacar del data (añadirlo al data y al input)
 		
 		
 		int maxDist = Integer.MIN_VALUE;

@@ -30,7 +30,7 @@ public class ActBuscarPills implements Action {
 			return game.getPossibleMoves(pos, lastMove)[0];
 		
 		//Get the closest pill to MsPacMan
-		int pill = MsPacManTools.closestPill(game);
+		int pill = MsPacManTools.closestPill(game); //TODO opción: si no ve pills no va apor ellas (esto en las reglas)
 		
 		
 		return MsPacManTools.goTo(game, pos, pill, lastMove);

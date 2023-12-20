@@ -26,12 +26,12 @@ public class ActHuirRodeandoPPill implements Action {
 			return game.getPossibleMoves(pos, lastMove)[0];
 		
 		//Get the closest PPill to MsPacMan
-		int ppill = MsPacManTools.closestPPill(game);
+		int ppill = MsPacManTools.closestPPill(game); //TODO sacar del data
 		Integer[] path = null;
 		
 		//Get the path that circles the PPill
 		for (Integer [] p : MsPacManTools.possiblePaths(game, pos, ppill, lastMove))
-			if (!MsPacManTools.blocked(game, p) && (path == null || path.length > p.length))
+			if (!MsPacManTools.blocked(game, p) && (path == null || path.length > p.length)) //TODO comprobar que funcione bien
 				path = p;
 		
 		return MsPacManTools.movesInPath(game, path).get(0);

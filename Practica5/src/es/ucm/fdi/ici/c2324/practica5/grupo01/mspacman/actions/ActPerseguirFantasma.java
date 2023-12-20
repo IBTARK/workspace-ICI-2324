@@ -28,7 +28,7 @@ public class ActPerseguirFantasma implements Action{
 			return game.getPossibleMoves(pos, lastMove)[0];
 		
 		//Nearest edible ghost to MsPacMan
-		GHOST nearestEdible = MsPacManTools.getNearestEdible(game, pos, lastMove);
+		GHOST nearestEdible = MsPacManTools.getNearestEdible(game, pos, lastMove); //TODO sacar del data
 	
 		//Move to chase the nearest edible ghost reducing the path distance
 		return MsPacManTools.goTo(game, pos, game.getGhostCurrentNodeIndex(nearestEdible), lastMove);

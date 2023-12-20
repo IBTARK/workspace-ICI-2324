@@ -6,25 +6,18 @@ import pacman.game.Constants.GHOST;
 
 public class MsPacManFuzzyMemory {
 	HashMap<String,Double> mem;
-	
+	MsPacManFuzzyData data;
 	double[] confidence = {100,100,100,100};
 
 	
-	public MsPacManFuzzyMemory() {
+	public MsPacManFuzzyMemory(MsPacManFuzzyData data) {
 		mem = new HashMap<String,Double>();
+		this.data = data;
 	}
 	
 	public void getInput(MsPacManInput input)
 	{
-		for(GHOST g: GHOST.values()) {
-			double conf = confidence[g.ordinal()];
-			if(input.isVisible(g))
-				conf = 100;
-			else
-				conf = Double.max(0, conf-5);
-			mem.put(g.name()+"confidence", conf);			
-		}
-
+		
 	}
 	
 	public HashMap<String, Double> getFuzzyValues() {

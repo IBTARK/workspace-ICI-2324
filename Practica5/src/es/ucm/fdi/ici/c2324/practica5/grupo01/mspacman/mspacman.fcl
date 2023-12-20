@@ -39,32 +39,34 @@ FUZZIFY numPills
 	TERM lot := (0,0) (20, 1);
 END_FUZZIFY
 FUZZIFY nearestPPillBlocked		
-	TERM true :=
-	TERM false :=
+	TERM true := (0, 1);
+	TERM false := (0, 0);
 END_FUZZIFY
 
 FUZZIFY nearestEdibleDist		
-	TERM near := ; 
-	TERM medium := ;
-	TERM far := ;
+	TERM near := (0, 1) (30, 0); 
+	TERM medium := (0, 0) (30, 1) (40, 0);
+	TERM far := (30, 0) (70, 1);
 END_FUZZIFY
 FUZZIFY nearestChasingDist
-	TERM near := ; 
-	TERM medium := ;
-	TERM far := ;
+	TERM near := (0, 1) (5, 1) (30, 0); 
+	TERM medium := (20, 0) (40, 1) (60, 0);
+	TERM far := (50, 0) (70, 1);
 END_FUZZIFY
 FUZZIFY nearestChasingDist2		
-	TERM near :=  ; 
-	TERM medium := ;
-	TERM far := ;
+	TERM near :=  (0, 1) (5, 1) (30, 0);
+	TERM medium := (20, 0) (40, 1) (60, 0);
+	TERM far := (50, 0) (70, 1);
 END_FUZZIFY
 FUZZIFY nearestEdibleNextJunctionDist			
-	TERM near := ; 
-	TERM medium := ;
-	TERM far := ;
+	TERM near := (0, 1) (20, 0); 
+	TERM medium := (10, 0) (30, 1);
+	TERM far := (20, 0) (45, 1);
 END_FUZZIFY
 FUZZIFY distOfNearestEdibleToHisNextJunction
-
+	TERM near := (0, 1) (20, 0); 
+	TERM medium := (10, 0) (30, 1);
+	TERM far := (20, 0) (45, 1);
 END_FUZZIFY
 
 DEFUZZIFY ActBuscarPills			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }

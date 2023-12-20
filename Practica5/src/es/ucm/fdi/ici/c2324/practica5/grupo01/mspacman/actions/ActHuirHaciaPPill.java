@@ -28,7 +28,7 @@ public class ActHuirHaciaPPill implements Action{
 			return game.getPossibleMoves(pos, lastMove)[0];
 		
 		//Nearest Power Pill to MsPacMan
-		int nearestPPill = MsPacManTools.closestPPill(game);
+		int nearestPPill = MsPacManTools.closestPPill(game); // TODO sacar del data
 		
 		//Move to reduce the distance to the nearest Power Pill
 		

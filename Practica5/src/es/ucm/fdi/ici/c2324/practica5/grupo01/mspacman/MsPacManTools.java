@@ -11,7 +11,6 @@ import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
 public class MsPacManTools {
-	private static final int TH_CHASING_GHOST = 80; 
 
 	public static List<Integer[]> possiblePaths(Game game, int orig, int dest, MOVE lastMove) {
 		List<Integer[]> paths = new ArrayList<>();
@@ -36,19 +35,6 @@ public class MsPacManTools {
 		return paths;
 	}
 	
-	public static int closestPPill(Game game) {
-		int node = -1, dist = Integer.MAX_VALUE;
-		for (int p : game.getActivePowerPillsIndices()) {
-			int aux = game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), 
-			 									   p, game.getPacmanLastMoveMade());
-			if (dist > aux) {
-				node = p;
-				dist = aux;
-			}
-		}
-		return node;
-	}
-	
 	public static int closestPill(Game game) {
 		int node = -1, dist = Integer.MAX_VALUE;
 		for (int p : game.getActivePillsIndices()) {
@@ -60,21 +46,6 @@ public class MsPacManTools {
 			}
 		}
 		return node;
-	}
-	
-	public static GHOST getNearestEdible(Game game, int pos, MOVE lastMove) {
-		GHOST nearest = null;
-		int minDist = Integer.MAX_VALUE;
-		for (GHOST g : GHOST.values()) {
-			if(game.getGhostLairTime(g) <= 0 && game.isGhostEdible(g)) {
-				int dist = game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(g), lastMove);
-				if (minDist > dist) {
-					minDist = dist;
-					nearest = g;
-				}
-			}
-		}
-		return nearest;
 	}
 	
 	public static int nextJunction(Game game, int pos, MOVE lastMove) {
@@ -108,7 +79,7 @@ public class MsPacManTools {
 				//The ghost is in the path
 				if(ghostPos == node) return true;
 				//The ghost can reach faster the first junction in the path
-				if(!firstJuncitonChecked && game.isJunction(node) 
+				if(ghostPos >= 0 && !firstJuncitonChecked && game.isJunction(node) 
 						&& game.getShortestPathDistance(ghostPos, node, ghostLastMove) < numNodes) return true;
 			}
 			if(!firstJuncitonChecked && game.isJunction(node)) firstJuncitonChecked = true;
@@ -118,40 +89,11 @@ public class MsPacManTools {
 	}
 	
 	//Checks if there is a PPill in the given path coming 
-	public static boolean blockedByClosestPPill(Game game, int[] path) {
-		int ppillIndex = closestPPill(game);
+	public static boolean blockedByClosestPPill(Game game, int[] path, int ppill) {
 		for(int node : path) {
-			if(ppillIndex == node) return true;
+			if(ppill == node) return true;
 		}
 		return false;
-	}
-
-	public static GHOST getNearestChasing(Game game, int pos, MOVE lastMove) {
-		GHOST nearest = null;
-		int aux = Integer.MAX_VALUE, dist = Integer.MAX_VALUE;
-		
-		for (GHOST g : GHOST.values()) {
-			if(game.getGhostLairTime(g) <= 0 && !game.isGhostEdible(g)) {
-				aux = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), pos, game.getGhostLastMoveMade(g));
-				if (dist > aux) {
-					dist = aux;
-					nearest = g;
-				}
-			}
-		}
-		return nearest;
-	}
-	
-	/**
-	 * Indicate if the ghost g is close to MsPacMan. It is close if the distance is <= than TH_CHASING_GHOST.
-	 * 
-	 * @param game
-	 * @param g ghost that might be close to MsPacMan
-	 * @return whether the ghost is close to MsPacMan or not
-	 */
-	public static boolean isGhostClose(Game game, GHOST g) {
-		if(game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(g)) <= TH_CHASING_GHOST) return true;
-		else return false;
 	}
 	
 	public static MOVE goTo(Game game, int pos, int dest, MOVE lastMove) {
