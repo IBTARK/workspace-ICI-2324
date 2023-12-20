@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import es.ucm.fdi.ici.Action;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostFuzzyData;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsActionSelector;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsFuzzyMemory;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsInput;
@@ -35,6 +36,8 @@ public class Ghosts extends GhostController {
 	Map<GHOST, FuzzyEngine> fuzzyEngines;
 	GhostsFuzzyMemory fuzzyMemory;
 	
+	private GhostFuzzyData data;
+	
 	public Ghosts() {
 		setName("MsPacMan XX");
 
@@ -51,7 +54,7 @@ public class Ghosts extends GhostController {
 		ActionSelector actionSelector;
 		for(GHOST g: GHOST.values()) {
 			
-			Action[] actions = {new ChaseMspacman(g), new GoToFirstJunction(g)};
+			Action[] actions = {new ChaseMspacman(g, data), new GoToFirstJunction(g)};
 			actionSelector = new GhostsActionSelector(actions);
 			
 			ghostFuzzyEngine = new FuzzyEngine(g.toString(),

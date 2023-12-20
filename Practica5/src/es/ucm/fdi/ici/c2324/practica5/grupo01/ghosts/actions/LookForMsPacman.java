@@ -1,6 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions;
 
 import es.ucm.fdi.ici.Action;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostFuzzyData;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
@@ -10,9 +11,11 @@ public class LookForMsPacman implements Action {
 
 
 	private GHOST ghost;
+	private GhostFuzzyData data;
 	
-	public LookForMsPacman(GHOST g) {
-		ghost = g;
+	public LookForMsPacman(GHOST g, GhostFuzzyData data) {
+		this.ghost = g;
+		this.data = data;
 	}
 
 	@Override
@@ -27,11 +30,8 @@ public class LookForMsPacman implements Action {
 		
 		if (game.doesGhostRequireAction(ghost))        //if it requires an action
         {
-			nextMove = game.getApproximateNextMoveTowardsTarget(
-					game.getGhostCurrentNodeIndex(ghost), 
-					game.getPacmanCurrentNodeIndex(), 
-					game.getGhostLastMoveMade(ghost), 
-					DM.PATH);
+			// Elegir movimientos que escaneen el mapa mejor
+			
         }
             
         return nextMove;	

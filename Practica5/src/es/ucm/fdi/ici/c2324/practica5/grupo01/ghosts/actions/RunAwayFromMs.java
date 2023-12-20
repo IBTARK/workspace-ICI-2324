@@ -1,6 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions;
 
 import es.ucm.fdi.ici.Action;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostFuzzyData;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
@@ -10,9 +11,11 @@ public class RunAwayFromMs implements Action{
 
 
 	private GHOST ghost;
+	private GhostFuzzyData data;
 	
-	public RunAwayFromMs(GHOST g) {
-		ghost = g;
+	public RunAwayFromMs(GHOST g, GhostFuzzyData data) {
+		this.ghost = g;
+		this.data = data;
 	}
 
 	@Override

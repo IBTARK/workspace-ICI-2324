@@ -1,10 +1,29 @@
 FUNCTION_BLOCK FuzzyBlinky	// Block definition (there may be more than one block per file)
 
 VAR_INPUT				// Define input variables
-	MSTOPPILLdistance : REAL;
-	MSPACMANdistance : REAL;
-	MSFIRSTJUNCTIONdistance : REAL;
-	DISTANCESconfidence: REAL;
+	MSPACMANtoPPILL : REAL;
+	BLINKYedible : REAL;
+	PINKYedible : REAL;
+	INKYedible : REAL;
+	SUEedible : REAL;
+	BLINKYtoMS : REAL;
+	PINKYtoMS : REAL;
+	INKYtoMS : REAL;
+	SUEtoMS : REAL;
+	BLINKYtoFIRSTJUNCTION : REAL;
+	PINKYtoFIRSTJUNCTION : REAL;
+	INKYtoFIRSTJUNCTION : REAL;
+	SUEtoFIRSTJUNCTION : REAL;
+	BLINKYtoCHASING : REAL;
+	PINKYtoCHASING : REAL;
+	INKYtoCHASING : REAL;
+	SUEtoCHASING : REAL;
+	BLINKYtoEDIBLE : REAL;
+	PINKYtoEDIBLE : REAL;
+	INKYtoEDIBLE : REAL;
+	SUEtoEDIBLE : REAL;
+
+	MSconfidence: REAL;
 END_VAR
 
 VAR_OUTPUT				// Define output variable
@@ -12,13 +31,165 @@ VAR_OUTPUT				// Define output variable
 	GoToPPill: REAL;
 END_VAR
 
-FUZZIFY MSPACMANdistance			// Fuzzify input variable 'service': {'poor', 'good' , 'excellent'}
-	TERM near := (0, 1) (35, 0) ; 
-	TERM medium := gauss 45 15;
-	TERM far := (55, 0) (90, 1) (200, 1);
+FUZZIFY MSPACMANtoPPILL
+	TERM near := (0, 1) (20, 0) ; 
+	TERM medium := (15, 0) (25, 1) (35, 1) (45, 0);
+	TERM far := (40, 0) (50, 1) (200, 1);
 END_FUZZIFY
 
+FUZZIFY BLINKYedible
+	TERM true := (0, 1)
+	TERM false := (1 ,1)
+END_FUZZIFY
+
+FUZZIFY BLINKYtoMS
+	TERM supernear := (0, 1) (9, 1) (10, 0)
+	TERM near := (8, 0) (11, 1) (20, 1) (25, 0); 
+	TERM medium := (20, 0) (30, 1) (35, 1) (45, 0);
+	TERM far := (40, 0) (50, 1) (200, 1);
+END_FUZZIFY
+
+FUZZIFY BLINKYtoFIRSTJUNCTION
+	TERM near := (0, 1) (20, 1) (25, 0); 
+	TERM medium := (20, 0) (30, 1) (35, 1) (45, 0);
+	TERM far := (40, 0) (50, 1) (200, 1);
+END_FUZZIFY
+
+FUZZIFY BLINKYtoCHASING
+	TERM near := (0, 1) (15, 1) (25, 0); 
+	TERM medium := (15, 0) (30, 1) (35, 1) (45, 0);
+	TERM far := (40, 0) (50, 1) (200, 1);
+END_FUZZIFY
+
+FUZZIFY BLINKYtoEDIBLE
+	TERM near := (0, 1) (15, 1) (25, 0); 
+	TERM medium := (15, 0) (30, 1) (35, 1) (45, 0);
+	TERM far := (40, 0) (50, 1) (200, 1);
+END_FUZZIFY
+
+FUZZIFY BLINKYtoFIRSTJUNCTION
+	TERM near := (0, 1) (20, 1) (25, 0); 
+	TERM medium := (20, 0) (30, 1) (35, 1) (45, 0);
+	TERM far := (40, 0) (50, 1) (200, 1);
+END_FUZZIFY
+
+FUZZIFY MSconfidence			// Fuzzify input variable 'service': {'poor', 'good' , 'excellent'}
+	TERM low := (0,1)(25,1)(50,0) ; 
+	TERM medium := gauss 50 25;
+	TERM high := (50,0)(75,1)(100,1);
+END_FUZZIFY
+
+
+
+DEFUZZIFY ChaseMsPacman			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM calm := (0,1) (5,1) (15,0);
+	TERM nervious := gauss 15 5;
+	TERM emergency := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY FlankMsPacman			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM impossible := (0,1) (5,1) (15,0);
+	TERM unsure := gauss 15 5;
+	TERM sure := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY GoToFirstJunction			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM impossible := (0,1) (5,1) (15,0);
+	TERM unsure := gauss 15 5;
+	TERM sure := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY LookForMsPacman			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM impossible := (0,1) (5,1) (15,0);
+	TERM unsure := gauss 15 5;
+	TERM sure := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY MaintainDistance			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM impossible := (0,1) (5,1) (15,0);
+	TERM unsure := gauss 15 5;
+	TERM sure := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY RunAwayFromMs			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM impossible := (0,1) (5,1) (15,0);
+	TERM unsure := gauss 15 5;
+	TERM sure := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+DEFUZZIFY RunAwayScattering			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM impossible := (0,1) (5,1) (15,0);
+	TERM unsure := gauss 15 5;
+	TERM sure := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY Scatter			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM impossible := (0,1) (5,1) (15,0);
+	TERM unsure := gauss 15 5;
+	TERM sure := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+
+
+RULEBLOCK MsPacManRules
+	AND : MIN;			// Use 'min' for 'and' (also implicit use 'max' for 'or' to fulfill DeMorgan's Law)
+	OR : MAX;
+	ACT : MIN;			// Use 'min' activation method
+	ACCU : MAX;			// Use 'MAX' accumulation method (Other options PROBOR and SUM)
+
+
+	RULE 1: IF BLINKYedible IS false AND (MSPACMANtoPPILL is far OR MSPACMANtoPPILL is medium) THEN RunAwayFromMs IS impossible;
+	RULE 1: IF BLINKYedible IS false AND (MSPACMANtoPPILL is far OR MSPACMANtoPPILL is medium) THEN RunAwayScattering IS impossible;
+	RULE 1: IF BLINKYedible IS false AND MSPACMANtoPPILL is near AND (BLINKYtoCHASING is medium OR BLINKYtoCHASING is far) THEN RunAwayFromMs IS sure;
+	RULE 1: IF BLINKYedible IS false AND MSPACMANtoPPILL is near AND BLINKYtoCHASING is near THEN RunAwayScattering IS sure;
+	
+	
+	
+	RULE 1 : IF MSconfidence IS low THEN ChaseMsPacman IS impossible;
+	RULE 2 : IF MSconfidence IS low THEN FlankMsPacman IS impossible;
+	RULE 3 : IF MSconfidence IS low THEN GoToFirstJunction IS impossible;
+	RULE 4 : IF MSconfidence IS low THEN LookForMsPacman IS impossible;
+	// RULE 1 : IF MSconfidence IS low THEN MaintainDistance IS impossible;
+	RULE 5 : IF MSconfidence IS low THEN RunAwayFromMs IS impossible;
+	RULE 6 : IF MSconfidence IS low THEN RunAwayScattering IS impossible;
+	// RULE 1 : IF MSconfidence IS low THEN Scatter IS impossible;
+	
+	
+	RULE 1 : IF BLINKYtoMSdistance IS superclose AND MSconfidence IS high THEN ChaseMspacman IS 
+	RULE 1 : IF BLINKYdistance IS near AND BLINKYconfidence IS high THEN Runaway IS emergency;
+	RULE 2 : IF PINKYdistance IS near AND PINKYconfidence IS high THEN Runaway IS emergency;
+	RULE 3 : IF INKYdistance IS near AND INKYconfidence IS high THEN Runaway IS emergency;
+	RULE 4 : IF SUEdistance IS near AND SUEconfidence IS high THEN Runaway IS emergency;
+	RULE 5 : IF BLINKYconfidence IS medium THEN GoToPPill IS nervious;
+	RULE 6 : IF PINKYconfidence IS medium THEN GoToPPill IS nervious;
+	RULE 7 : IF INKYconfidence IS medium THEN GoToPPill IS nervious;
+	RULE 8 : IF SUEconfidence IS medium THEN GoToPPill IS nervious;
+	RULE 9 : IF BLINKYdistance IS far THEN Runaway IS calm;
+	RULE 10 : IF PINKYdistance IS far THEN Runaway IS calm;
+	RULE 11 : IF INKYdistance IS far THEN Runaway IS calm;
+	RULE 12 : IF SUEdistance IS far THEN Runaway IS calm;
+END_RULEBLOCK
+
 END_FUNCTION_BLOCK
+
+
+
+
 
 FUNCTION_BLOCK FuzzyPinky	// Block definition (there may be more than one block per file)
 
