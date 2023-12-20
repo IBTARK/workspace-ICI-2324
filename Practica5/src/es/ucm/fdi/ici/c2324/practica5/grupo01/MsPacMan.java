@@ -7,8 +7,16 @@ import es.ucm.fdi.ici.Action;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.MaxActionSelector;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.MsPacManFuzzyMemory;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.MsPacManInput;
-import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions.GoToPPillAction;
-import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions.RunAwayAction;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions.ActBuscarPills;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions.ActEvitarPPill;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions.ActFlanquearFantasma;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions.ActHuirDeFantasma;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions.ActHuirHaciaPPill;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions.ActHuirRodeandoPPill;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions.ActHuirVariosFantasmas;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions.ActKamikazeAPill;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions.ActKamikazeFantasma;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions.ActPerseguirFantasma;
 import es.ucm.fdi.ici.fuzzy.ActionSelector;
 import es.ucm.fdi.ici.fuzzy.FuzzyEngine;
 import es.ucm.fdi.ici.fuzzy.observers.ConsoleFuzzyEngineObserver;
@@ -29,7 +37,16 @@ public class MsPacMan extends PacmanController {
 
 		fuzzyMemory = new MsPacManFuzzyMemory();
 		
-		Action[] actions = {new GoToPPillAction(), new RunAwayAction()};
+		Action[] actions = {new ActBuscarPills(), 
+							new ActEvitarPPill(), 
+							new ActFlanquearFantasma(), 
+							new ActHuirDeFantasma(), 
+							new ActHuirHaciaPPill(), 
+							new ActHuirRodeandoPPill(), 
+							new ActHuirVariosFantasmas(), 
+							new ActKamikazeAPill(), 
+							new ActKamikazeFantasma(), 
+							new ActPerseguirFantasma() };
 		
 		ActionSelector actionSelector = new MaxActionSelector(actions);
 		 
