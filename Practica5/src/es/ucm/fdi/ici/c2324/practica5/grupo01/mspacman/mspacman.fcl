@@ -1,64 +1,73 @@
 FUNCTION_BLOCK FuzzyMsPacMan	// Block definition (there may be more than one block per file)
 
 VAR_INPUT				// Define input variables
-	BLINKYdistance : REAL;
-	PINKYdistance : REAL;
-	INKYdistance : REAL;
-	SUEdistance : REAL;
-	BLINKYconfidence : REAL;
-	PINKYconfidence : REAL;
-	INKYconfidence : REAL;
-	SUEconfidence : REAL;
+	ppillDistance : REAL;
+	combo : REAL;
+	numPills : REAL;
+	nearestPPillBlocked : REAL;
+	nearestEdibleDist : REAL;
+	nearestChasingDist : REAL;
+	nearestChasingDist2 : REAL;
+	nearestEdibleNextJunctionDist : REAL;
+	distOfNearestEdibleToHisNextJunction : REAL;
 END_VAR
 
 VAR_OUTPUT				// Define output variable
-	Runaway : REAL;
-	GoToPPill: REAL;
+	ActBuscarPills : REAL;
+	ActEvitarPPill : REAL;
+	ActFlanquearFantasma : REAL;
+	ActHuirDeFantasma : REAL;
+	ActHuirHaciaPPill : REAL;
+	ActHuirRodeandoPPill : REAL;
+	ActHuirVariosFantasmas : REAL;
+	ActKamikazeAPill : REAL;
+	ActKamikazeFantasma : REAL;
+	ActPerseguirFantasma : REAL;
 END_VAR
 
-FUZZIFY BLINKYdistance			// Fuzzify input variable 'service': {'poor', 'good' , 'excellent'}
-	TERM near := (0, 1) (60, 0) ; 
-	TERM medium := gauss 75 25;
-	TERM far := (90, 0) (150, 1) (200, 1);
+FUZZIFY ppillDistance	
+	TERM near := (0, 1) (20, 0); 
+	TERM medium := (0, 0) (20, 1) (30, 0) ;
+	TERM far := (20, 0) (60, 1);
 END_FUZZIFY
-FUZZIFY PINKYdistance			// Fuzzify input variable 'service': {'poor', 'good' , 'excellent'}
-	TERM near := (0, 1) (60, 0) ; 
-	TERM medium := gauss 75 25;
-	TERM far := (90, 0) (150, 1) (200, 1);
+FUZZIFY combo			
+	TERM few := (0, 1) (800, 0)
+	TERM lot := (200, 0) (800, 1) 
 END_FUZZIFY
-FUZZIFY INKYdistance			// Fuzzify input variable 'service': {'poor', 'good' , 'excellent'}
-	TERM near := (0, 1) (60, 0) ; 
-	TERM medium := gauss 75 25;
-	TERM far := (90, 0) (150, 1) (200, 1);
+FUZZIFY numPills			
+	TERM few := (0, 1) (20, 0) ; 
+	TERM lot := (0,0) (20, 1);
 END_FUZZIFY
-FUZZIFY SUEdistance			// Fuzzify input variable 'service': {'poor', 'good' , 'excellent'}
-	TERM near := (0, 1) (60, 0) ; 
-	TERM medium := gauss 75 25;
-	TERM far := (90, 0) (150, 1) (200, 1);
+FUZZIFY nearestPPillBlocked		
+	TERM true :=
+	TERM false :=
 END_FUZZIFY
 
-FUZZIFY BLINKYconfidence			// Fuzzify input variable 'service': {'poor', 'good' , 'excellent'}
-	TERM low := (0,1)(25,1)(50,0) ; 
-	TERM medium := gauss 50 25;
-	TERM high := (50,0)(75,1)(100,1);
+FUZZIFY nearestEdibleDist		
+	TERM near := ; 
+	TERM medium := ;
+	TERM far := ;
 END_FUZZIFY
-FUZZIFY INKYconfidence			// Fuzzify input variable 'service': {'poor', 'good' , 'excellent'}
-	TERM low := (0,1)(25,1)(50,0) ; 
-	TERM medium := gauss 50 25;
-	TERM high := (50,0)(75,1)(100,1);
+FUZZIFY nearestChasingDist
+	TERM near := ; 
+	TERM medium := ;
+	TERM far := ;
 END_FUZZIFY
-FUZZIFY PINKYconfidence			// Fuzzify input variable 'service': {'poor', 'good' , 'excellent'}
-	TERM low := (0,1)(25,1)(50,0) ; 
-	TERM medium := gauss 50 25;
-	TERM high := (50,0)(75,1)(100,1);
+FUZZIFY nearestChasingDist2		
+	TERM near :=  ; 
+	TERM medium := ;
+	TERM far := ;
 END_FUZZIFY
-FUZZIFY SUEconfidence			// Fuzzify input variable 'service': {'poor', 'good' , 'excellent'}
-	TERM low := (0,1)(25,1)(50,0) ; 
-	TERM medium := gauss 50 25;
-	TERM high := (50,0)(75,1)(100,1);
+FUZZIFY nearestEdibleNextJunctionDist			
+	TERM near := ; 
+	TERM medium := ;
+	TERM far := ;
+END_FUZZIFY
+FUZZIFY distOfNearestEdibleToHisNextJunction
+
 END_FUZZIFY
 
-DEFUZZIFY Runaway			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+DEFUZZIFY ActBuscarPills			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
 	TERM calm := (0,1) (5,1) (15,0);
 	TERM nervious := gauss 15 5;
 	TERM emergency := (15,0) (25,1) (30,1);
@@ -66,7 +75,63 @@ DEFUZZIFY Runaway			// Defzzzify output variable 'tip' : {'cheap', 'average', 'g
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
-DEFUZZIFY GoToPPill			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+DEFUZZIFY ActEvitarPPill
+	TERM calm := (0,1) (5,1) (15,0);
+	TERM nervious := gauss 15 5;
+	TERM emergency := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY ActFlanquearFantasma	
+	TERM calm := (0,1) (5,1) (15,0);
+	TERM nervious := gauss 15 5;
+	TERM emergency := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY ActHuirDeFantasma	
+	TERM calm := (0,1) (5,1) (15,0);
+	TERM nervious := gauss 15 5;
+	TERM emergency := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY ActHuirHaciaPPill	
+	TERM calm := (0,1) (5,1) (15,0);
+	TERM nervious := gauss 15 5;
+	TERM emergency := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY ActHuirRodeandoPPill	
+	TERM calm := (0,1) (5,1) (15,0);
+	TERM nervious := gauss 15 5;
+	TERM emergency := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY ActKamikazeAPill
+	TERM calm := (0,1) (5,1) (15,0);
+	TERM nervious := gauss 15 5;
+	TERM emergency := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY ActKamikazeFantasma
+	TERM calm := (0,1) (5,1) (15,0);
+	TERM nervious := gauss 15 5;
+	TERM emergency := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY ActPerseguirFantasma
 	TERM calm := (0,1) (5,1) (15,0);
 	TERM nervious := gauss 15 5;
 	TERM emergency := (15,0) (25,1) (30,1);
