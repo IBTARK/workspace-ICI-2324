@@ -25,7 +25,7 @@ public class MsPacMan extends PacmanController {
 	
 	public MsPacMan()
 	{
-		setName("MsPacMan XX");
+		setName("MsPacMan YI-DJ");
 
 		fuzzyMemory = new MsPacManFuzzyMemory();
 		
