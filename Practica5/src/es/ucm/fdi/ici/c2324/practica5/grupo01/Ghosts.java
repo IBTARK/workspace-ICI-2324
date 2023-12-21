@@ -10,7 +10,7 @@ import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostFuzzyData;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsActionSelector;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsFuzzyMemory;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsInput;
-import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.ChaseMspacman;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.ChaseMsPacman;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.GoToFirstJunction;
 import es.ucm.fdi.ici.fuzzy.ActionSelector;
 import es.ucm.fdi.ici.fuzzy.FuzzyEngine;
@@ -54,7 +54,7 @@ public class Ghosts extends GhostController {
 		ActionSelector actionSelector;
 		for(GHOST g: GHOST.values()) {
 			
-			Action[] actions = {new ChaseMspacman(g, data), new GoToFirstJunction(g)};
+			Action[] actions = {new ChaseMsPacman(g, data), new GoToFirstJunction(g)};
 			actionSelector = new GhostsActionSelector(actions);
 			
 			ghostFuzzyEngine = new FuzzyEngine(g.toString(),
