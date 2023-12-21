@@ -21,7 +21,22 @@ public class MsPacManFuzzyMemory {
 		if (input.getNearestPPill() != null) data.setNearestPPill(input.getNearestPPill());
 		if (input.getNearestEdibleNextJunction() != null) data.setNearestEdibleNextJunction(input.getNearestEdibleNextJunction());
 		
+		//TODO logica de ppills
 		//TODO confianzas
+		
+		mem.putAll(input.getFuzzyValues());
+		if (mem.get("ppillDistance") == null)
+			mem.put("ppillDistance", data.getPpillDistance());
+		if (mem.get("nearestEdibleDist") == null)
+			mem.put("nearestEdibleDist", data.getNearestEdibleDist());
+		if (mem.get("nearestChasingDist") == null)
+			mem.put("nearestChasingDist", data.getNearestChasingDist());
+		if (mem.get("nearestChasingDist2") == null)
+			mem.put("nearestChasingDist2", data.getNearestChasingDist2());
+		if (mem.get("nearestEdibleNextJunctionDist") == null)
+			mem.put("nearestEdibleNextJunctionDist", data.getNearestEdibleNextJunctionDist());
+		if (mem.get("distOfNearestEdibleToHisNextJunction") == null)
+			mem.put("distOfNearestEdibleToHisNextJunction", data.getDistOfNearestEdibleToHisNextJunction());
 	}
 	
 	public HashMap<String, Double> getFuzzyValues() {

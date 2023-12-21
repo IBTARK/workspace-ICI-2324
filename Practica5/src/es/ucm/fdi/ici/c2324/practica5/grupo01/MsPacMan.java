@@ -40,7 +40,7 @@ public class MsPacMan extends PacmanController {
 		fuzzyData = new MsPacManFuzzyData();
 		fuzzyMemory = new MsPacManFuzzyMemory(fuzzyData);
 		
-		Action[] actions = {new ActBuscarPills(fuzzyData), 
+		Action[] actions = {new ActBuscarPills(), 
 							new ActEvitarPPill(fuzzyData), 
 							new ActFlanquearFantasma(fuzzyData), 
 							new ActHuirDeFantasma(fuzzyData), 
@@ -71,8 +71,7 @@ public class MsPacMan extends PacmanController {
 		input.parseInput();
 		fuzzyMemory.getInput(input);
 		
-		HashMap<String, Double> fvars = input.getFuzzyValues();
-		fvars.putAll(fuzzyMemory.getFuzzyValues());
+		HashMap<String, Double> fvars = fuzzyMemory.getFuzzyValues();
 		
 		return fuzzyEngine.run(fvars,game);
 	}

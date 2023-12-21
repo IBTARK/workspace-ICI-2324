@@ -14,6 +14,12 @@ public class MsPacManFuzzyData {
 	private int numOfPills;
 	private int numOfPPills;
 	private ArrayList<Integer> ppillsPos; 
+	private Double ppillDistance;
+	private Double nearestChasingDist;
+	private Double nearestChasingDist2;
+	private Double nearestEdibleDist;
+	private Double nearestEdibleNextJunctionDist;
+	private Double distOfNearestEdibleToHisNextJunction;
 	
 	public int getNearestPPill() {
 		return nearestPPill;
@@ -45,6 +51,30 @@ public class MsPacManFuzzyData {
 	
 	public ArrayList<Integer> getPpillsPos() {
 		return ppillsPos;
+	}
+
+	public Double getPpillDistance() {
+		return ppillDistance;
+	}
+
+	public Double getDistOfNearestEdibleToHisNextJunction() {
+		return distOfNearestEdibleToHisNextJunction;
+	}
+
+	public Double getNearestChasingDist() {
+		return nearestChasingDist;
+	}
+
+	public Double getNearestEdibleNextJunctionDist() {
+		return nearestEdibleNextJunctionDist;
+	}
+
+	public Double getNearestEdibleDist() {
+		return nearestEdibleDist;
+	}
+
+	public Double getNearestChasingDist2() {
+		return nearestChasingDist2;
 	}
 	
 	public void setNearestPPill(int nearestPPill) {
@@ -78,6 +108,28 @@ public class MsPacManFuzzyData {
 	public void setPpillsPos(ArrayList<Integer> ppillsPos) {
 		this.ppillsPos = ppillsPos;
 	}
-	
-	
+
+	public void setPpillDistance(Double ppillDistance) {
+		this.ppillDistance = ppillDistance;
+	}
+
+	public void setNearestChasingDist(Double nearestChasingDist) {
+		this.nearestChasingDist = nearestChasingDist;
+	}
+
+	public void setNearestChasingDist2(Double nearestChasingDist2) {
+		this.nearestChasingDist2 = nearestChasingDist2;
+	}
+
+	public void setNearestEdibleDist(Double nearestEdibleDist) {
+		this.nearestEdibleDist = nearestEdibleDist;
+	}
+
+	public void setNearestEdibleNextJunctionDist(Double nearestEdibleNextJunctionDist) {
+		this.nearestEdibleNextJunctionDist = nearestEdibleNextJunctionDist;
+	}
+
+	public void setDistOfNearestEdibleToHisNextJunction(Double distOfNearestEdibleToHisNextJunction) {
+		this.distOfNearestEdibleToHisNextJunction = distOfNearestEdibleToHisNextJunction;
+	}
 }

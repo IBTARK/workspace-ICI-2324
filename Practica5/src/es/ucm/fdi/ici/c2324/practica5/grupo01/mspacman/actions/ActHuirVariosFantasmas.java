@@ -55,7 +55,7 @@ public class ActHuirVariosFantasmas implements Action {
 				if(node >= 0 && !game.isGhostEdible(g)) {
 					//Actual distances
 					if(node == closestGhostIndex) {
-						dists += 10 * game.getShortestPathDistance(closestGhostIndex, nextPos, closestGhostLastMove); 
+						dists += 5 * game.getShortestPathDistance(closestGhostIndex, nextPos, closestGhostLastMove); 
 					}
 					else {
 						dists += game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), nextPos, game.getGhostLastMoveMade(g));
