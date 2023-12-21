@@ -2,40 +2,37 @@ package es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman;
 
 import java.util.ArrayList;
 
+import pacman.game.Constants.MOVE;
+
 public class MsPacManFuzzyData {
 	
-	private Double ppillDistance;
-	private Double nearestChasingDist; //Distance from MsPacMan to the nearest edible ghost to her
-	private Double nearestChasingDist2; //Distance from MsPacMan to the nearest edible ghost to her
-	private Double nearestEdibleDist; //Distance from MsPacMan to the nearest edible ghost to her
-	private Double nearestEdibleNextJunctionDist; //Distance from MsPacMan to the next junction of the nearest edible ghosts to her
-	private Double distOfNearestEdibleToHisNextJunction; //Distance of MsPacMans nearest edible ghost to his next junction
+	private int nearestPPill; 
+	private int nearestChasing;
+	private MOVE nearestChasingLastMove;
+	private int nearestEdible; //Distance from MsPacMan to the nearest edible ghost to her
+	private int nearestEdibleNextJunction; //Distance from MsPacMan to the next junction of the nearest edible ghosts to her
 	private int numOfPills;
 	private int numOfPPills;
 	private ArrayList<Integer> ppillsPos; 
 	
-	public Double getPpillDistance() {
-		return ppillDistance;
+	public int getNearestPPill() {
+		return nearestPPill;
 	}
 	
-	public Double getNearestChasingDist() {
-		return nearestChasingDist;
+	public int getNearestChasing() {
+		return nearestChasing;
 	}
 	
-	public Double getNearestChasingDist2() {
-		return nearestChasingDist2;
+	public MOVE getNearestChasingLastMove() {
+		return nearestChasingLastMove;
 	}
 	
-	public Double getNearestEdibleDist() {
-		return nearestEdibleDist;
+	public int getNearestEdible() {
+		return nearestEdible;
 	}
 	
-	public Double getNearestEdibleNextJunctionDist() {
-		return nearestEdibleNextJunctionDist;
-	}
-	
-	public Double getDistOfNearestEdibleToHisNextJunction() {
-		return distOfNearestEdibleToHisNextJunction;
+	public int getNearestEdibleNextJunction() {
+		return nearestEdibleNextJunction;
 	}
 	
 	public int getNumOfPills() {
@@ -50,28 +47,24 @@ public class MsPacManFuzzyData {
 		return ppillsPos;
 	}
 	
-	public void setPPillDistance(Double ppillDistance) {
-		this.ppillDistance = ppillDistance;
+	public void setNearestPPill(int nearestPPill) {
+		this.nearestPPill = nearestPPill;
 	}
 	
-	public void setNearestChasingDist(Double nearestChasingDist) {
-		this.nearestChasingDist = nearestChasingDist;
+	public void setNearestChasing(int nearestChasing) {
+		this.nearestChasing = nearestChasing;
 	}
 	
-	public void setNearestChasingDist2(Double nearestChasingDist2) {
-		this.nearestChasingDist2 = nearestChasingDist2;
+	public void setNearestChasingLastMove(MOVE nearestChasingLastMove) {
+		this.nearestChasingLastMove = nearestChasingLastMove;
 	}
 	
-	public void setNearestEdibleDist(Double nearestEdibleDist) {
-		this.nearestEdibleDist = nearestEdibleDist;
+	public void setNearestEdible(int nearestEdible) {
+		this.nearestEdible = nearestEdible;
 	}
 	
-	public void setNearestEdibleNextJunctionDist(Double nearestEdibleNextJunctionDist) {
-		this.nearestEdibleNextJunctionDist = nearestEdibleNextJunctionDist;
-	}
-	
-	public void setDistOfNearestEdibleToHisNextJunction(Double distOfNearestEdibleToHisNextJunction) {
-		this.distOfNearestEdibleToHisNextJunction = distOfNearestEdibleToHisNextJunction;
+	public void setNearestEdibleNextJunction(int nearestEdibleNextJunction) {
+		this.nearestEdibleNextJunction = nearestEdibleNextJunction;
 	}
 	
 	public void setNumOfPills(int numOfPills) {

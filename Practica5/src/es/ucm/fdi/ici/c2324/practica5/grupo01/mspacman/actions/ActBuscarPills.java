@@ -1,5 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions;
 
+import java.util.Random;
+
 import es.ucm.fdi.ici.Action;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.MsPacManTools;
 import pacman.game.Constants.MOVE;
@@ -30,9 +32,12 @@ public class ActBuscarPills implements Action {
 			return game.getPossibleMoves(pos, lastMove)[0];
 		
 		//Get the closest pill to MsPacMan
-		int pill = MsPacManTools.closestPill(game); //TODO opción: si no ve pills no va apor ellas (esto en las reglas)
+		int pill = MsPacManTools.closestPill(game);
 		
-		
+		if (pill < 0) {
+			MOVE[] moves = game.getPossibleMoves(pos, lastMove);
+			return moves[new Random(moves.length).nextInt()];
+		}
 		return MsPacManTools.goTo(game, pos, pill, lastMove);
 	}
 

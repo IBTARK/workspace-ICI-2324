@@ -1,8 +1,8 @@
 package es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions;
 
 import es.ucm.fdi.ici.Action;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.MsPacManFuzzyData;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.MsPacManTools;
-import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
@@ -10,6 +10,12 @@ import pacman.game.Game;
  * Action that always makes the movement that makes MsPacMan move towards the closest edible ghost
  */
 public class ActKamikazeFantasma implements Action {
+	
+	private MsPacManFuzzyData data;
+	
+	public ActKamikazeFantasma(MsPacManFuzzyData data) {
+		this.data = data;
+	}
 
 	/**
 	 * Gets the movement that gets MsPacMan closer to the closest edible ghost to her.
@@ -26,8 +32,7 @@ public class ActKamikazeFantasma implements Action {
 			return game.getPossibleMoves(pos, lastMove)[0];
 		
 		//Get the nearest edible ghost
-		GHOST ghost = MsPacManTools.getNearestEdible(game, pos, lastMove); // TODO sacar del data
-		int ghostIndex = game.getGhostCurrentNodeIndex(ghost);
+		int ghostIndex = data.getNearestEdible();
 		
 		//Movement that makes MsPacMan move towards the closest edible ghost
 		return MsPacManTools.goTo(game, pos, ghostIndex, lastMove);

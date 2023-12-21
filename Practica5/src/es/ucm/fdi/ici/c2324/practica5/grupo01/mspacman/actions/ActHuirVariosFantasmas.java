@@ -1,6 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions;
 
 import es.ucm.fdi.ici.Action;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.MsPacManFuzzyData;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.MsPacManTools;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
@@ -10,6 +11,12 @@ import pacman.game.Game;
  * Action to move away from several ghosts
  */
 public class ActHuirVariosFantasmas implements Action {
+	
+	private MsPacManFuzzyData data;
+	
+	public ActHuirVariosFantasmas(MsPacManFuzzyData data) {
+		this.data = data;
+	}
 	
 	/**
 	 * Gets the best movement for MsPacMan to run away from several chasing ghosts. This is done by analyzing every
@@ -27,11 +34,9 @@ public class ActHuirVariosFantasmas implements Action {
 		if (!game.isJunction(pos))
 			return game.getPossibleMoves(pos, lastMove)[0];
 		
-		//Closest ghost to MsPacMan
-		GHOST closestGhost =  MsPacManTools.getNearestChasing(game, pos, lastMove); // TODO sacar del data (usar nodo)
 		//Index and last movement of the closest ghost
-		int closestGhostIndex = game.getGhostCurrentNodeIndex(closestGhost);
-		MOVE closestGhostLastMove = game.getGhostLastMoveMade(closestGhost);
+		int closestGhostIndex = data.getNearestChasing();
+		MOVE closestGhostLastMove = data.getNearestChasingLastMove();
 		
 		
 		int maxDists = -1;
@@ -39,28 +44,29 @@ public class ActHuirVariosFantasmas implements Action {
 		
 		for(MOVE m : game.getPossibleMoves(pos, lastMove)) {
 			int nextPos = game.getNeighbour(pos, m), dists = 0;
-			int nextJunction = MsPacManTools.nextJunction(game, nextPos, m);
-			
-			GHOST closestGhostJunction = MsPacManTools.getNearestChasing(game, nextJunction, m); // TODO sacar del data (usar nodo)
+//			int nextJunction = MsPacManTools.nextJunction(game, nextPos, m);
+			//TODO revisar lo comentado
+//			GHOST closestGhostJunction = MsPacManTools.getNearestChasing(game, nextJunction, m); // TODO sacar del data (usar nodo)
 			
 			//int distBtwNextJuntNextPos = game.getShortestPathDistance(nextPos, nextJunction);
 			
 			for(GHOST g : GHOST.values()) {	
-				if(game.getGhostCurrentNodeIndex(g) >= 0 && !game.isGhostEdible(g)) {
+				int node = game.getGhostCurrentNodeIndex(g);
+				if(node >= 0 && !game.isGhostEdible(g)) {
 					//Actual distances
-					if(g == closestGhost) { //TODO usar nodo
+					if(node == closestGhostIndex) {
 						dists += 10 * game.getShortestPathDistance(closestGhostIndex, nextPos, closestGhostLastMove); 
 					}
 					else {
 						dists += game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), nextPos, game.getGhostLastMoveMade(g));
 					}
-					//Future distances
-					if(g == closestGhostJunction) { //TODO usar nodo
-						dists += 10 * game.getShortestPathDistance(game.getGhostCurrentNodeIndex(closestGhostJunction), nextJunction);
-					}
-					else {
-						dists += game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), nextPos);
-					}
+//					//Future distances
+//					if(g == closestGhostJunction) { //TODO usar nodo
+//						dists += 10 * game.getShortestPathDistance(game.getGhostCurrentNodeIndex(closestGhostJunction), nextJunction);
+//					}
+//					else {
+//						dists += game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), nextPos);
+//					}
 				}
 			}
 			if(dists > maxDists) {
