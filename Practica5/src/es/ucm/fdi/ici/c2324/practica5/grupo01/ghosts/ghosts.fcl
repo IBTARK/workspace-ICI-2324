@@ -2,10 +2,6 @@ FUNCTION_BLOCK FuzzyBLINKY	// Block definition (there may be more than one block
 
 VAR_INPUT				// Define input variables
 	MSPACMANtoPPILL : REAL;
-	BLINKYalive : REAL;
-	PINKYalive : REAL;
-	INKYalive : REAL;
-	SUEalive : REAL;
 	BLINKYedible : REAL;
 	PINKYedible : REAL;
 	INKYedible : REAL;
@@ -43,7 +39,6 @@ VAR_OUTPUT				// Define output variable
 	RunAwayScattering : REAL;
 	RunAwayToChasing : REAL;
 	Scatter: REAL;
-	DoNothing : REAL;
 END_VAR
 
 
@@ -56,11 +51,6 @@ FUZZIFY MSPACMANtoPPILL
 END_FUZZIFY
 
 FUZZIFY ppills
-	TERM true := 1;
-	TERM false := 0;
-END_FUZZIFY
-
-FUZZIFY BLINKYalive
 	TERM true := 1;
 	TERM false := 0;
 END_FUZZIFY
@@ -176,14 +166,6 @@ DEFUZZIFY Scatter			// Defzzzify output variable 'tip' : {'cheap', 'average', 'g
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
-DEFUZZIFY DoNothing			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
-	TERM impossible := (0,1) (5,1) (15,0);
-	TERM possible := gauss 15 5;
-	TERM sure := (20,0) (30,1) (31,1);
-	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
-	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
-END_DEFUZZIFY
-
 
 
 RULEBLOCK BLINKYactions
@@ -257,9 +239,6 @@ RULEBLOCK BLINKYactions
 	RULE 35: IF ppills IS false AND BLINKYedible IS false THEN RunAwayFromMs IS impossible;
 	RULE 36: IF BLINKYedible IS false THEN RunAwayToChasing IS impossible;
 	
-	RULE 37 : IF BLINKYalive IS false THEN DoNothing IS sure;
-	
-	RULE 38 : IF MSconfidence IS low AND BLINKYedible IS false THEN LookForMsPacman IS sure;
 	
 END_RULEBLOCK
 
@@ -273,10 +252,6 @@ FUNCTION_BLOCK FuzzyPINKY	// Block definition (there may be more than one block 
 
 VAR_INPUT				// Define input variables
 	MSPACMANtoPPILL : REAL;
-	BLINKYalive : REAL;
-	PINKYalive : REAL;
-	INKYalive : REAL;
-	SUEalive : REAL;
 	BLINKYedible : REAL;
 	PINKYedible : REAL;
 	INKYedible : REAL;
@@ -313,7 +288,6 @@ VAR_OUTPUT				// Define output variable
 	RunAwayScattering : REAL;
 	RunAwayToChasing : REAL;
 	Scatter: REAL;
-	DoNothing : REAL;
 END_VAR
 
 
@@ -326,11 +300,6 @@ FUZZIFY MSPACMANtoPPILL
 END_FUZZIFY
 
 FUZZIFY ppills
-	TERM true := 1;
-	TERM false := 0;
-END_FUZZIFY
-
-FUZZIFY PINKYalive
 	TERM true := 1;
 	TERM false := 0;
 END_FUZZIFY
@@ -446,14 +415,6 @@ DEFUZZIFY Scatter			// Defzzzify output variable 'tip' : {'cheap', 'average', 'g
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
-DEFUZZIFY DoNothing			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
-	TERM impossible := (0,1) (5,1) (15,0);
-	TERM possible := gauss 15 5;
-	TERM sure := (20,0) (30,1) (31,1);
-	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
-	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
-END_DEFUZZIFY
-
 
 
 RULEBLOCK PINKYactions
@@ -527,9 +488,6 @@ RULEBLOCK PINKYactions
 	RULE 35: IF ppills IS false AND PINKYedible IS false THEN RunAwayFromMs IS impossible;
 	RULE 36: IF PINKYedible IS false THEN RunAwayToChasing IS impossible;
 	
-	RULE 37 : IF PINKYalive IS false THEN DoNothing IS sure;
-	
-	
 	
 END_RULEBLOCK
 
@@ -541,10 +499,6 @@ FUNCTION_BLOCK FuzzyINKY	// Block definition (there may be more than one block p
 
 VAR_INPUT				// Define input variables
 	MSPACMANtoPPILL : REAL;
-	BLINKYalive : REAL;
-	PINKYalive : REAL;
-	INKYalive : REAL;
-	SUEalive : REAL;
 	BLINKYedible : REAL;
 	PINKYedible : REAL;
 	INKYedible : REAL;
@@ -581,7 +535,6 @@ VAR_OUTPUT				// Define output variable
 	RunAwayScattering : REAL;
 	RunAwayToChasing : REAL;
 	Scatter: REAL;
-	DoNothing : REAL;
 END_VAR
 
 
@@ -596,11 +549,6 @@ FUZZIFY MSPACMANtoPPILL
 	TERM near := (0, 1) (20, 0) ; 
 	TERM medium := (15, 0) (25, 1) (35, 1) (45, 0);
 	TERM far := (40, 0) (50, 1) (200, 1);
-END_FUZZIFY
-
-FUZZIFY INKYalive
-	TERM true := 1;
-	TERM false := 0;
 END_FUZZIFY
 
 FUZZIFY INKYedible
@@ -714,14 +662,6 @@ DEFUZZIFY Scatter			// Defzzzify output variable 'tip' : {'cheap', 'average', 'g
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
-DEFUZZIFY DoNothing			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
-	TERM impossible := (0,1) (5,1) (15,0);
-	TERM possible := gauss 15 5;
-	TERM sure := (20,0) (30,1) (31,1);
-	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
-	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
-END_DEFUZZIFY
-
 
 
 RULEBLOCK INKYactions
@@ -795,9 +735,6 @@ RULEBLOCK INKYactions
 	RULE 35: IF ppills IS false AND INKYedible IS false THEN RunAwayFromMs IS impossible;
 	RULE 36: IF INKYedible IS false THEN RunAwayToChasing IS impossible;
 	
-	RULE 37 : IF INKYalive IS false THEN DoNothing IS sure;
-	
-	
 	
 END_RULEBLOCK
 
@@ -808,10 +745,6 @@ FUNCTION_BLOCK FuzzySUE	// Block definition (there may be more than one block pe
 
 VAR_INPUT				// Define input variables
 	MSPACMANtoPPILL : REAL;
-	BLINKYalive : REAL;
-	PINKYalive : REAL;
-	INKYalive : REAL;
-	SUEalive : REAL;
 	BLINKYedible : REAL;
 	PINKYedible : REAL;
 	INKYedible : REAL;
@@ -848,7 +781,6 @@ VAR_OUTPUT				// Define output variable
 	RunAwayScattering : REAL;
 	RunAwayToChasing : REAL;
 	Scatter: REAL;
-	DoNothing : REAL;
 END_VAR
 
 
@@ -861,11 +793,6 @@ FUZZIFY MSPACMANtoPPILL
 END_FUZZIFY
 
 FUZZIFY ppills
-	TERM true := 1;
-	TERM false := 0;
-END_FUZZIFY
-
-FUZZIFY SUEalive
 	TERM true := 1;
 	TERM false := 0;
 END_FUZZIFY
@@ -981,13 +908,6 @@ DEFUZZIFY Scatter			// Defzzzify output variable 'tip' : {'cheap', 'average', 'g
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
-DEFUZZIFY DoNothing			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
-	TERM impossible := (0,1) (5,1) (15,0);
-	TERM possible := gauss 15 5;
-	TERM sure := (20,0) (30,1) (31,1);
-	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
-	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
-END_DEFUZZIFY
 
 
 RULEBLOCK SUEactions
@@ -1060,8 +980,6 @@ RULEBLOCK SUEactions
 	// SI SOMOS CHASING Y NO QUEDAN pills NO PODEMOS ESCAPAR
 	RULE 35: IF ppills IS false AND SUEedible IS false THEN RunAwayFromMs IS impossible;
 	RULE 36: IF SUEedible IS false THEN RunAwayToChasing IS impossible;
-	
-	RULE 37 : IF SUEalive IS false THEN DoNothing IS sure;
 	
 	
 END_RULEBLOCK

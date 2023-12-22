@@ -11,7 +11,6 @@ import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsActionSelector;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsFuzzyMemory;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsInput;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.ChaseMsPacman;
-import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.DoNothing;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.FlankMsPacman;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.GoToFirstJunction;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.LookForMsPacman;
@@ -72,8 +71,7 @@ public class Ghosts extends GhostController {
 				new RunAwayFromMs(g, fuzzyData),
 				new RunAwayScattering(g, fuzzyData),
 				new RunAwayToChasing(g, fuzzyData),
-				new Scatter(g, fuzzyData),
-				new DoNothing()
+				new Scatter(g, fuzzyData)
 			};
 			actionSelector = new GhostsActionSelector(actions);
 			String fuzzyBlockName = "Fuzzy"+g.toString();
@@ -113,8 +111,13 @@ public class Ghosts extends GhostController {
 		
 		FuzzyEngine ghostEngine;
 		for(GHOST g: GHOST.values()) {
-			ghostEngine = fuzzyEngines.get(g);
-			moves.put(g, ghostEngine.run(fvars, game));
+			if(game.getGhostLairTime(g)<=0) {
+				ghostEngine = fuzzyEngines.get(g);
+				moves.put(g, ghostEngine.run(fvars, game));
+			}
+			else {
+				moves.put(g, MOVE.NEUTRAL);
+			}
 		}
 		
 		return moves;
