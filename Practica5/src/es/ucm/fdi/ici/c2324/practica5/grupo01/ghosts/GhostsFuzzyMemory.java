@@ -34,7 +34,7 @@ public class GhostsFuzzyMemory {
 		
 		
 		double anyPPills = ppillsRemaining > 0 ? 1 : 0;
-		mem.put("PPILLS", anyPPills);
+		mem.put("ppills", anyPPills);
 		mem.put("MSconfidence", pacmanVisibilityConfidence);			
 	}
 	

@@ -21,7 +21,7 @@ public class GoToFirstJunction implements Action{
 	@Override
 	public String getActionId() {
 		// TODO Auto-generated method stub
-		return "Go To First Junction";
+		return "GoToFirstJunction";
 	}
 
 	@Override

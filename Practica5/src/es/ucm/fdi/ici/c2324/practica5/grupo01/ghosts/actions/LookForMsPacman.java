@@ -21,7 +21,7 @@ public class LookForMsPacman implements Action {
 	@Override
 	public String getActionId() {
 		// TODO Auto-generated method stub
-		return "Look for MsPacman";
+		return "LookforMsPacman";
 	}
 
 	@Override

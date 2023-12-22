@@ -20,7 +20,7 @@ public class ChaseMsPacman implements Action {
 	@Override
 	public String getActionId() {
 		// TODO Auto-generated method stub
-		return "Chase MsPacman";
+		return "ChaseMsPacman";
 	}
 
 	@Override

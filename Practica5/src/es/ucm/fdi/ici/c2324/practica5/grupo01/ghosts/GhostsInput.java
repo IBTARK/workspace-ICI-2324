@@ -16,14 +16,13 @@ public class GhostsInput extends FuzzyInput {
 	private boolean ppillEaten;
 	
 	private double msToPPill;
+	private double[] alives;
 	private double[] edibles;
 	private double[] msDistance;
 	private double[] msFirstJunctionDistance;
 	private double[] nearestChasingDistance;
 	private double[] nearestEdibleDistance;
 	
-	private GhostsFuzzyMemory fuzzyMemory;
-
 	public GhostsInput(Game game) {
 		super(game);
 	}
@@ -32,6 +31,9 @@ public class GhostsInput extends FuzzyInput {
 	@Override
 	public void parseInput() {
 		
+		msToPPill = MAX_DISTANCE;
+		alives = new double[] {0,0,0,0};
+		edibles = new double[] {0,0,0,0};
 		msDistance = new double[] {MAX_DISTANCE,MAX_DISTANCE,MAX_DISTANCE,MAX_DISTANCE};
 		msFirstJunctionDistance = new double[] {MAX_DISTANCE,MAX_DISTANCE,MAX_DISTANCE,MAX_DISTANCE};
 		nearestChasingDistance = new double[] {MAX_DISTANCE,MAX_DISTANCE,MAX_DISTANCE,MAX_DISTANCE};
@@ -43,14 +45,20 @@ public class GhostsInput extends FuzzyInput {
 		currentLevel = game.getCurrentLevel();
 		
 		int mspacman = game.getPacmanCurrentNodeIndex();	
-		msVisible = mspacman!=1;
-		MOVE msLastMove = msVisible ? game.getPacmanLastMoveMade() : MOVE.NEUTRAL;
+		
+		msVisible = false;
+		MOVE msLastMove = MOVE.NEUTRAL;
+		if(mspacman != -1) {
+			msVisible = true;
+			msLastMove = msVisible ? game.getPacmanLastMoveMade() : MOVE.NEUTRAL;
+		}
 		
 		int index, pos;
 		for(GHOST g: GHOST.values()) {
 			index = g.ordinal();
 			pos = game.getGhostCurrentNodeIndex(g);
 			if(game.getGhostLairTime(g) <= 0) {
+				alives[index] = 1;
 				
 				if(mspacman != -1) {
 					msDistance[index] = game.getShortestPathDistance(pos, game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(g));
@@ -61,22 +69,30 @@ public class GhostsInput extends FuzzyInput {
 				
 				edibles[index] = game.isGhostEdible(g) ? 1 : 0;
 				
-				int nearestChasing = game.getGhostCurrentNodeIndex(GhostsTools.getNearestChasing(game, g));
-				nearestChasingDistance[index] = game.getShortestPathDistance(pos, nearestChasing, game.getGhostLastMoveMade(g));
+				GHOST nearestChasing = GhostsTools.getNearestChasing(game, g);
+				if(nearestChasing != null) {
+					int nearestChasingIdx = game.getGhostCurrentNodeIndex(nearestChasing);
+					nearestChasingDistance[index] = game.getShortestPathDistance(pos, nearestChasingIdx, game.getGhostLastMoveMade(g));
+				}
 				
-				int nearestEdible = game.getGhostCurrentNodeIndex(GhostsTools.getNearestEdible(game, g));
-				nearestEdibleDistance[index] = game.getShortestPathDistance(pos, nearestEdible, game.getGhostLastMoveMade(g));
-			
+				GHOST nearestEdible = GhostsTools.getNearestEdible(game, g);
+				if(nearestEdible != null) {
+					int nearestEdibleIdx = game.getGhostCurrentNodeIndex(nearestEdible);
+					nearestEdibleDistance[index] = game.getShortestPathDistance(pos, nearestEdibleIdx, game.getGhostLastMoveMade(g));
+				}
 			}
 			
 		}
 		
 		// Calculamos la supuesta distancia
-		int dist = Integer.MAX_VALUE;
-		for (int ppill : game.getActivePowerPillsIndices()) {
-			int aux = game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), ppill, game.getPacmanLastMoveMade());
-			if (aux < dist) {
-				msToPPill = aux;
+		if(mspacman!=-1) {
+			int minDist = Integer.MAX_VALUE;
+			for (int ppill : game.getPowerPillIndices()) {
+				int aux = game.getShortestPathDistance(mspacman, ppill, game.getPacmanLastMoveMade());
+				if (aux < minDist) {
+					minDist = aux;
+					msToPPill = aux;
+				}
 			}
 		}
 		

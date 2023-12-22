@@ -21,7 +21,7 @@ public class MaintainDistance implements Action {
 	@Override
 	public String getActionId() {
 		// TODO Auto-generated method stub
-		return "Maintain Distance";
+		return "MaintainDistance";
 	}
 
 	@Override

@@ -21,7 +21,7 @@ public class RunAwayFromMs implements Action{
 	@Override
 	public String getActionId() {
 		// TODO Auto-generated method stub
-		return "Run Away from MsPacman";
+		return "RunAwayFromMs";
 	}
 
 	@Override

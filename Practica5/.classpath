@@ -7,10 +7,5 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/david/OneDrive - Universidad Complutense de Madrid (UCM)/Escritorio/Git/workspace-ICI-2324/Practica5/lib/jFuzzyLogic.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

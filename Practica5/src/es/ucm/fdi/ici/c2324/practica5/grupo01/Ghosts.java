@@ -11,6 +11,7 @@ import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsActionSelector;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsFuzzyMemory;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsInput;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.ChaseMsPacman;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.DoNothing;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.FlankMsPacman;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.GoToFirstJunction;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.LookForMsPacman;
@@ -71,13 +72,14 @@ public class Ghosts extends GhostController {
 				new RunAwayFromMs(g, fuzzyData),
 				new RunAwayScattering(g, fuzzyData),
 				new RunAwayToChasing(g, fuzzyData),
-				new Scatter(g, fuzzyData)
+				new Scatter(g, fuzzyData),
+				new DoNothing()
 			};
 			actionSelector = new GhostsActionSelector(actions);
-			
+			String fuzzyBlockName = "Fuzzy"+g.toString();
 			ghostFuzzyEngine = new FuzzyEngine(g.toString(),
 					RULES_PATH+"ghosts.fcl",
-					String.format("fuzzy%s", g.toString()),
+					fuzzyBlockName,
 					actionSelector);
 			
 			// Añadimos un observer a blinky.
@@ -99,7 +101,7 @@ public class Ghosts extends GhostController {
 		EnumMap<GHOST, MOVE> moves = new EnumMap<GHOST, MOVE>(GHOST.class);
 		
 		GhostsInput input = new GhostsInput(game);
-		input.parseInput();
+		// input.parseInput(); // Ya se parsea en el constructor.
 		fuzzyMemory.getInput(input);
 		
 		if(game.getPacmanCurrentNodeIndex()!=-1) {

@@ -1,7 +1,11 @@
-FUNCTION_BLOCK FuzzyBlinky	// Block definition (there may be more than one block per file)
+FUNCTION_BLOCK FuzzyBLINKY	// Block definition (there may be more than one block per file)
 
 VAR_INPUT				// Define input variables
 	MSPACMANtoPPILL : REAL;
+	BLINKYalive : REAL;
+	PINKYalive : REAL;
+	INKYalive : REAL;
+	SUEalive : REAL;
 	BLINKYedible : REAL;
 	PINKYedible : REAL;
 	INKYedible : REAL;
@@ -30,8 +34,16 @@ VAR_INPUT				// Define input variables
 END_VAR
 
 VAR_OUTPUT				// Define output variable
-	Runaway : REAL;
-	GoToPPill: REAL;
+	ChaseMsPacman : REAL;
+	FlankMsPacman : REAL;
+	GoToFirstJunction : REAL;
+	LookForMsPacman : REAL;
+	MaintainDistance : REAL;
+	RunAwayFromMs : REAL;
+	RunAwayScattering : REAL;
+	RunAwayToChasing : REAL;
+	Scatter: REAL;
+	DoNothing : REAL;
 END_VAR
 
 
@@ -43,7 +55,12 @@ FUZZIFY MSPACMANtoPPILL
 	TERM far := (40, 0) (50, 1) (200, 1);
 END_FUZZIFY
 
-FUZZIFY PPILLS
+FUZZIFY ppills
+	TERM true := 1;
+	TERM false := 0;
+END_FUZZIFY
+
+FUZZIFY BLINKYalive
 	TERM true := 1;
 	TERM false := 0;
 END_FUZZIFY
@@ -134,7 +151,16 @@ DEFUZZIFY RunAwayFromMs			// Defzzzify output variable 'tip' : {'cheap', 'averag
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
+
 DEFUZZIFY RunAwayScattering			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM impossible := (0,1) (5,1) (15,0);
+	TERM possible := gauss 15 5;
+	TERM sure := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY RunAwayToChasing			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
 	TERM impossible := (0,1) (5,1) (15,0);
 	TERM possible := gauss 15 5;
 	TERM sure := (15,0) (25,1) (30,1);
@@ -146,6 +172,14 @@ DEFUZZIFY Scatter			// Defzzzify output variable 'tip' : {'cheap', 'average', 'g
 	TERM impossible := (0,1) (5,1) (15,0);
 	TERM possible := gauss 15 5;
 	TERM sure := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY DoNothing			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM impossible := (0,1) (5,1) (15,0);
+	TERM possible := gauss 15 5;
+	TERM sure := (20,0) (30,1) (31,1);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
@@ -219,10 +253,13 @@ RULEBLOCK BLINKYactions
 	RULE 33: IF MSconfidence IS low AND BLINKYedible IS true THEN RunAwayToChasing IS sure;
 	RULE 34: IF MSconfidence IS low AND BLINKYedible IS false THEN RunAwayToChasing IS impossible;
 	
-	// SI SOMOS CHASING NO PODEMOS ESCAPAR (SI NO QUEDAN PPILLS)
+	// SI SOMOS CHASING NO PODEMOS ESCAPAR (SI NO QUEDAN ppills)
 	RULE 35: IF ppills IS false AND BLINKYedible IS false THEN RunAwayFromMs IS impossible;
 	RULE 36: IF BLINKYedible IS false THEN RunAwayToChasing IS impossible;
 	
+	RULE 37 : IF BLINKYalive IS false THEN DoNothing IS sure;
+	
+	RULE 38 : IF MSconfidence IS low AND BLINKYedible IS false THEN LookForMsPacman IS sure;
 	
 END_RULEBLOCK
 
@@ -232,10 +269,14 @@ END_FUNCTION_BLOCK
 
 
 
-FUNCTION_BLOCK FuzzyPinky	// Block definition (there may be more than one block per file)
+FUNCTION_BLOCK FuzzyPINKY	// Block definition (there may be more than one block per file)
 
 VAR_INPUT				// Define input variables
 	MSPACMANtoPPILL : REAL;
+	BLINKYalive : REAL;
+	PINKYalive : REAL;
+	INKYalive : REAL;
+	SUEalive : REAL;
 	BLINKYedible : REAL;
 	PINKYedible : REAL;
 	INKYedible : REAL;
@@ -257,13 +298,22 @@ VAR_INPUT				// Define input variables
 	INKYtoEDIBLE : REAL;
 	SUEtoEDIBLE : REAL;
 
+	ppills : REAL;
 	MSconfidence: REAL;
 	
 END_VAR
 
 VAR_OUTPUT				// Define output variable
-	Runaway : REAL;
-	GoToPPill: REAL;
+	ChaseMsPacman : REAL;
+	FlankMsPacman : REAL;
+	GoToFirstJunction : REAL;
+	LookForMsPacman : REAL;
+	MaintainDistance : REAL;
+	RunAwayFromMs : REAL;
+	RunAwayScattering : REAL;
+	RunAwayToChasing : REAL;
+	Scatter: REAL;
+	DoNothing : REAL;
 END_VAR
 
 
@@ -273,6 +323,16 @@ FUZZIFY MSPACMANtoPPILL
 	TERM near := (0, 1) (20, 0) ; 
 	TERM medium := (15, 0) (25, 1) (35, 1) (45, 0);
 	TERM far := (40, 0) (50, 1) (200, 1);
+END_FUZZIFY
+
+FUZZIFY ppills
+	TERM true := 1;
+	TERM false := 0;
+END_FUZZIFY
+
+FUZZIFY PINKYalive
+	TERM true := 1;
+	TERM false := 0;
 END_FUZZIFY
 
 FUZZIFY PINKYedible
@@ -361,7 +421,16 @@ DEFUZZIFY RunAwayFromMs			// Defzzzify output variable 'tip' : {'cheap', 'averag
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
+
 DEFUZZIFY RunAwayScattering			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM impossible := (0,1) (5,1) (15,0);
+	TERM possible := gauss 15 5;
+	TERM sure := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY RunAwayToChasing			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
 	TERM impossible := (0,1) (5,1) (15,0);
 	TERM possible := gauss 15 5;
 	TERM sure := (15,0) (25,1) (30,1);
@@ -373,6 +442,14 @@ DEFUZZIFY Scatter			// Defzzzify output variable 'tip' : {'cheap', 'average', 'g
 	TERM impossible := (0,1) (5,1) (15,0);
 	TERM possible := gauss 15 5;
 	TERM sure := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY DoNothing			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM impossible := (0,1) (5,1) (15,0);
+	TERM possible := gauss 15 5;
+	TERM sure := (20,0) (30,1) (31,1);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
@@ -450,6 +527,9 @@ RULEBLOCK PINKYactions
 	RULE 35: IF ppills IS false AND PINKYedible IS false THEN RunAwayFromMs IS impossible;
 	RULE 36: IF PINKYedible IS false THEN RunAwayToChasing IS impossible;
 	
+	RULE 37 : IF PINKYalive IS false THEN DoNothing IS sure;
+	
+	
 	
 END_RULEBLOCK
 
@@ -457,10 +537,14 @@ END_FUNCTION_BLOCK
 
 
 
-FUNCTION_BLOCK FuzzyInky	// Block definition (there may be more than one block per file)
+FUNCTION_BLOCK FuzzyINKY	// Block definition (there may be more than one block per file)
 
 VAR_INPUT				// Define input variables
 	MSPACMANtoPPILL : REAL;
+	BLINKYalive : REAL;
+	PINKYalive : REAL;
+	INKYalive : REAL;
+	SUEalive : REAL;
 	BLINKYedible : REAL;
 	PINKYedible : REAL;
 	INKYedible : REAL;
@@ -482,22 +566,41 @@ VAR_INPUT				// Define input variables
 	INKYtoEDIBLE : REAL;
 	SUEtoEDIBLE : REAL;
 
+	ppills: REAL;
 	MSconfidence: REAL;
 	
 END_VAR
 
 VAR_OUTPUT				// Define output variable
-	Runaway : REAL;
-	GoToPPill: REAL;
+	ChaseMsPacman : REAL;
+	FlankMsPacman : REAL;
+	GoToFirstJunction : REAL;
+	LookForMsPacman : REAL;
+	MaintainDistance : REAL;
+	RunAwayFromMs : REAL;
+	RunAwayScattering : REAL;
+	RunAwayToChasing : REAL;
+	Scatter: REAL;
+	DoNothing : REAL;
 END_VAR
 
 
 // FUZZYFY VALORES
 
+FUZZIFY ppills
+	TERM true := 1;
+	TERM false := 0;
+END_FUZZIFY
+
 FUZZIFY MSPACMANtoPPILL
 	TERM near := (0, 1) (20, 0) ; 
 	TERM medium := (15, 0) (25, 1) (35, 1) (45, 0);
 	TERM far := (40, 0) (50, 1) (200, 1);
+END_FUZZIFY
+
+FUZZIFY INKYalive
+	TERM true := 1;
+	TERM false := 0;
 END_FUZZIFY
 
 FUZZIFY INKYedible
@@ -586,7 +689,16 @@ DEFUZZIFY RunAwayFromMs			// Defzzzify output variable 'tip' : {'cheap', 'averag
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
+
 DEFUZZIFY RunAwayScattering			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM impossible := (0,1) (5,1) (15,0);
+	TERM possible := gauss 15 5;
+	TERM sure := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY RunAwayToChasing			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
 	TERM impossible := (0,1) (5,1) (15,0);
 	TERM possible := gauss 15 5;
 	TERM sure := (15,0) (25,1) (30,1);
@@ -598,6 +710,14 @@ DEFUZZIFY Scatter			// Defzzzify output variable 'tip' : {'cheap', 'average', 'g
 	TERM impossible := (0,1) (5,1) (15,0);
 	TERM possible := gauss 15 5;
 	TERM sure := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY DoNothing			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM impossible := (0,1) (5,1) (15,0);
+	TERM possible := gauss 15 5;
+	TERM sure := (20,0) (30,1) (31,1);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
@@ -675,16 +795,23 @@ RULEBLOCK INKYactions
 	RULE 35: IF ppills IS false AND INKYedible IS false THEN RunAwayFromMs IS impossible;
 	RULE 36: IF INKYedible IS false THEN RunAwayToChasing IS impossible;
 	
+	RULE 37 : IF INKYalive IS false THEN DoNothing IS sure;
+	
+	
 	
 END_RULEBLOCK
 
 END_FUNCTION_BLOCK
 
 
-FUNCTION_BLOCK FuzzySue	// Block definition (there may be more than one block per file)
+FUNCTION_BLOCK FuzzySUE	// Block definition (there may be more than one block per file)
 
 VAR_INPUT				// Define input variables
 	MSPACMANtoPPILL : REAL;
+	BLINKYalive : REAL;
+	PINKYalive : REAL;
+	INKYalive : REAL;
+	SUEalive : REAL;
 	BLINKYedible : REAL;
 	PINKYedible : REAL;
 	INKYedible : REAL;
@@ -706,13 +833,22 @@ VAR_INPUT				// Define input variables
 	INKYtoEDIBLE : REAL;
 	SUEtoEDIBLE : REAL;
 
+	ppills : REAL;
 	MSconfidence: REAL;
 	
 END_VAR
 
 VAR_OUTPUT				// Define output variable
-	Runaway : REAL;
-	GoToPPill: REAL;
+	ChaseMsPacman : REAL;
+	FlankMsPacman : REAL;
+	GoToFirstJunction : REAL;
+	LookForMsPacman : REAL;
+	MaintainDistance : REAL;
+	RunAwayFromMs : REAL;
+	RunAwayScattering : REAL;
+	RunAwayToChasing : REAL;
+	Scatter: REAL;
+	DoNothing : REAL;
 END_VAR
 
 
@@ -722,6 +858,16 @@ FUZZIFY MSPACMANtoPPILL
 	TERM near := (0, 1) (20, 0) ; 
 	TERM medium := (15, 0) (25, 1) (35, 1) (45, 0);
 	TERM far := (40, 0) (50, 1) (200, 1);
+END_FUZZIFY
+
+FUZZIFY ppills
+	TERM true := 1;
+	TERM false := 0;
+END_FUZZIFY
+
+FUZZIFY SUEalive
+	TERM true := 1;
+	TERM false := 0;
 END_FUZZIFY
 
 FUZZIFY SUEedible
@@ -810,7 +956,16 @@ DEFUZZIFY RunAwayFromMs			// Defzzzify output variable 'tip' : {'cheap', 'averag
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
+
 DEFUZZIFY RunAwayScattering			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM impossible := (0,1) (5,1) (15,0);
+	TERM possible := gauss 15 5;
+	TERM sure := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY RunAwayToChasing			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
 	TERM impossible := (0,1) (5,1) (15,0);
 	TERM possible := gauss 15 5;
 	TERM sure := (15,0) (25,1) (30,1);
@@ -826,6 +981,13 @@ DEFUZZIFY Scatter			// Defzzzify output variable 'tip' : {'cheap', 'average', 'g
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
+DEFUZZIFY DoNothing			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
+	TERM impossible := (0,1) (5,1) (15,0);
+	TERM possible := gauss 15 5;
+	TERM sure := (20,0) (30,1) (31,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
 
 
 RULEBLOCK SUEactions
@@ -895,9 +1057,11 @@ RULEBLOCK SUEactions
 	RULE 33: IF MSconfidence IS low AND SUEedible IS true THEN RunAwayToChasing IS sure;
 	RULE 34: IF MSconfidence IS low AND SUEedible IS false THEN RunAwayToChasing IS impossible;
 	
-	// SI SOMOS CHASING Y NO QUEDAN PPILLS NO PODEMOS ESCAPAR
+	// SI SOMOS CHASING Y NO QUEDAN pills NO PODEMOS ESCAPAR
 	RULE 35: IF ppills IS false AND SUEedible IS false THEN RunAwayFromMs IS impossible;
 	RULE 36: IF SUEedible IS false THEN RunAwayToChasing IS impossible;
+	
+	RULE 37 : IF SUEalive IS false THEN DoNothing IS sure;
 	
 	
 END_RULEBLOCK

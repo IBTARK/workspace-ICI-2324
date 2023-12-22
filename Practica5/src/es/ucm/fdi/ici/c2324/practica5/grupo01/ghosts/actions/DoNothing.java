@@ -6,27 +6,17 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-public class FlankMsPacman implements Action {
-
-	private GHOST ghost;
-	private GhostFuzzyData data;
-	
-	public FlankMsPacman(GHOST g, GhostFuzzyData data) {
-		this.ghost = g;
-		this.data = data;
-	}
+public class DoNothing implements Action {
 	
 	@Override
 	public String getActionId() {
-		return "FlankMsPacman";
+		return "DoNothing";
 	}
 
 	@Override
 	public MOVE execute(Game game) {
-		int mspacman = data.getMspacman();
-		if(mspacman == -1) return MOVE.NEUTRAL;
-		
 		return MOVE.NEUTRAL;
 	}
+
 
 }

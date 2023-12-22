@@ -21,7 +21,7 @@ public class RunAwayScattering implements Action {
 	@Override
 	public String getActionId() {
 		// TODO Auto-generated method stub
-		return "Run Away Scattering";
+		return "RunAwayScattering";
 	}
 
 	@Override
