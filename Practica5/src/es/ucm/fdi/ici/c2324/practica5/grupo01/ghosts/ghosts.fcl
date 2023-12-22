@@ -44,17 +44,17 @@ FUZZIFY MSPACMANtoPPILL
 END_FUZZIFY
 
 FUZZIFY PPILLS
-	TERM true := 1
-	TERM false := 0
+	TERM true := 1;
+	TERM false := 0;
 END_FUZZIFY
 
 FUZZIFY BLINKYedible
-	TERM true := 1
-	TERM false := 0
+	TERM true := 1;
+	TERM false := 0;
 END_FUZZIFY
 
 FUZZIFY BLINKYtoMS
-	TERM supernear := (0, 1) (9, 1) (10, 0)
+	TERM supernear := (0, 1) (9, 1) (10, 0);
 	TERM near := (8, 0) (11, 1) (20, 1) (25, 0); 
 	TERM medium := (20, 0) (30, 1) (35, 1) (45, 0);
 	TERM far := (40, 0) (50, 1) (200, 1);
@@ -173,45 +173,45 @@ RULEBLOCK BLINKYactions
 	RULE 8 : IF BLINKYedible IS true THEN Scatter IS impossible;
 	
 	// SI SOMOS EDIBLE Y ESTAMOS A RANGO DE MSPACMAN
-	RULE 9: IF BLINKYedible IS true AND (BLINKYtoMS IS near OR BLINKYtoMS IS medium) AND BLINKYtoEDIBLE IS near THEN RunAwayScattering IS sure
-	RULE 10: IF BLINKYedible IS true AND (BLINKYtoMS IS near OR BLINKYtoMS IS medium) AND BLINKYtoEDIBLE IS medium THEN RunAwayScattering IS possible
-	RULE 11: IF BLINKYedible IS true AND BLINKYtoEDIBLE IS far THEN RunAwayScattering IS impossible
+	RULE 9: IF BLINKYedible IS true AND (BLINKYtoMS IS near OR BLINKYtoMS IS medium) AND BLINKYtoEDIBLE IS near THEN RunAwayScattering IS sure;
+	RULE 10: IF BLINKYedible IS true AND (BLINKYtoMS IS near OR BLINKYtoMS IS medium) AND BLINKYtoEDIBLE IS medium THEN RunAwayScattering IS possible;
+	RULE 11: IF BLINKYedible IS true AND BLINKYtoEDIBLE IS far THEN RunAwayScattering IS impossible;
 	
-	RULE 12: IF BLINKYedible IS true AND (BLINKYtoMS IS near OR BLINKYtoMS IS medium) AND BLINKYtoCHASING IS near THEN RunAwayToChasing IS sure
-	RULE 13: IF BLINKYedible IS true AND (BLINKYtoMS IS near OR BLINKYtoMS IS medium) AND BLINKYtoCHASING IS medium THEN RunAwayToChasing IS possible
-	RULE 14: IF BLINKYedible IS true AND BLINKYtoCHASING IS far THEN RunAwayScattering IS impossible
+	RULE 12: IF BLINKYedible IS true AND (BLINKYtoMS IS near OR BLINKYtoMS IS medium) AND BLINKYtoCHASING IS near THEN RunAwayToChasing IS sure;
+	RULE 13: IF BLINKYedible IS true AND (BLINKYtoMS IS near OR BLINKYtoMS IS medium) AND BLINKYtoCHASING IS medium THEN RunAwayToChasing IS possible;
+	RULE 14: IF BLINKYedible IS true AND BLINKYtoCHASING IS far THEN RunAwayScattering IS impossible;
 	
-	RULE 15: IF BLINKYedible IS true AND (BLINKYtoCHASING IS far AND BLINKYtoEDIBLE IS far) THEN RunAwayFromMs IS sure
-	RULE 16: IF BLINKYedible IS true AND (BLINKYtoCHASING IS medium OR BLINKYtoEDIBLE IS medium) THEN RunAwayFromMs IS possible
-	RULE 17: IF BLINKYedible IS true AND (BLINKYtoCHASING IS near OR BLINKYtoEDIBLE IS near) THEN RunAwayFromMs IS sure
+	RULE 15: IF BLINKYedible IS true AND (BLINKYtoCHASING IS far AND BLINKYtoEDIBLE IS far) THEN RunAwayFromMs IS sure;
+	RULE 16: IF BLINKYedible IS true AND (BLINKYtoCHASING IS medium OR BLINKYtoEDIBLE IS medium) THEN RunAwayFromMs IS possible;
+	RULE 17: IF BLINKYedible IS true AND (BLINKYtoCHASING IS near OR BLINKYtoEDIBLE IS near) THEN RunAwayFromMs IS sure;
 
-	RULE 18: IF BLINKYedible IS true AND BLINKYtoMS IS far AND (BLINKYtoEDIBLE IS far OR BLINKYtoEDIBLE IS medium) THEN MaintainDistance IS sure
-	RULE 19: IF BLINKYedible IS true AND BLINKYtoMS IS far AND BLINKYtoEDIBLE IS near THEN Scatter IS sure
+	RULE 18: IF BLINKYedible IS true AND BLINKYtoMS IS far AND (BLINKYtoEDIBLE IS far OR BLINKYtoEDIBLE IS medium) THEN MaintainDistance IS sure;
+	RULE 19: IF BLINKYedible IS true AND BLINKYtoMS IS far AND BLINKYtoEDIBLE IS near THEN Scatter IS sure;
 	
 	
 	// CUANDO NO SABEMOS DONDE ESTA PACMAN (CONFIDENCE BAJO)
 	// SCATTER
-	RULE 20: IF BLINKYedible IS false AND MSconfidence IS low AND BLINKYtoCHASING IS near THEN Scatter IS sure
-	RULE 21: IF BLINKYedible IS false AND MSconfidence IS low AND BLINKYtoCHASING IS medium THEN Scatter IS possible
-	RULE 20: IF BLINKYedible IS false AND MSconfidence IS low AND BLINKYtoCHASING IS far THEN Scatter IS impossible
+	RULE 20: IF BLINKYedible IS false AND MSconfidence IS low AND BLINKYtoCHASING IS near THEN Scatter IS sure;
+	RULE 21: IF BLINKYedible IS false AND MSconfidence IS low AND BLINKYtoCHASING IS medium THEN Scatter IS possible;
+	RULE 20: IF BLINKYedible IS false AND MSconfidence IS low AND BLINKYtoCHASING IS far THEN Scatter IS impossible;
 	
-	RULE 22: IF BLINKYedible IS false AND MSconfidence IS low AND (BLINKYtoCHASING IS far OR BLINKYtoCHASING IS medium) THEN LookForMsPacman IS sure
-	RULE 23: IF BLINKYedible IS false AND MSconfidence IS medium THEN LookForMsPacman IS possible
-	RULE 24: IF BLINKYedible IS false AND MSconfidence IS high THEN LookForMsPacman IS impossible
+	RULE 22: IF BLINKYedible IS false AND MSconfidence IS low AND (BLINKYtoCHASING IS far OR BLINKYtoCHASING IS medium) THEN LookForMsPacman IS sure;
+	RULE 23: IF BLINKYedible IS false AND MSconfidence IS medium THEN LookForMsPacman IS possible;
+	RULE 24: IF BLINKYedible IS false AND MSconfidence IS high THEN LookForMsPacman IS impossible;
 	
 	// PERSEGUIR DIRECTAMENTE
-	RULE 23: IF BLINKYedible IS false AND MSconfidence IS high AND BLINKYtoMS IS supernear THEN ChaseMsPacman IS sure
-	RULE 24: IF BLINKYedible IS false AND (MSconfidence IS medium AND BLINKYtoMS IS supernear) OR (MSconfidence IS high AND BLINKYtoMS IS near) THEN ChaseMsPacman IS possible
-	RULE 25: IF BLINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (BLINKYtoMS IS medium OR BLINKYtoMS IS far) THEN ChaseMsPacman IS impossible
+	RULE 23: IF BLINKYedible IS false AND MSconfidence IS high AND BLINKYtoMS IS supernear THEN ChaseMsPacman IS sure;
+	RULE 24: IF BLINKYedible IS false AND (MSconfidence IS medium AND BLINKYtoMS IS supernear) OR (MSconfidence IS high AND BLINKYtoMS IS near) THEN ChaseMsPacman IS possible;
+	RULE 25: IF BLINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (BLINKYtoMS IS medium OR BLINKYtoMS IS far) THEN ChaseMsPacman IS impossible;
 
 	// IR A FIRST JUNCTION
-	RULE 26: IF BLINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND BLINKYtoFIRSTJUNCTION IS near THEN GoToFirstJunction IS sure
-	RULE 27: IF BLINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (BLINKYtoFIRSTJUNCTION IS medium OR BLINKYtoFIRSTJUNCTION IS far) THEN GoToFirstJunction IS possible
+	RULE 26: IF BLINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND BLINKYtoFIRSTJUNCTION IS near THEN GoToFirstJunction IS sure;
+	RULE 27: IF BLINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (BLINKYtoFIRSTJUNCTION IS medium OR BLINKYtoFIRSTJUNCTION IS far) THEN GoToFirstJunction IS possible;
 	
 	// SI ESTAMOS LEJOS O MEDIO -> FLANQUEAR. SI ESTAMOS CERCA TAMBIEN ES POSIBLE
-	RULE 28: IF BLINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND BLINKYtoFIRSTJUNCTION IS far THEN FlankMsPacman IS sure
-	RULE 29: IF BLINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND BLINKYtoFIRSTJUNCTION IS medium THEN FlankMsPacman IS possible
-	RULE 30: IF BLINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND BLINKYtoMS IS supernear THEN FlankMsPacman IS possible
+	RULE 28: IF BLINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND BLINKYtoFIRSTJUNCTION IS far THEN FlankMsPacman IS sure;
+	RULE 29: IF BLINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND BLINKYtoFIRSTJUNCTION IS medium THEN FlankMsPacman IS possible;
+	RULE 30: IF BLINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND BLINKYtoMS IS supernear THEN FlankMsPacman IS possible;
 	
 	// REGLAS ADICIONALES SI NO SABEMOS DONDE ESTA MSPACMAN
 	RULE 31: IF MSconfidence IS low THEN RunAwayFromMs IS impossible;
@@ -276,12 +276,12 @@ FUZZIFY MSPACMANtoPPILL
 END_FUZZIFY
 
 FUZZIFY PINKYedible
-	TERM true := 1
-	TERM false := 0
+	TERM true := 1;
+	TERM false := 0;
 END_FUZZIFY
 
 FUZZIFY PINKYtoMS
-	TERM supernear := (0, 1) (9, 1) (10, 0)
+	TERM supernear := (0, 1) (9, 1) (10, 0);
 	TERM near := (8, 0) (11, 1) (20, 1) (25, 0); 
 	TERM medium := (20, 0) (30, 1) (35, 1) (45, 0);
 	TERM far := (40, 0) (50, 1) (200, 1);
@@ -400,45 +400,45 @@ RULEBLOCK PINKYactions
 	RULE 8 : IF PINKYedible IS true THEN Scatter IS impossible;
 	
 	// SI SOMOS EDIBLE Y ESTAMOS A RANGO DE MSPACMAN
-	RULE 9: IF PINKYedible IS true AND (PINKYtoMS IS near OR PINKYtoMS IS medium) AND PINKYtoEDIBLE IS near THEN RunAwayScattering IS sure
-	RULE 10: IF PINKYedible IS true AND (PINKYtoMS IS near OR PINKYtoMS IS medium) AND PINKYtoEDIBLE IS medium THEN RunAwayScattering IS possible
-	RULE 11: IF PINKYedible IS true AND PINKYtoEDIBLE IS far THEN RunAwayScattering IS impossible
+	RULE 9: IF PINKYedible IS true AND (PINKYtoMS IS near OR PINKYtoMS IS medium) AND PINKYtoEDIBLE IS near THEN RunAwayScattering IS sure;
+	RULE 10: IF PINKYedible IS true AND (PINKYtoMS IS near OR PINKYtoMS IS medium) AND PINKYtoEDIBLE IS medium THEN RunAwayScattering IS possible;
+	RULE 11: IF PINKYedible IS true AND PINKYtoEDIBLE IS far THEN RunAwayScattering IS impossible;
 	
-	RULE 12: IF PINKYedible IS true AND (PINKYtoMS IS near OR PINKYtoMS IS medium) AND PINKYtoCHASING IS near THEN RunAwayToChasing IS sure
-	RULE 13: IF PINKYedible IS true AND (PINKYtoMS IS near OR PINKYtoMS IS medium) AND PINKYtoCHASING IS medium THEN RunAwayToChasing IS possible
-	RULE 14: IF PINKYedible IS true AND PINKYtoCHASING IS far THEN RunAwayScattering IS impossible
+	RULE 12: IF PINKYedible IS true AND (PINKYtoMS IS near OR PINKYtoMS IS medium) AND PINKYtoCHASING IS near THEN RunAwayToChasing IS sure;
+	RULE 13: IF PINKYedible IS true AND (PINKYtoMS IS near OR PINKYtoMS IS medium) AND PINKYtoCHASING IS medium THEN RunAwayToChasing IS possible;
+	RULE 14: IF PINKYedible IS true AND PINKYtoCHASING IS far THEN RunAwayScattering IS impossible;
 	
-	RULE 15: IF PINKYedible IS true AND (PINKYtoCHASING IS far AND PINKYtoEDIBLE IS far) THEN RunAwayFromMs IS sure
-	RULE 16: IF PINKYedible IS true AND (PINKYtoCHASING IS medium OR PINKYtoEDIBLE IS medium) THEN RunAwayFromMs IS possible
-	RULE 17: IF PINKYedible IS true AND (PINKYtoCHASING IS near OR PINKYtoEDIBLE IS near) THEN RunAwayFromMs IS sure
+	RULE 15: IF PINKYedible IS true AND (PINKYtoCHASING IS far AND PINKYtoEDIBLE IS far) THEN RunAwayFromMs IS sure;
+	RULE 16: IF PINKYedible IS true AND (PINKYtoCHASING IS medium OR PINKYtoEDIBLE IS medium) THEN RunAwayFromMs IS possible;
+	RULE 17: IF PINKYedible IS true AND (PINKYtoCHASING IS near OR PINKYtoEDIBLE IS near) THEN RunAwayFromMs IS sure;
 
-	RULE 18: IF PINKYedible IS true AND PINKYtoMS IS far AND (PINKYtoEDIBLE IS far OR PINKYtoEDIBLE IS medium) THEN MaintainDistance IS sure
-	RULE 19: IF PINKYedible IS true AND PINKYtoMS IS far AND PINKYtoEDIBLE IS near THEN Scatter IS sure
+	RULE 18: IF PINKYedible IS true AND PINKYtoMS IS far AND (PINKYtoEDIBLE IS far OR PINKYtoEDIBLE IS medium) THEN MaintainDistance IS sure;
+	RULE 19: IF PINKYedible IS true AND PINKYtoMS IS far AND PINKYtoEDIBLE IS near THEN Scatter IS sure;
 	
 	
 	// CUANDO NO SABEMOS DONDE ESTA PACMAN (CONFIDENCE BAJO)
 	// SCATTER
-	RULE 20: IF PINKYedible IS false AND MSconfidence IS low AND PINKYtoCHASING IS near THEN Scatter IS sure
-	RULE 21: IF PINKYedible IS false AND MSconfidence IS low AND PINKYtoCHASING IS medium THEN Scatter IS possible
-	RULE 20: IF PINKYedible IS false AND MSconfidence IS low AND PINKYtoCHASING IS far THEN Scatter IS impossible
+	RULE 20: IF PINKYedible IS false AND MSconfidence IS low AND PINKYtoCHASING IS near THEN Scatter IS sure;
+	RULE 21: IF PINKYedible IS false AND MSconfidence IS low AND PINKYtoCHASING IS medium THEN Scatter IS possible;
+	RULE 20: IF PINKYedible IS false AND MSconfidence IS low AND PINKYtoCHASING IS far THEN Scatter IS impossible;
 	
-	RULE 22: IF PINKYedible IS false AND MSconfidence IS low AND (PINKYtoCHASING IS far OR PINKYtoCHASING IS medium) THEN LookForMsPacman IS sure
-	RULE 23: IF PINKYedible IS false AND MSconfidence IS medium THEN LookForMsPacman IS possible
-	RULE 24: IF PINKYedible IS false AND MSconfidence IS high THEN LookForMsPacman IS impossible
+	RULE 22: IF PINKYedible IS false AND MSconfidence IS low AND (PINKYtoCHASING IS far OR PINKYtoCHASING IS medium) THEN LookForMsPacman IS sure;
+	RULE 23: IF PINKYedible IS false AND MSconfidence IS medium THEN LookForMsPacman IS possible;
+	RULE 24: IF PINKYedible IS false AND MSconfidence IS high THEN LookForMsPacman IS impossible;
 	
 	// PERSEGUIR DIRECTAMENTE
-	RULE 23: IF PINKYedible IS false AND MSconfidence IS high AND PINKYtoMS IS supernear THEN ChaseMsPacman IS sure
-	RULE 24: IF PINKYedible IS false AND (MSconfidence IS medium AND PINKYtoMS IS supernear) OR (MSconfidence IS high AND PINKYtoMS IS near) THEN ChaseMsPacman IS possible
-	RULE 25: IF PINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (PINKYtoMS IS medium OR PINKYtoMS IS far) THEN ChaseMsPacman IS impossible
+	RULE 23: IF PINKYedible IS false AND MSconfidence IS high AND PINKYtoMS IS supernear THEN ChaseMsPacman IS sure;
+	RULE 24: IF PINKYedible IS false AND (MSconfidence IS medium AND PINKYtoMS IS supernear) OR (MSconfidence IS high AND PINKYtoMS IS near) THEN ChaseMsPacman IS possible;
+	RULE 25: IF PINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (PINKYtoMS IS medium OR PINKYtoMS IS far) THEN ChaseMsPacman IS impossible;
 
 	// IR A FIRST JUNCTION
-	RULE 26: IF PINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND PINKYtoFIRSTJUNCTION IS near THEN GoToFirstJunction IS sure
-	RULE 27: IF PINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (PINKYtoFIRSTJUNCTION IS medium OR PINKYtoFIRSTJUNCTION IS far) THEN GoToFirstJunction IS possible
+	RULE 26: IF PINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND PINKYtoFIRSTJUNCTION IS near THEN GoToFirstJunction IS sure;
+	RULE 27: IF PINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (PINKYtoFIRSTJUNCTION IS medium OR PINKYtoFIRSTJUNCTION IS far) THEN GoToFirstJunction IS possible;
 	
 	// SI ESTAMOS LEJOS O MEDIO -> FLANQUEAR. SI ESTAMOS CERCA TAMBIEN ES POSIBLE
-	RULE 28: IF PINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND PINKYtoFIRSTJUNCTION IS far THEN FlankMsPacman IS sure
-	RULE 29: IF PINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND PINKYtoFIRSTJUNCTION IS medium THEN FlankMsPacman IS possible
-	RULE 30: IF PINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND PINKYtoMS IS supernear THEN FlankMsPacman IS possible
+	RULE 28: IF PINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND PINKYtoFIRSTJUNCTION IS far THEN FlankMsPacman IS sure;
+	RULE 29: IF PINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND PINKYtoFIRSTJUNCTION IS medium THEN FlankMsPacman IS possible;
+	RULE 30: IF PINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND PINKYtoMS IS supernear THEN FlankMsPacman IS possible;
 	
 	// REGLAS ADICIONALES SI NO SABEMOS DONDE ESTA MSPACMAN
 	RULE 31: IF MSconfidence IS low THEN RunAwayFromMs IS impossible;
@@ -501,12 +501,12 @@ FUZZIFY MSPACMANtoPPILL
 END_FUZZIFY
 
 FUZZIFY INKYedible
-	TERM true := 1
-	TERM false := 0
+	TERM true := 1;
+	TERM false := 0;
 END_FUZZIFY
 
 FUZZIFY INKYtoMS
-	TERM supernear := (0, 1) (9, 1) (10, 0)
+	TERM supernear := (0, 1) (9, 1) (10, 0);
 	TERM near := (8, 0) (11, 1) (20, 1) (25, 0); 
 	TERM medium := (20, 0) (30, 1) (35, 1) (45, 0);
 	TERM far := (40, 0) (50, 1) (200, 1);
@@ -625,45 +625,45 @@ RULEBLOCK INKYactions
 	RULE 8 : IF INKYedible IS true THEN Scatter IS impossible;
 	
 	// SI SOMOS EDIBLE Y ESTAMOS A RANGO DE MSPACMAN
-	RULE 9: IF INKYedible IS true AND (INKYtoMS IS near OR INKYtoMS IS medium) AND INKYtoEDIBLE IS near THEN RunAwayScattering IS sure
-	RULE 10: IF INKYedible IS true AND (INKYtoMS IS near OR INKYtoMS IS medium) AND INKYtoEDIBLE IS medium THEN RunAwayScattering IS possible
-	RULE 11: IF INKYedible IS true AND INKYtoEDIBLE IS far THEN RunAwayScattering IS impossible
+	RULE 9: IF INKYedible IS true AND (INKYtoMS IS near OR INKYtoMS IS medium) AND INKYtoEDIBLE IS near THEN RunAwayScattering IS sure;
+	RULE 10: IF INKYedible IS true AND (INKYtoMS IS near OR INKYtoMS IS medium) AND INKYtoEDIBLE IS medium THEN RunAwayScattering IS possible;
+	RULE 11: IF INKYedible IS true AND INKYtoEDIBLE IS far THEN RunAwayScattering IS impossible;
 	
-	RULE 12: IF INKYedible IS true AND (INKYtoMS IS near OR INKYtoMS IS medium) AND INKYtoCHASING IS near THEN RunAwayToChasing IS sure
-	RULE 13: IF INKYedible IS true AND (INKYtoMS IS near OR INKYtoMS IS medium) AND INKYtoCHASING IS medium THEN RunAwayToChasing IS possible
-	RULE 14: IF INKYedible IS true AND INKYtoCHASING IS far THEN RunAwayScattering IS impossible
+	RULE 12: IF INKYedible IS true AND (INKYtoMS IS near OR INKYtoMS IS medium) AND INKYtoCHASING IS near THEN RunAwayToChasing IS sure;
+	RULE 13: IF INKYedible IS true AND (INKYtoMS IS near OR INKYtoMS IS medium) AND INKYtoCHASING IS medium THEN RunAwayToChasing IS possible;
+	RULE 14: IF INKYedible IS true AND INKYtoCHASING IS far THEN RunAwayScattering IS impossible;
 	
-	RULE 15: IF INKYedible IS true AND (INKYtoCHASING IS far AND INKYtoEDIBLE IS far) THEN RunAwayFromMs IS sure
-	RULE 16: IF INKYedible IS true AND (INKYtoCHASING IS medium OR INKYtoEDIBLE IS medium) THEN RunAwayFromMs IS possible
-	RULE 17: IF INKYedible IS true AND (INKYtoCHASING IS near OR INKYtoEDIBLE IS near) THEN RunAwayFromMs IS sure
+	RULE 15: IF INKYedible IS true AND (INKYtoCHASING IS far AND INKYtoEDIBLE IS far) THEN RunAwayFromMs IS sure;
+	RULE 16: IF INKYedible IS true AND (INKYtoCHASING IS medium OR INKYtoEDIBLE IS medium) THEN RunAwayFromMs IS possible;
+	RULE 17: IF INKYedible IS true AND (INKYtoCHASING IS near OR INKYtoEDIBLE IS near) THEN RunAwayFromMs IS sure;
 
-	RULE 18: IF INKYedible IS true AND INKYtoMS IS far AND (INKYtoEDIBLE IS far OR INKYtoEDIBLE IS medium) THEN MaintainDistance IS sure
-	RULE 19: IF INKYedible IS true AND INKYtoMS IS far AND INKYtoEDIBLE IS near THEN Scatter IS sure
+	RULE 18: IF INKYedible IS true AND INKYtoMS IS far AND (INKYtoEDIBLE IS far OR INKYtoEDIBLE IS medium) THEN MaintainDistance IS sure;
+	RULE 19: IF INKYedible IS true AND INKYtoMS IS far AND INKYtoEDIBLE IS near THEN Scatter IS sure;
 	
 	
 	// CUANDO NO SABEMOS DONDE ESTA PACMAN (CONFIDENCE BAJO)
 	// SCATTER
-	RULE 20: IF INKYedible IS false AND MSconfidence IS low AND INKYtoCHASING IS near THEN Scatter IS sure
-	RULE 21: IF INKYedible IS false AND MSconfidence IS low AND INKYtoCHASING IS medium THEN Scatter IS possible
-	RULE 20: IF INKYedible IS false AND MSconfidence IS low AND INKYtoCHASING IS far THEN Scatter IS impossible
+	RULE 20: IF INKYedible IS false AND MSconfidence IS low AND INKYtoCHASING IS near THEN Scatter IS sure;
+	RULE 21: IF INKYedible IS false AND MSconfidence IS low AND INKYtoCHASING IS medium THEN Scatter IS possible;
+	RULE 20: IF INKYedible IS false AND MSconfidence IS low AND INKYtoCHASING IS far THEN Scatter IS impossible;
 	
-	RULE 22: IF INKYedible IS false AND MSconfidence IS low AND (INKYtoCHASING IS far OR INKYtoCHASING IS medium) THEN LookForMsPacman IS sure
-	RULE 23: IF INKYedible IS false AND MSconfidence IS medium THEN LookForMsPacman IS possible
-	RULE 24: IF INKYedible IS false AND MSconfidence IS high THEN LookForMsPacman IS impossible
+	RULE 22: IF INKYedible IS false AND MSconfidence IS low AND (INKYtoCHASING IS far OR INKYtoCHASING IS medium) THEN LookForMsPacman IS sure;
+	RULE 23: IF INKYedible IS false AND MSconfidence IS medium THEN LookForMsPacman IS possible;
+	RULE 24: IF INKYedible IS false AND MSconfidence IS high THEN LookForMsPacman IS impossible;
 	
 	// PERSEGUIR DIRECTAMENTE
-	RULE 23: IF INKYedible IS false AND MSconfidence IS high AND INKYtoMS IS supernear THEN ChaseMsPacman IS sure
-	RULE 24: IF INKYedible IS false AND (MSconfidence IS medium AND INKYtoMS IS supernear) OR (MSconfidence IS high AND INKYtoMS IS near) THEN ChaseMsPacman IS possible
-	RULE 25: IF INKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (INKYtoMS IS medium OR INKYtoMS IS far) THEN ChaseMsPacman IS impossible
+	RULE 23: IF INKYedible IS false AND MSconfidence IS high AND INKYtoMS IS supernear THEN ChaseMsPacman IS sure;
+	RULE 24: IF INKYedible IS false AND (MSconfidence IS medium AND INKYtoMS IS supernear) OR (MSconfidence IS high AND INKYtoMS IS near) THEN ChaseMsPacman IS possible;
+	RULE 25: IF INKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (INKYtoMS IS medium OR INKYtoMS IS far) THEN ChaseMsPacman IS impossible;
 
 	// IR A FIRST JUNCTION
-	RULE 26: IF INKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND INKYtoFIRSTJUNCTION IS near THEN GoToFirstJunction IS sure
-	RULE 27: IF INKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (INKYtoFIRSTJUNCTION IS medium OR INKYtoFIRSTJUNCTION IS far) THEN GoToFirstJunction IS possible
+	RULE 26: IF INKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND INKYtoFIRSTJUNCTION IS near THEN GoToFirstJunction IS sure;
+	RULE 27: IF INKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (INKYtoFIRSTJUNCTION IS medium OR INKYtoFIRSTJUNCTION IS far) THEN GoToFirstJunction IS possible;
 	
 	// SI ESTAMOS LEJOS O MEDIO -> FLANQUEAR. SI ESTAMOS CERCA TAMBIEN ES POSIBLE
-	RULE 28: IF INKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND INKYtoFIRSTJUNCTION IS far THEN FlankMsPacman IS sure
-	RULE 29: IF INKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND INKYtoFIRSTJUNCTION IS medium THEN FlankMsPacman IS possible
-	RULE 30: IF INKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND INKYtoMS IS supernear THEN FlankMsPacman IS possible
+	RULE 28: IF INKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND INKYtoFIRSTJUNCTION IS far THEN FlankMsPacman IS sure;
+	RULE 29: IF INKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND INKYtoFIRSTJUNCTION IS medium THEN FlankMsPacman IS possible;
+	RULE 30: IF INKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND INKYtoMS IS supernear THEN FlankMsPacman IS possible;
 	
 	// REGLAS ADICIONALES SI NO SABEMOS DONDE ESTA MSPACMAN
 	RULE 31: IF MSconfidence IS low THEN RunAwayFromMs IS impossible;
@@ -725,12 +725,12 @@ FUZZIFY MSPACMANtoPPILL
 END_FUZZIFY
 
 FUZZIFY SUEedible
-	TERM true := 1
-	TERM false := 0
+	TERM true := 1;
+	TERM false := 0;
 END_FUZZIFY
 
 FUZZIFY SUEtoMS
-	TERM supernear := (0, 1) (9, 1) (10, 0)
+	TERM supernear := (0, 1) (9, 1) (10, 0);
 	TERM near := (8, 0) (11, 1) (20, 1) (25, 0); 
 	TERM medium := (20, 0) (30, 1) (35, 1) (45, 0);
 	TERM far := (40, 0) (50, 1) (200, 1);
@@ -849,45 +849,45 @@ RULEBLOCK SUEactions
 	RULE 8 : IF SUEedible IS true THEN Scatter IS impossible;
 	
 	// SI SOMOS EDIBLE Y ESTAMOS A RANGO DE MSPACMAN
-	RULE 9: IF SUEedible IS true AND (SUEtoMS IS near OR SUEtoMS IS medium) AND SUEtoEDIBLE IS near THEN RunAwayScattering IS sure
-	RULE 10: IF SUEedible IS true AND (SUEtoMS IS near OR SUEtoMS IS medium) AND SUEtoEDIBLE IS medium THEN RunAwayScattering IS possible
-	RULE 11: IF SUEedible IS true AND SUEtoEDIBLE IS far THEN RunAwayScattering IS impossible
+	RULE 9: IF SUEedible IS true AND (SUEtoMS IS near OR SUEtoMS IS medium) AND SUEtoEDIBLE IS near THEN RunAwayScattering IS sure;
+	RULE 10: IF SUEedible IS true AND (SUEtoMS IS near OR SUEtoMS IS medium) AND SUEtoEDIBLE IS medium THEN RunAwayScattering IS possible;
+	RULE 11: IF SUEedible IS true AND SUEtoEDIBLE IS far THEN RunAwayScattering IS impossible;
 	
-	RULE 12: IF SUEedible IS true AND (SUEtoMS IS near OR SUEtoMS IS medium) AND SUEtoCHASING IS near THEN RunAwayToChasing IS sure
-	RULE 13: IF SUEedible IS true AND (SUEtoMS IS near OR SUEtoMS IS medium) AND SUEtoCHASING IS medium THEN RunAwayToChasing IS possible
-	RULE 14: IF SUEedible IS true AND SUEtoCHASING IS far THEN RunAwayScattering IS impossible
+	RULE 12: IF SUEedible IS true AND (SUEtoMS IS near OR SUEtoMS IS medium) AND SUEtoCHASING IS near THEN RunAwayToChasing IS sure;
+	RULE 13: IF SUEedible IS true AND (SUEtoMS IS near OR SUEtoMS IS medium) AND SUEtoCHASING IS medium THEN RunAwayToChasing IS possible;
+	RULE 14: IF SUEedible IS true AND SUEtoCHASING IS far THEN RunAwayScattering IS impossible;
 	
-	RULE 15: IF SUEedible IS true AND (SUEtoCHASING IS far AND SUEtoEDIBLE IS far) THEN RunAwayFromMs IS sure
-	RULE 16: IF SUEedible IS true AND (SUEtoCHASING IS medium OR SUEtoEDIBLE IS medium) THEN RunAwayFromMs IS possible
-	RULE 17: IF SUEedible IS true AND (SUEtoCHASING IS near OR SUEtoEDIBLE IS near) THEN RunAwayFromMs IS sure
+	RULE 15: IF SUEedible IS true AND (SUEtoCHASING IS far AND SUEtoEDIBLE IS far) THEN RunAwayFromMs IS sure;
+	RULE 16: IF SUEedible IS true AND (SUEtoCHASING IS medium OR SUEtoEDIBLE IS medium) THEN RunAwayFromMs IS possible;
+	RULE 17: IF SUEedible IS true AND (SUEtoCHASING IS near OR SUEtoEDIBLE IS near) THEN RunAwayFromMs IS sure;
 
-	RULE 18: IF SUEedible IS true AND SUEtoMS IS far AND (SUEtoEDIBLE IS far OR SUEtoEDIBLE IS medium) THEN MaintainDistance IS sure
-	RULE 19: IF SUEedible IS true AND SUEtoMS IS far AND SUEtoEDIBLE IS near THEN Scatter IS sure
+	RULE 18: IF SUEedible IS true AND SUEtoMS IS far AND (SUEtoEDIBLE IS far OR SUEtoEDIBLE IS medium) THEN MaintainDistance IS sure;
+	RULE 19: IF SUEedible IS true AND SUEtoMS IS far AND SUEtoEDIBLE IS near THEN Scatter IS sure;
 	
 	
 	// CUANDO NO SABEMOS DONDE ESTA PACMAN (CONFIDENCE BAJO)
 	// SCATTER
-	RULE 20: IF SUEedible IS false AND MSconfidence IS low AND SUEtoCHASING IS near THEN Scatter IS sure
-	RULE 21: IF SUEedible IS false AND MSconfidence IS low AND SUEtoCHASING IS medium THEN Scatter IS possible
-	RULE 20: IF SUEedible IS false AND MSconfidence IS low AND SUEtoCHASING IS far THEN Scatter IS impossible
+	RULE 20: IF SUEedible IS false AND MSconfidence IS low AND SUEtoCHASING IS near THEN Scatter IS sure;
+	RULE 21: IF SUEedible IS false AND MSconfidence IS low AND SUEtoCHASING IS medium THEN Scatter IS possible;
+	RULE 20: IF SUEedible IS false AND MSconfidence IS low AND SUEtoCHASING IS far THEN Scatter IS impossible;
 	
-	RULE 22: IF SUEedible IS false AND MSconfidence IS low AND (SUEtoCHASING IS far OR SUEtoCHASING IS medium) THEN LookForMsPacman IS sure
-	RULE 23: IF SUEedible IS false AND MSconfidence IS medium THEN LookForMsPacman IS possible
-	RULE 24: IF SUEedible IS false AND MSconfidence IS high THEN LookForMsPacman IS impossible
+	RULE 22: IF SUEedible IS false AND MSconfidence IS low AND (SUEtoCHASING IS far OR SUEtoCHASING IS medium) THEN LookForMsPacman IS sure;
+	RULE 23: IF SUEedible IS false AND MSconfidence IS medium THEN LookForMsPacman IS possible;
+	RULE 24: IF SUEedible IS false AND MSconfidence IS high THEN LookForMsPacman IS impossible;
 	
 	// PERSEGUIR DIRECTAMENTE
-	RULE 23: IF SUEedible IS false AND MSconfidence IS high AND SUEtoMS IS supernear THEN ChaseMsPacman IS sure
-	RULE 24: IF SUEedible IS false AND (MSconfidence IS medium AND SUEtoMS IS supernear) OR (MSconfidence IS high AND SUEtoMS IS near) THEN ChaseMsPacman IS possible
-	RULE 25: IF SUEedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (SUEtoMS IS medium OR SUEtoMS IS far) THEN ChaseMsPacman IS impossible
+	RULE 23: IF SUEedible IS false AND MSconfidence IS high AND SUEtoMS IS supernear THEN ChaseMsPacman IS sure;
+	RULE 24: IF SUEedible IS false AND (MSconfidence IS medium AND SUEtoMS IS supernear) OR (MSconfidence IS high AND SUEtoMS IS near) THEN ChaseMsPacman IS possible;
+	RULE 25: IF SUEedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (SUEtoMS IS medium OR SUEtoMS IS far) THEN ChaseMsPacman IS impossible;
 
 	// IR A FIRST JUNCTION
-	RULE 26: IF SUEedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND SUEtoFIRSTJUNCTION IS near THEN GoToFirstJunction IS sure
-	RULE 27: IF SUEedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (SUEtoFIRSTJUNCTION IS medium OR SUEtoFIRSTJUNCTION IS far) THEN GoToFirstJunction IS possible
+	RULE 26: IF SUEedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND SUEtoFIRSTJUNCTION IS near THEN GoToFirstJunction IS sure;
+	RULE 27: IF SUEedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND (SUEtoFIRSTJUNCTION IS medium OR SUEtoFIRSTJUNCTION IS far) THEN GoToFirstJunction IS possible;
 	
 	// SI ESTAMOS LEJOS O MEDIO -> FLANQUEAR. SI ESTAMOS CERCA TAMBIEN ES POSIBLE
-	RULE 28: IF SUEedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND SUEtoFIRSTJUNCTION IS far THEN FlankMsPacman IS sure
-	RULE 29: IF SUEedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND SUEtoFIRSTJUNCTION IS medium THEN FlankMsPacman IS possible
-	RULE 30: IF SUEedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND SUEtoMS IS supernear THEN FlankMsPacman IS possible
+	RULE 28: IF SUEedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND SUEtoFIRSTJUNCTION IS far THEN FlankMsPacman IS sure;
+	RULE 29: IF SUEedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND SUEtoFIRSTJUNCTION IS medium THEN FlankMsPacman IS possible;
+	RULE 30: IF SUEedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND SUEtoMS IS supernear THEN FlankMsPacman IS possible;
 	
 	// REGLAS ADICIONALES SI NO SABEMOS DONDE ESTA MSPACMAN
 	RULE 31: IF MSconfidence IS low THEN RunAwayFromMs IS impossible;
