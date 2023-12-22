@@ -18,14 +18,15 @@ public class FlankMsPacman implements Action {
 	
 	@Override
 	public String getActionId() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Flank MsPacman";
 	}
 
 	@Override
 	public MOVE execute(Game game) {
-		// TODO Auto-generated method stub
-		return null;
+		int mspacman = data.getMspacman();
+		if(mspacman == -1) return MOVE.NEUTRAL;
+		
+		return MOVE.NEUTRAL;
 	}
 
 }

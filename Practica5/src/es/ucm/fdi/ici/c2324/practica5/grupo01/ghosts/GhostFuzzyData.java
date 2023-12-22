@@ -4,9 +4,7 @@ import pacman.game.Constants.MOVE;
 
 public class GhostFuzzyData {
 
-	private int mspacman;
-	private MOVE msLastmove;
-	
+	private int mspacman;	
 	
 	public int getMspacman() {
 		return mspacman;
@@ -14,11 +12,4 @@ public class GhostFuzzyData {
 	public void setMspacman(int mspacman) {
 		this.mspacman = mspacman;
 	}
-	public MOVE getMsLastmove() {
-		return msLastmove;
-	}
-	public void setMsLastmove(MOVE msLastmove) {
-		this.msLastmove = msLastmove;
-	}
-	
 }

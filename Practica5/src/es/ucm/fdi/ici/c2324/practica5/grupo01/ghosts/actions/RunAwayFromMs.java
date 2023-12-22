@@ -27,12 +27,14 @@ public class RunAwayFromMs implements Action{
 	@Override
 	public MOVE execute(Game game) {
 		MOVE nextMove = MOVE.NEUTRAL;
-		
+		int mspacman = data.getMspacman();
+		if(mspacman == -1) return MOVE.NEUTRAL;
+
 		if (game.doesGhostRequireAction(ghost))        //if it requires an action
         {
 			nextMove = game.getApproximateNextMoveAwayFromTarget(
-					game.getGhostCurrentNodeIndex(ghost), 
-					game.getPacmanCurrentNodeIndex(), 
+					game.getGhostCurrentNodeIndex(ghost),
+					mspacman,
 					game.getGhostLastMoveMade(ghost), 
 					DM.PATH);
         }

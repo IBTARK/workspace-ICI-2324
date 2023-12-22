@@ -2,6 +2,7 @@ package es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions;
 
 import es.ucm.fdi.ici.Action;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostFuzzyData;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsTools;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
@@ -29,18 +30,7 @@ public class RunAwayToChasing implements Action {
 		if (game.doesGhostRequireAction(ghost))        //if it requires an action
         {
 			GHOST nearestChasing = null;
-			int pos = game.getGhostCurrentNodeIndex(ghost);
-			int dist = Integer.MAX_VALUE;
-			int aux;
-			for(GHOST g: GHOST.values()) {
-				if(game.getGhostLairTime(g) <= 0 && !game.isGhostEdible(g)) {
-					aux = game.getShortestPathDistance(pos, game.getGhostCurrentNodeIndex(g), game.getGhostLastMoveMade(ghost));
-					if(aux < dist) {
-						dist = aux;
-						nearestChasing = g;
-					}
-				}
-			}
+			nearestChasing = GhostsTools.getNearestChasing(game, ghost);
 			if(nearestChasing != null) {
 				nextMove = game.getApproximateNextMoveTowardsTarget(
 						game.getGhostCurrentNodeIndex(ghost), 

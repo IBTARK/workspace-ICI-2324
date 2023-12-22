@@ -43,14 +43,14 @@ public class Ghosts extends GhostController {
 	Map<GHOST, FuzzyEngine> fuzzyEngines;
 	GhostsFuzzyMemory fuzzyMemory;
 	
-	private GhostFuzzyData data;
+	GhostFuzzyData fuzzyData;
 	
 	public Ghosts() {
 		setName("MsPacMan XX");
 
 		fuzzyMemory = new GhostsFuzzyMemory();
 		fuzzyEngines = new EnumMap<GHOST, FuzzyEngine>(GHOST.class);
-		
+		fuzzyData = new GhostFuzzyData();
 		
 		//Action[] actions = {/*new GoToPPillAction(), new RunAwayAction()*/};
 		
@@ -63,15 +63,15 @@ public class Ghosts extends GhostController {
 			
 			Action[] actions = 
 			{
-				new ChaseMsPacman(g, data), 
-				new GoToFirstJunction(g, data),
-				new FlankMsPacman(g, data),
-				new LookForMsPacman(g, data),
-				new MaintainDistance(g, data),
-				new RunAwayFromMs(g, data),
-				new RunAwayScattering(g, data),
-				new RunAwayToChasing(g, data),
-				new Scatter(g, data)
+				new ChaseMsPacman(g, fuzzyData), 
+				new GoToFirstJunction(g, fuzzyData),
+				new FlankMsPacman(g, fuzzyData),
+				new LookForMsPacman(g, fuzzyData),
+				new MaintainDistance(g, fuzzyData),
+				new RunAwayFromMs(g, fuzzyData),
+				new RunAwayScattering(g, fuzzyData),
+				new RunAwayToChasing(g, fuzzyData),
+				new Scatter(g, fuzzyData)
 			};
 			actionSelector = new GhostsActionSelector(actions);
 			
@@ -101,6 +101,10 @@ public class Ghosts extends GhostController {
 		GhostsInput input = new GhostsInput(game);
 		input.parseInput();
 		fuzzyMemory.getInput(input);
+		
+		if(game.getPacmanCurrentNodeIndex()!=-1) {
+			fuzzyData.setMspacman(game.getPacmanCurrentNodeIndex());
+		}
 		
 		HashMap<String, Double> fvars = input.getFuzzyValues();
 		fvars.putAll(fuzzyMemory.getFuzzyValues());

@@ -29,17 +29,19 @@ public class MaintainDistance implements Action {
 		MOVE nextMove = MOVE.NEUTRAL;
 		MOVE escapeMove, chaseMove;
 		MOVE possibleMoves[];
+		int mspacman = data.getMspacman();
+		if(mspacman == -1) return MOVE.NEUTRAL;
 		
 		if (game.doesGhostRequireAction(ghost))        //if it requires an action
         {
 			int gIndex = game.getGhostCurrentNodeIndex(ghost);
-			int msPacman = game.getPacmanCurrentNodeIndex();
+
 			MOVE gLastMove = game.getGhostLastMoveMade(ghost);
 			
 			possibleMoves = game.getPossibleMoves(gIndex, gLastMove);
 			
-			escapeMove = game.getApproximateNextMoveAwayFromTarget(gIndex, msPacman, gLastMove, DM.PATH);
-			chaseMove = game.getApproximateNextMoveTowardsTarget(gIndex, msPacman, gLastMove, DM.PATH);
+			escapeMove = game.getApproximateNextMoveAwayFromTarget(gIndex, mspacman, gLastMove, DM.PATH);
+			chaseMove = game.getApproximateNextMoveTowardsTarget(gIndex, mspacman, gLastMove, DM.PATH);
 			
 			nextMove = chaseMove; // por si no encontramos otro movimiento posible, asignamos el chaseMove por predeterminado
 			for(MOVE m: possibleMoves) {

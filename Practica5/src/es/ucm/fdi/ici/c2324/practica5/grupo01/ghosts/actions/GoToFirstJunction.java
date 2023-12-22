@@ -27,15 +27,16 @@ public class GoToFirstJunction implements Action{
 	@Override
 	public MOVE execute(Game game) {
 		MOVE nextMove = MOVE.NEUTRAL;
+		int mspacman = data.getMspacman();
+		if(mspacman==-1) return MOVE.NEUTRAL;
 		
 		if (game.doesGhostRequireAction(ghost))        //if it requires an action
         {
 			int nextJunction;
 			int gIndex = game.getGhostCurrentNodeIndex(ghost);
-			int msPacman = game.getPacmanCurrentNodeIndex();
 			MOVE gLastMove = game.getGhostLastMoveMade(ghost);
 			
-			nextJunction = GhostsTools.nextJunction(game, msPacman, game.getPacmanLastMoveMade());
+			nextJunction = GhostsTools.nextJunction(game, mspacman, game.getPacmanLastMoveMade());
 			
 			nextMove = game.getApproximateNextMoveTowardsTarget(
 					gIndex, 

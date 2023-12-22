@@ -23,6 +23,8 @@ VAR_INPUT				// Define input variables
 	INKYtoEDIBLE : REAL;
 	SUEtoEDIBLE : REAL;
 
+	// Valores de la fuzzy memory
+	ppills : REAL;
 	MSconfidence: REAL;
 	
 END_VAR
@@ -39,6 +41,11 @@ FUZZIFY MSPACMANtoPPILL
 	TERM near := (0, 1) (20, 0) ; 
 	TERM medium := (15, 0) (25, 1) (35, 1) (45, 0);
 	TERM far := (40, 0) (50, 1) (200, 1);
+END_FUZZIFY
+
+FUZZIFY PPILLS
+	TERM true := 1
+	TERM false := 0
 END_FUZZIFY
 
 FUZZIFY BLINKYedible
@@ -72,7 +79,7 @@ FUZZIFY BLINKYtoEDIBLE
 END_FUZZIFY
 
 FUZZIFY MSconfidence			// Fuzzify input variable 'service': {'poor', 'good' , 'excellent'}
-	TERM low := (0,1)(25,1)(50,0) ; 
+	TERM low := (0,1)(25,1)(40,0) ; 
 	TERM medium := gauss 50 25;
 	TERM high := (50,0)(75,1)(100,1);
 END_FUZZIFY
@@ -153,7 +160,7 @@ RULEBLOCK BLINKYactions
 
 	// ESCAPAR DE PACMAN O NO SI ESTA CERCA DE LA PPILL
 	RULE 1: IF BLINKYedible IS false AND MSPACMANtoPPILL IS far THEN RunAwayFromMs IS impossible;
-	RULE 2: IF BLINKYedible IS false AND MSPACMANtoPPILL IS near AND (BLINKYtoMS IS medium OR BLINKYtoMS IS far) THEN RunAwayFromMs IS sure;
+	RULE 2: IF BLINKYedible IS false AND ppills IS true AND MSPACMANtoPPILL IS near AND (BLINKYtoMS IS medium OR BLINKYtoMS IS far) THEN RunAwayFromMs IS sure;
 	RULE 3: IF BLINKYedible IS false THEN RunAwayScattering IS impossible;
 	
 	// Si estamos cerca tampoco queremos darnos la vuelta, porque cuando se coma la ppill 
@@ -205,6 +212,17 @@ RULEBLOCK BLINKYactions
 	RULE 28: IF BLINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND BLINKYtoFIRSTJUNCTION IS far THEN FlankMsPacman IS sure
 	RULE 29: IF BLINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND BLINKYtoFIRSTJUNCTION IS medium THEN FlankMsPacman IS possible
 	RULE 30: IF BLINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND BLINKYtoMS IS supernear THEN FlankMsPacman IS possible
+	
+	// REGLAS ADICIONALES SI NO SABEMOS DONDE ESTA MSPACMAN
+	RULE 31: IF MSconfidence IS low THEN RunAwayFromMs IS impossible;
+	RULE 32: IF MSconfidence IS low THEN RunAwayScattering IS impossible;
+	RULE 33: IF MSconfidence IS low AND BLINKYedible IS true THEN RunAwayToChasing IS sure;
+	RULE 34: IF MSconfidence IS low AND BLINKYedible IS false THEN RunAwayToChasing IS impossible;
+	
+	// SI SOMOS CHASING NO PODEMOS ESCAPAR (SI NO QUEDAN PPILLS)
+	RULE 35: IF ppills IS false AND BLINKYedible IS false THEN RunAwayFromMs IS impossible;
+	RULE 36: IF BLINKYedible IS false THEN RunAwayToChasing IS impossible;
+	
 	
 END_RULEBLOCK
 
@@ -369,7 +387,7 @@ RULEBLOCK PINKYactions
 
 	// ESCAPAR DE PACMAN O NO SI ESTA CERCA DE LA PPILL
 	RULE 1: IF PINKYedible IS false AND MSPACMANtoPPILL IS far THEN RunAwayFromMs IS impossible;
-	RULE 2: IF PINKYedible IS false AND MSPACMANtoPPILL IS near AND (PINKYtoMS IS medium OR PINKYtoMS IS far) THEN RunAwayFromMs IS sure;
+	RULE 2: IF PINKYedible IS false AND ppills IS true AND MSPACMANtoPPILL IS near AND (PINKYtoMS IS medium OR PINKYtoMS IS far) THEN RunAwayFromMs IS sure;
 	RULE 3: IF PINKYedible IS false THEN RunAwayScattering IS impossible;
 	
 	// Si estamos cerca tampoco queremos darnos la vuelta, porque cuando se coma la ppill 
@@ -421,6 +439,17 @@ RULEBLOCK PINKYactions
 	RULE 28: IF PINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND PINKYtoFIRSTJUNCTION IS far THEN FlankMsPacman IS sure
 	RULE 29: IF PINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND PINKYtoFIRSTJUNCTION IS medium THEN FlankMsPacman IS possible
 	RULE 30: IF PINKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND PINKYtoMS IS supernear THEN FlankMsPacman IS possible
+	
+	// REGLAS ADICIONALES SI NO SABEMOS DONDE ESTA MSPACMAN
+	RULE 31: IF MSconfidence IS low THEN RunAwayFromMs IS impossible;
+	RULE 32: IF MSconfidence IS low THEN RunAwayScattering IS impossible;
+	RULE 33: IF MSconfidence IS low AND PINKYedible IS true THEN RunAwayToChasing IS sure;
+	RULE 34: IF MSconfidence IS low AND PINKYedible IS false THEN RunAwayToChasing IS impossible;
+	
+	// SI SOMOS CHASING NO PODEMOS ESCAPAR
+	RULE 35: IF ppills IS false AND PINKYedible IS false THEN RunAwayFromMs IS impossible;
+	RULE 36: IF PINKYedible IS false THEN RunAwayToChasing IS impossible;
+	
 	
 END_RULEBLOCK
 
@@ -583,7 +612,7 @@ RULEBLOCK INKYactions
 
 	// ESCAPAR DE PACMAN O NO SI ESTA CERCA DE LA PPILL
 	RULE 1: IF INKYedible IS false AND MSPACMANtoPPILL IS far THEN RunAwayFromMs IS impossible;
-	RULE 2: IF INKYedible IS false AND MSPACMANtoPPILL IS near AND (INKYtoMS IS medium OR INKYtoMS IS far) THEN RunAwayFromMs IS sure;
+	RULE 2: IF INKYedible IS false AND ppills IS true AND MSPACMANtoPPILL IS near AND (INKYtoMS IS medium OR INKYtoMS IS far) THEN RunAwayFromMs IS sure;
 	RULE 3: IF INKYedible IS false THEN RunAwayScattering IS impossible;
 	
 	// Si estamos cerca tampoco queremos darnos la vuelta, porque cuando se coma la ppill 
@@ -635,6 +664,17 @@ RULEBLOCK INKYactions
 	RULE 28: IF INKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND INKYtoFIRSTJUNCTION IS far THEN FlankMsPacman IS sure
 	RULE 29: IF INKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND INKYtoFIRSTJUNCTION IS medium THEN FlankMsPacman IS possible
 	RULE 30: IF INKYedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND INKYtoMS IS supernear THEN FlankMsPacman IS possible
+	
+	// REGLAS ADICIONALES SI NO SABEMOS DONDE ESTA MSPACMAN
+	RULE 31: IF MSconfidence IS low THEN RunAwayFromMs IS impossible;
+	RULE 32: IF MSconfidence IS low THEN RunAwayScattering IS impossible;
+	RULE 33: IF MSconfidence IS low AND INKYedible IS true THEN RunAwayToChasing IS sure;
+	RULE 34: IF MSconfidence IS low AND INKYedible IS false THEN RunAwayToChasing IS impossible;
+	
+	// SI SOMOS CHASING NO PODEMOS ESCAPAR
+	RULE 35: IF ppills IS false AND INKYedible IS false THEN RunAwayFromMs IS impossible;
+	RULE 36: IF INKYedible IS false THEN RunAwayToChasing IS impossible;
+	
 	
 END_RULEBLOCK
 
@@ -796,7 +836,7 @@ RULEBLOCK SUEactions
 
 	// ESCAPAR DE PACMAN O NO SI ESTA CERCA DE LA PPILL
 	RULE 1: IF SUEedible IS false AND MSPACMANtoPPILL IS far THEN RunAwayFromMs IS impossible;
-	RULE 2: IF SUEedible IS false AND MSPACMANtoPPILL IS near AND (SUEtoMS IS medium OR SUEtoMS IS far) THEN RunAwayFromMs IS sure;
+	RULE 2: IF SUEedible IS false AND ppills IS true AND MSPACMANtoPPILL IS near AND (SUEtoMS IS medium OR SUEtoMS IS far) THEN RunAwayFromMs IS sure;
 	RULE 3: IF SUEedible IS false THEN RunAwayScattering IS impossible;
 	
 	// Si estamos cerca tampoco queremos darnos la vuelta, porque cuando se coma la ppill 
@@ -848,6 +888,17 @@ RULEBLOCK SUEactions
 	RULE 28: IF SUEedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND SUEtoFIRSTJUNCTION IS far THEN FlankMsPacman IS sure
 	RULE 29: IF SUEedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND SUEtoFIRSTJUNCTION IS medium THEN FlankMsPacman IS possible
 	RULE 30: IF SUEedible IS false AND (MSconfidence IS medium OR MSconfidence IS high) AND SUEtoMS IS supernear THEN FlankMsPacman IS possible
+	
+	// REGLAS ADICIONALES SI NO SABEMOS DONDE ESTA MSPACMAN
+	RULE 31: IF MSconfidence IS low THEN RunAwayFromMs IS impossible;
+	RULE 32: IF MSconfidence IS low THEN RunAwayScattering IS impossible;
+	RULE 33: IF MSconfidence IS low AND SUEedible IS true THEN RunAwayToChasing IS sure;
+	RULE 34: IF MSconfidence IS low AND SUEedible IS false THEN RunAwayToChasing IS impossible;
+	
+	// SI SOMOS CHASING Y NO QUEDAN PPILLS NO PODEMOS ESCAPAR
+	RULE 35: IF ppills IS false AND SUEedible IS false THEN RunAwayFromMs IS impossible;
+	RULE 36: IF SUEedible IS false THEN RunAwayToChasing IS impossible;
+	
 	
 END_RULEBLOCK
 

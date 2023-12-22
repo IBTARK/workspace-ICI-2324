@@ -28,6 +28,8 @@ public class ChaseMsPacman implements Action {
 		MOVE nextMove = MOVE.NEUTRAL;
 		int mspacman = data.getMspacman();
 		
+		if(mspacman == -1) return MOVE.NEUTRAL;
+		
 		if (game.doesGhostRequireAction(ghost))        //if it requires an action
         {
 			nextMove = game.getApproximateNextMoveTowardsTarget(
