@@ -1,6 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions;
 
 import es.ucm.fdi.ici.Action;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.MsPacManFuzzyData;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.MsPacManTools;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
@@ -10,7 +11,12 @@ import pacman.game.Game;
  */
 public class ActEvitarPPill implements Action {
 
-
+	private MsPacManFuzzyData data;
+	
+	public ActEvitarPPill(MsPacManFuzzyData data) {
+		this.data = data;
+	}
+	
 	/**
 	 * Gets the best movement to avoid the closest PPill to MsPacMan. Does it by analyzing every possible movement and 
 	 * choosing the one that maximizes the distance from MsPacMan to her closest PPill
@@ -27,7 +33,7 @@ public class ActEvitarPPill implements Action {
 			return game.getPossibleMoves(pos, lastMove)[0];
 		
 		MOVE nextMove = MOVE.NEUTRAL;
-		int closestPill = MsPacManTools.closestPill(game); //TODO igual que en buscarPills
+		int closestPPill = data.getNearestPPill();
 		int distance = Integer.MAX_VALUE;
 		//Choose the move that makes MsPacMan stay as far as possible from his closest PPill
 		for(MOVE move: game.getPossibleMoves(pos, lastMove)) {
@@ -35,11 +41,11 @@ public class ActEvitarPPill implements Action {
 			//Path from the current position of MsPacMan to MsPacMans next junction
 			int[] p = game.getShortestPath(pos, nextJunc, move);
 			//Check if there isn't a PPill in the path p
-			if(!MsPacManTools.blockedByClosestPPill(game, p)) {
-				//Choose the movement that minimizes the distance to the Pill
-				if(nextMove == null || game.getShortestPathDistance(pos, closestPill, move) < distance) {
+			if(!MsPacManTools.blockedByClosestPPill(game, p, closestPPill)) {
+				//Choose the movement that maximizes the distance to the Pill
+				if(nextMove == MOVE.NEUTRAL || game.getShortestPathDistance(pos, closestPPill, move) > distance) {
 					nextMove = move;
-					distance = game.getShortestPathDistance(pos, closestPill, move);
+					distance = game.getShortestPathDistance(pos, closestPPill, move);
 				}
 			}
 		}

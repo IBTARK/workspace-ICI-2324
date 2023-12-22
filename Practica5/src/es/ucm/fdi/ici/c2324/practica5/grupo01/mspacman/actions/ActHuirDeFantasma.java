@@ -1,6 +1,7 @@
 package es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.actions;
 
 import es.ucm.fdi.ici.Action;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.MsPacManFuzzyData;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman.MsPacManTools;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
@@ -10,6 +11,12 @@ import pacman.game.Game;
  * Action to run away from the chasing ghosts
  */
 public class ActHuirDeFantasma implements Action {
+	
+	private MsPacManFuzzyData data;
+	
+	public ActHuirDeFantasma(MsPacManFuzzyData data) {
+		this.data = data;
+	}
 
 	/**
 	 * Gets the best movement for MsPacMan to run away from the chasing ghosts. Does it by analyzing every possible movement and 
@@ -23,9 +30,8 @@ public class ActHuirDeFantasma implements Action {
 		MOVE lastMove = game.getPacmanLastMoveMade();
 		
 		//Nearest chasing ghost to MsPacMan
-		GHOST nearest = MsPacManTools.getNearestChasing(game, pos, lastMove);
-		int posNearest = game.getGhostCurrentNodeIndex(nearest); // TODO sacar del data (añadirlo al data y al input)
-		MOVE lastMoveNearest = game.getGhostLastMoveMade(nearest);// TODO sacar del data (añadirlo al data y al input)
+		int posNearest = data.getNearestChasing();
+		MOVE lastMoveNearest = data.getNearestChasingLastMove();
 		
 		
 		int maxDist = Integer.MIN_VALUE;

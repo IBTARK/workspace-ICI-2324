@@ -34,6 +34,7 @@ public class ActBuscarPills implements Action {
 		//Get the closest pill to MsPacMan
 		int pill = MsPacManTools.closestPill(game);
 		
+		//If there are not visible pills a random move is made
 		if (pill < 0) {
 			MOVE[] moves = game.getPossibleMoves(pos, lastMove);
 			return moves[new Random(moves.length).nextInt()];

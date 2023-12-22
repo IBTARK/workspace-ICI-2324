@@ -35,21 +35,16 @@ public class MsPacManInput extends FuzzyInput {
 	
 	@Override
 	public void parseInput() {
-		combo = 0.0;
-		nearestPPill = -1;
-		nearestEdibleNextJunction = -1;
 		nearestChasing = -1;
 		nearestEdible = -1;
 		nearestEdibleLastMove = null;
 		nearestChasingLastMove = null;
-		numPills = INVISIBLE;
 		ppillDistance = INVISIBLE;
 		nearestEdibleDist = INVISIBLE;
 		nearestChasingDist = INVISIBLE;
 		nearestChasingDist2 = INVISIBLE;
-		nearestEdibleNextJunctionDist = INVISIBLE;
 		distOfNearestEdibleToHisNextJunction = INVISIBLE;
-		nearestPPillBlocked = 0.0;//Treat as boolean
+		nearestPPillBlocked = -1.0;//Treat as boolean
 		
 		for (GHOST g : GHOST.values()) {
 			int node = game.getGhostCurrentNodeIndex(g);
@@ -83,7 +78,7 @@ public class MsPacManInput extends FuzzyInput {
 		combo = (double) game.getGhostCurrentEdibleScore();
 		
 		int pos = game.getPacmanCurrentNodeIndex();
-		nearestPPill = closestPPill(game);
+		nearestPPill = closestPPill(game); //-1 if there is no PPill visible
 		MOVE lastMove = game.getPacmanLastMoveMade();
 		
 		
@@ -104,8 +99,8 @@ public class MsPacManInput extends FuzzyInput {
 		nearestEdibleNextJunction = nearestEdible < 0 ? null : MsPacManTools.nextJunction(game, nearestEdible, nearestEdibleLastMove);
 		nearestEdibleNextJunctionDist = (double) (nearestEdible < 0 ? INVISIBLE : game.getShortestPathDistance(pos, nearestEdibleNextJunction, lastMove));
 		
-		
-		numPills = (double) game.getNumberOfActivePills();
+		//INVISIBLE if no pills are visible
+		numPills = (game.getNumberOfActivePills() <= 0 ? INVISIBLE : (double) game.getNumberOfActivePills());
 	}
 
 	@Override

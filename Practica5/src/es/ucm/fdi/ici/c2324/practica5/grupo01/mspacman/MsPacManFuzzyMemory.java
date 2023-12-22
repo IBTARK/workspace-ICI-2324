@@ -3,6 +3,8 @@ package es.ucm.fdi.ici.c2324.practica5.grupo01.mspacman;
 import java.util.HashMap;
 
 public class MsPacManFuzzyMemory {
+	private static final Double INVISIBLE = Double.MAX_VALUE;
+	
 	HashMap<String,Double> mem;
 	MsPacManFuzzyData data;
 	double[] confidence = {100,100,100,100};
