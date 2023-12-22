@@ -80,6 +80,6 @@ public class ActHuirVariosFantasmas implements Action {
 	
 	@Override
 	public String getActionId() {
-		return "Huir de varios fantasmas";
+		return "ActHuirVariosFantasmas";
 	}
 }

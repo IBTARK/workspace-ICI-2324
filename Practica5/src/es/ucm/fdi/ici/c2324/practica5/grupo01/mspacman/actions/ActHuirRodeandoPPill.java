@@ -46,6 +46,6 @@ public class ActHuirRodeandoPPill implements Action {
 
 	@Override
 	public String getActionId() {
-		return "Huir rodeando hacia PPill";
+		return "ActHuirRodeandoPPill";
 	}
 }

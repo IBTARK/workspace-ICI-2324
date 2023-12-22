@@ -48,7 +48,7 @@ public class ActKamikazeAPill implements Action {
 
 	@Override
 	public String getActionId() {
-		return "Kamikaze a pill";
+		return "ActKamikazeAPill";
 	}
 
 }

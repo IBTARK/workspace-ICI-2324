@@ -52,6 +52,6 @@ public class ActHuirDeFantasma implements Action {
 
 	@Override
 	public String getActionId() {
-		return "Huir de Fantasma";
+		return "ActHuirDeFantasma";
 	}
 }

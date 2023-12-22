@@ -17,7 +17,8 @@ public class MsPacManInput extends FuzzyInput {
 	private int nearestEdibleNextJunction;
 	private int nearestChasing;
 	private int nearestEdible;
-	private MOVE nearestEdibleLastMove;
+	private boolean wasPillEaten;
+	private boolean wasPPillEaten;
 	private MOVE nearestChasingLastMove;
 	private Double ppillDistance;
 	private Double combo;
@@ -27,7 +28,9 @@ public class MsPacManInput extends FuzzyInput {
 	private Double nearestChasingDist2; //Distance from MsPacMan to the nearest edible ghost to her
 	private Double nearestEdibleDist; //Distance from MsPacMan to the nearest edible ghost to her
 	private Double nearestEdibleNextJunctionDist; //Distance from MsPacMan to the next junction of the nearest edible ghosts to her
-	private Double distOfNearestEdibleToHisNextJunction; //Distance of MsPacMans nearest edible ghost to his next junction
+	private int pos; //MsPacMan current position
+	private MOVE lastMove; //MsPacMan last move made
+	
 	
 	public MsPacManInput(Game game) {
 		super(game);
@@ -37,15 +40,14 @@ public class MsPacManInput extends FuzzyInput {
 	public void parseInput() {
 		nearestChasing = -1;
 		nearestEdible = -1;
-		nearestEdibleLastMove = null;
 		nearestChasingLastMove = null;
 		ppillDistance = INVISIBLE;
 		nearestEdibleDist = INVISIBLE;
 		nearestChasingDist = INVISIBLE;
 		nearestChasingDist2 = INVISIBLE;
-		distOfNearestEdibleToHisNextJunction = INVISIBLE;
 		nearestPPillBlocked = -1.0;//Treat as boolean
 		
+		MOVE nearestEdibleLastMove = null;
 		for (GHOST g : GHOST.values()) {
 			int node = game.getGhostCurrentNodeIndex(g);
 			if (node >= 0) {
@@ -58,8 +60,8 @@ public class MsPacManInput extends FuzzyInput {
 						if (nearestChasingDist == INVISIBLE || dist < nearestChasingDist) {
 							nearestChasing = node;
 							nearestChasingDist2 = nearestChasingDist;
-							nearestChasingDist = dist;
 							nearestChasingLastMove = game.getGhostLastMoveMade(g);
+							nearestChasingDist = dist;
 						}
 						else if (nearestChasingDist == INVISIBLE || dist < nearestChasingDist2)
 							nearestChasingDist2 = dist;
@@ -77,9 +79,9 @@ public class MsPacManInput extends FuzzyInput {
 		
 		combo = (double) game.getGhostCurrentEdibleScore();
 		
-		int pos = game.getPacmanCurrentNodeIndex();
+		pos = game.getPacmanCurrentNodeIndex();
 		nearestPPill = closestPPill(game); //-1 if there is no PPill visible
-		MOVE lastMove = game.getPacmanLastMoveMade();
+		lastMove = game.getPacmanLastMoveMade();
 		
 		
 		boolean ppillAccessible = false;
@@ -88,6 +90,7 @@ public class MsPacManInput extends FuzzyInput {
 			else for (Integer[] path : MsPacManTools.possiblePaths(game, pos, nearestPPill, lastMove))
 					ppillAccessible |= !MsPacManTools.blocked(game, path);
 			
+			ppillDistance = INVISIBLE - 1;
 			if (ppillAccessible) {
 				ppillDistance = (double) game.getShortestPathDistance(pos, nearestPPill, lastMove);
 				nearestPPillBlocked = (double) (MsPacManTools.blocked(game, ArrayUtils.toObject(game.getShortestPath(pos, nearestPPill, lastMove))) ? 1 : 0);
@@ -96,11 +99,14 @@ public class MsPacManInput extends FuzzyInput {
 		
 		
 		//Next junction of the edible ghost, it can be null if there is no edible ghost
-		nearestEdibleNextJunction = nearestEdible < 0 ? null : MsPacManTools.nextJunction(game, nearestEdible, nearestEdibleLastMove);
+		nearestEdibleNextJunction = nearestEdible < 0 ? -1 : MsPacManTools.nextJunction(game, nearestEdible, nearestEdibleLastMove);
 		nearestEdibleNextJunctionDist = (double) (nearestEdible < 0 ? INVISIBLE : game.getShortestPathDistance(pos, nearestEdibleNextJunction, lastMove));
 		
 		//INVISIBLE if no pills are visible
-		numPills = (game.getNumberOfActivePills() <= 0 ? INVISIBLE : (double) game.getNumberOfActivePills());
+		numPills = (double) game.getNumberOfPills();
+		
+		wasPillEaten = game.wasPillEaten();
+		wasPPillEaten = game.wasPowerPillEaten();
 	}
 
 	@Override
@@ -114,8 +120,15 @@ public class MsPacManInput extends FuzzyInput {
 		vars.put("nearestChasingDist", nearestChasingDist);
 		vars.put("nearestChasingDist2", nearestChasingDist2);
 		vars.put("nearestEdibleNextJunctionDist", nearestEdibleNextJunctionDist);
-		vars.put("distOfNearestEdibleToHisNextJunction", distOfNearestEdibleToHisNextJunction);
 		return vars;
+	}
+	
+	public Boolean wasPillEaten(){
+		return wasPillEaten;
+	}
+	
+	public Boolean wasPPillEaten(){
+		return wasPPillEaten;
 	}
 	
 	public Integer getNearestPPill() {
@@ -135,7 +148,19 @@ public class MsPacManInput extends FuzzyInput {
 	}
 	
 	public MOVE getNearestChasingLastMove() {
-		return nearestEdibleLastMove;
+		return nearestChasingLastMove;
+	}
+	
+	public int shortestPathDistance(int orig, int dest, MOVE lastMove) {
+		return game.getShortestPathDistance(orig, dest, lastMove);
+	}
+	
+	public int getMsPacManCurrPos(){
+		return pos;
+	}
+	
+	public MOVE getMsPacManLastMove(){
+		return lastMove;
 	}
 	
 	private int closestPPill(Game game) {

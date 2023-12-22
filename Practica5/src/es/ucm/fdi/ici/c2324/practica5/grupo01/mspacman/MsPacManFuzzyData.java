@@ -11,15 +11,13 @@ public class MsPacManFuzzyData {
 	private MOVE nearestChasingLastMove;
 	private int nearestEdible; //Distance from MsPacMan to the nearest edible ghost to her
 	private int nearestEdibleNextJunction; //Distance from MsPacMan to the next junction of the nearest edible ghosts to her
-	private int numOfPills;
-	private int numOfPPills;
-	private ArrayList<Integer> ppillsPos; 
+	private Double numOfPills = -1.0;
+	private ArrayList<Integer> ppillsPos = new ArrayList<>(); 
 	private Double ppillDistance;
 	private Double nearestChasingDist;
 	private Double nearestChasingDist2;
 	private Double nearestEdibleDist;
 	private Double nearestEdibleNextJunctionDist;
-	private Double distOfNearestEdibleToHisNextJunction;
 	
 	public int getNearestPPill() {
 		return nearestPPill;
@@ -41,12 +39,8 @@ public class MsPacManFuzzyData {
 		return nearestEdibleNextJunction;
 	}
 	
-	public int getNumOfPills() {
+	public Double getNumOfPills() {
 		return numOfPills;
-	}
-	
-	public int getNumOfPPills() {
-		return numOfPPills;
 	}
 	
 	public ArrayList<Integer> getPpillsPos() {
@@ -55,10 +49,6 @@ public class MsPacManFuzzyData {
 
 	public Double getPpillDistance() {
 		return ppillDistance;
-	}
-
-	public Double getDistOfNearestEdibleToHisNextJunction() {
-		return distOfNearestEdibleToHisNextJunction;
 	}
 
 	public Double getNearestChasingDist() {
@@ -97,12 +87,8 @@ public class MsPacManFuzzyData {
 		this.nearestEdibleNextJunction = nearestEdibleNextJunction;
 	}
 	
-	public void setNumOfPills(int numOfPills) {
+	public void setNumOfPills(Double numOfPills) {
 		this.numOfPills = numOfPills;
-	}
-	
-	public void setNumOfPPills(int numOfPPills) {
-		this.numOfPPills = numOfPPills;
 	}
 	
 	public void setPpillsPos(ArrayList<Integer> ppillsPos) {
@@ -127,9 +113,5 @@ public class MsPacManFuzzyData {
 
 	public void setNearestEdibleNextJunctionDist(Double nearestEdibleNextJunctionDist) {
 		this.nearestEdibleNextJunctionDist = nearestEdibleNextJunctionDist;
-	}
-
-	public void setDistOfNearestEdibleToHisNextJunction(Double distOfNearestEdibleToHisNextJunction) {
-		this.distOfNearestEdibleToHisNextJunction = distOfNearestEdibleToHisNextJunction;
 	}
 }

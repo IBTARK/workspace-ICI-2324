@@ -9,7 +9,9 @@ VAR_INPUT				// Define input variables
 	nearestChasingDist : REAL;
 	nearestChasingDist2 : REAL;
 	nearestEdibleNextJunctionDist : REAL;
-	distOfNearestEdibleToHisNextJunction : REAL;
+	nearestEdibleConfidence : REAL;
+	nearestChasingConfidence : REAL;
+	nearestChasing2Confidence : REAL;
 END_VAR
 
 VAR_OUTPUT				// Define output variable
@@ -25,22 +27,28 @@ VAR_OUTPUT				// Define output variable
 	ActPerseguirFantasma : REAL;
 END_VAR
 
+
+// Fuzzify inputs
+
 FUZZIFY ppillDistance	
 	TERM near := (0, 1) (20, 0); 
-	TERM medium := (0, 0) (20, 1) (30, 0) ;
+	TERM medium := (0, 0) (20, 1) (30, 0);
 	TERM far := (20, 0) (60, 1);
 END_FUZZIFY
+
 FUZZIFY combo			
-	TERM few := (0, 1) (800, 0)
-	TERM lot := (200, 0) (800, 1) 
+	TERM low := (0, 1) (800, 0);
+	TERM high := (200, 0) (800, 1) ;
 END_FUZZIFY
+
 FUZZIFY numPills			
 	TERM few := (0, 1) (20, 0) ; 
 	TERM lot := (0,0) (20, 1);
 END_FUZZIFY
+
 FUZZIFY nearestPPillBlocked		
-	TERM true := (0, 1);
 	TERM false := (0, 0);
+	TERM true := (1, 1);
 END_FUZZIFY
 
 FUZZIFY nearestEdibleDist		
@@ -48,117 +56,228 @@ FUZZIFY nearestEdibleDist
 	TERM medium := (0, 0) (30, 1) (40, 0);
 	TERM far := (30, 0) (70, 1);
 END_FUZZIFY
+
 FUZZIFY nearestChasingDist
 	TERM near := (0, 1) (5, 1) (30, 0); 
 	TERM medium := (20, 0) (40, 1) (60, 0);
 	TERM far := (50, 0) (70, 1);
 END_FUZZIFY
+
 FUZZIFY nearestChasingDist2		
 	TERM near :=  (0, 1) (5, 1) (30, 0);
 	TERM medium := (20, 0) (40, 1) (60, 0);
 	TERM far := (50, 0) (70, 1);
 END_FUZZIFY
+
 FUZZIFY nearestEdibleNextJunctionDist			
 	TERM near := (0, 1) (20, 0); 
 	TERM medium := (10, 0) (30, 1);
 	TERM far := (20, 0) (45, 1);
 END_FUZZIFY
-FUZZIFY distOfNearestEdibleToHisNextJunction
-	TERM near := (0, 1) (20, 0); 
-	TERM medium := (10, 0) (30, 1);
-	TERM far := (20, 0) (45, 1);
+
+FUZZIFY nearestEdibleConfidence
+	TERM low := (0, 1) (50, 0); 
+	TERM medium := (0, 0) (50, 1) (100, 0);
+	TERM high := (50, 0) (100, 1);
 END_FUZZIFY
 
+FUZZIFY nearestChasingConfidence
+	TERM low := (0, 1) (50, 0); 
+	TERM medium := (0, 0) (50, 1) (100, 0);
+	TERM high := (50, 0) (100, 1);
+END_FUZZIFY
+
+FUZZIFY nearestChasing2Confidence
+	TERM low := (0, 1) (50, 0); 
+	TERM medium := (0, 0) (50, 1) (100, 0);
+	TERM high := (50, 0) (100, 1);
+END_FUZZIFY
+
+
+// Defuzzify outputs
+
 DEFUZZIFY ActBuscarPills			// Defzzzify output variable 'tip' : {'cheap', 'average', 'generous' }
-	TERM calm := (0,1) (5,1) (15,0);
-	TERM nervious := gauss 15 5;
-	TERM emergency := (15,0) (25,1) (30,1);
+	TERM low := (0,1) (5,1) (15,0);
+	TERM medium := gauss 15 5;
+	TERM high := (15,0) (25,1) (30,1);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
 DEFUZZIFY ActEvitarPPill
-	TERM calm := (0,1) (5,1) (15,0);
-	TERM nervious := gauss 15 5;
-	TERM emergency := (15,0) (25,1) (30,1);
+	TERM low := (0,1) (5,1) (15,0);
+	TERM medium := gauss 15 5;
+	TERM high := (15,0) (25,1) (30,1);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
 DEFUZZIFY ActFlanquearFantasma	
-	TERM calm := (0,1) (5,1) (15,0);
-	TERM nervious := gauss 15 5;
-	TERM emergency := (15,0) (25,1) (30,1);
+	TERM low := (0,1) (5,1) (15,0);
+	TERM medium := gauss 15 5;
+	TERM high := (15,0) (25,1) (30,1);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
 DEFUZZIFY ActHuirDeFantasma	
-	TERM calm := (0,1) (5,1) (15,0);
-	TERM nervious := gauss 15 5;
-	TERM emergency := (15,0) (25,1) (30,1);
+	TERM low := (0,1) (5,1) (15,0);
+	TERM medium := gauss 15 5;
+	TERM high := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY ActHuirVariosFantasmas	
+	TERM low := (0,1) (5,1) (15,0);
+	TERM medium := gauss 15 5;
+	TERM high := (15,0) (25,1) (30,1);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
 DEFUZZIFY ActHuirHaciaPPill	
-	TERM calm := (0,1) (5,1) (15,0);
-	TERM nervious := gauss 15 5;
-	TERM emergency := (15,0) (25,1) (30,1);
+	TERM low := (0,1) (5,1) (15,0);
+	TERM medium := gauss 15 5;
+	TERM high := (15,0) (25,1) (30,1);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
 DEFUZZIFY ActHuirRodeandoPPill	
-	TERM calm := (0,1) (5,1) (15,0);
-	TERM nervious := gauss 15 5;
-	TERM emergency := (15,0) (25,1) (30,1);
-	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
-	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
-END_DEFUZZIFY
-
-DEFUZZIFY ActKamikazeAPill
-	TERM calm := (0,1) (5,1) (15,0);
-	TERM nervious := gauss 15 5;
-	TERM emergency := (15,0) (25,1) (30,1);
-	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
-	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
-END_DEFUZZIFY
-
-DEFUZZIFY ActKamikazeFantasma
-	TERM calm := (0,1) (5,1) (15,0);
-	TERM nervious := gauss 15 5;
-	TERM emergency := (15,0) (25,1) (30,1);
+	TERM low := (0,1) (5,1) (15,0);
+	TERM medium := gauss 15 5;
+	TERM high := (15,0) (25,1) (30,1);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
 DEFUZZIFY ActPerseguirFantasma
-	TERM calm := (0,1) (5,1) (15,0);
-	TERM nervious := gauss 15 5;
+	TERM low := (0,1) (5,1) (15,0);
+	TERM medium := gauss 15 5;
+	TERM high := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY ActKamikazeAPill
+	TERM low := (0,1) (5,1) (15,0);
+	TERM high := (15,0) (25,1) (30,1);
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+DEFUZZIFY ActKamikazeFantasma
+	TERM low := (0,1) (5,1) (15,0);
+	TERM high := gauss 15 5;
 	TERM emergency := (15,0) (25,1) (30,1);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
 
+// Rules
+
 RULEBLOCK MsPacManRules
 	AND : MIN;			// Use 'min' for 'and' (also implicit use 'max' for 'or' to fulfill DeMorgan's Law)
+	OR : MAX;
 	ACT : MIN;			// Use 'min' activation method
 	ACCU : MAX;			// Use 'MAX' accumulation method (Other options PROBOR and SUM)
 
-	RULE 1 : IF BLINKYdistance IS near AND BLINKYconfidence IS high THEN Runaway IS emergency;
-	RULE 2 : IF PINKYdistance IS near AND PINKYconfidence IS high THEN Runaway IS emergency;
-	RULE 3 : IF INKYdistance IS near AND INKYconfidence IS high THEN Runaway IS emergency;
-	RULE 4 : IF SUEdistance IS near AND SUEconfidence IS high THEN Runaway IS emergency;
-	RULE 5 : IF BLINKYconfidence IS medium THEN GoToPPill IS nervious;
-	RULE 6 : IF PINKYconfidence IS medium THEN GoToPPill IS nervious;
-	RULE 7 : IF INKYconfidence IS medium THEN GoToPPill IS nervious;
-	RULE 8 : IF SUEconfidence IS medium THEN GoToPPill IS nervious;
-	RULE 9 : IF BLINKYdistance IS far THEN Runaway IS calm;
-	RULE 10 : IF PINKYdistance IS far THEN Runaway IS calm;
-	RULE 11 : IF INKYdistance IS far THEN Runaway IS calm;
-	RULE 12 : IF SUEdistance IS far THEN Runaway IS calm;
+	// ActKamikazeAPill
+	RULE 1 : IF numPills IS few 
+			THEN ActKamikazeAPill IS high;
+	RULE 2 : IF numPills IS lot 
+			THEN ActKamikazeAPill IS low;
+			
+	// ActKamikazeFantasma
+	RULE 3 : IF combo IS low 
+			THEN ActKamikazeFantasma IS low;
+	RULE 4 : IF combo IS high 
+			THEN ActKamikazeFantasma IS high;
+			
+	// ActPerseguirFantasma
+	RULE 5 : IF nearestEdibleDist IS far
+				OR nearestEdibleConfidence IS low
+			THEN ActPerseguirFantasma IS low;
+	RULE 6 : IF (nearestEdibleDist IS near AND nearestEdibleConfidence IS medium) 
+				OR (nearestEdibleDist IS medium AND nearestEdibleConfidence IS high) 
+			THEN ActPerseguirFantasma IS medium;
+	RULE 7 : IF nearestEdibleDist IS near AND nearestEdibleConfidence IS high 
+			THEN ActPerseguirFantasma IS high;
+			
+	// ActHuirRodeandoPPill
+	RULE 8 : IF nearestPPillBlocked IS false
+				OR ppillDistance IS far
+				OR nearestChasingDist IS far
+				OR nearestChasingConfidence IS low
+			THEN ActHuirRodeandoPPill IS low;
+	RULE 9 : IF nearestPPillBlocked IS true AND ppillDistance IS medium AND nearestChasingDist2 IS NOT far
+			THEN ActHuirRodeandoPPill IS medium;
+	RULE 10: IF nearestPPillBlocked IS true AND ppillDistance IS near AND nearestChasingDist IS near AND nearestChasingDist2 IS NOT far
+			THEN ActHuirRodeandoPPill IS high;
+			
+	// ActHuirHaciaPPill
+	RULE 11: IF nearestPPillBlocked IS true
+			 	OR ppillDistance IS far
+				OR nearestChasingDist IS far
+				OR nearestChasingConfidence IS low
+			THEN ActHuirHaciaPPill IS low;
+	RULE 12: IF nearestPPillBlocked IS false AND ppillDistance IS medium AND nearestChasingDist IS NOT far AND nearestChasingConfidence IS high
+			THEN ActHuirHaciaPPill IS medium;
+	RULE 13: IF nearestPPillBlocked IS false AND ppillDistance IS near AND nearestChasingDist IS near AND nearestChasingDist2 IS NOT far AND nearestChasing2Confidence IS NOT low
+			THEN ActHuirHaciaPPill IS high;
+			
+	// ActHuirVariosFantasmas
+	RULE 14: IF nearestChasingDist2 IS far
+				OR nearestChasing2Confidence IS low
+			THEN ActHuirVariosFantasmas IS low;
+	RULE 15: IF nearestChasingDist2 IS NOT far AND nearestChasingDist IS NOT near
+				AND nearestChasing2Confidence IS NOT low
+			THEN ActHuirVariosFantasmas IS medium;
+	RULE 16: IF nearestChasingDist2 IS NOT far AND nearestChasingDist IS near
+				AND nearestChasing2Confidence IS high
+			THEN ActHuirVariosFantasmas IS high;
+			
+	// ActHuirDeFantasma
+	RULE 17: IF nearestChasingDist IS far
+				OR nearestChasingConfidence IS low
+				OR nearestChasingDist2 IS NOT far
+			THEN ActHuirDeFantasma IS low;
+	RULE 18: IF nearestChasingDist IS medium AND nearestChasingConfidence IS NOT low
+			THEN ActHuirDeFantasma IS medium;
+	RULE 19: IF nearestChasingDist IS near AND nearestChasingConfidence IS high
+				AND ppillDistance IS NOT near
+			THEN ActHuirDeFantasma IS high;
+			
+	// ActFlanquearFantasma
+	RULE 20: IF nearestEdibleNextJunctionDist IS far
+				OR nearestEdibleConfidence IS low
+			THEN ActFlanquearFantasma IS low;
+	RULE 21: IF (nearestEdibleNextJunctionDist IS near AND nearestEdibleConfidence IS medium) 
+				OR (nearestEdibleNextJunctionDist IS medium AND nearestEdibleConfidence IS high) 
+			THEN ActFlanquearFantasma IS medium;
+	RULE 22: IF nearestEdibleNextJunctionDist IS near AND nearestEdibleConfidence IS high 
+			THEN ActFlanquearFantasma IS high;
+			
+	// ActEvitarPPill
+	RULE 23: IF nearestChasingDist IS NOT far AND ppillDistance IS far
+			THEN ActEvitarPPill IS low;
+	RULE 24: IF ppillDistance IS medium AND (nearestChasingDist IS far OR nearestChasingConfidence IS low)
+			THEN ActEvitarPPill IS medium;
+	RULE 25: IF (nearestChasingDist IS far OR nearestChasingConfidence IS low) AND ppillDistance IS near
+			THEN ActEvitarPPill IS high;
+	
+	// ActBuscarPills
+	RULE 26: IF nearestChasingDist IS NOT far
+				OR ppillDistance is near
+			THEN ActBuscarPills IS low;
+	RULE 27: IF nearestChasingConfidence IS NOT high
+			THEN ActBuscarPills IS medium;
+	RULE 28: IF (nearestChasingDist IS far OR nearestChasingConfidence IS low)
+			THEN ActBuscarPills IS high;
+			
+	
 END_RULEBLOCK
 
 END_FUNCTION_BLOCK

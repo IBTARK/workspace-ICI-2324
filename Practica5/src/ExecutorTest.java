@@ -22,7 +22,7 @@ public class ExecutorTest {
                 .setScaleFactor(2.5)
                 .build();
 
-        PacmanController pacMan = new MsPacManAlgorithmic();
+        PacmanController pacMan = new MsPacMan();
         GhostController ghosts = new GhostsRandom();
         
         System.out.println( 

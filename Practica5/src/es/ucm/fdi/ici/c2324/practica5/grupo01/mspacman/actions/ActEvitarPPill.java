@@ -55,7 +55,7 @@ public class ActEvitarPPill implements Action {
 	
 	@Override
 	public String getActionId() {
-		return "Evitar Power Pill";
+		return "ActEvitarPPill";
 	}
 	
 }

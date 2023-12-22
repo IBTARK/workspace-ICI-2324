@@ -44,7 +44,7 @@ public class ActBuscarPills implements Action {
 
 	@Override
 	public String getActionId() {
-		return "Buscar Pills";
+		return "ActBuscarPills";
 	}
 
 }

@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="lib/ici-c2223-practica2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Practica0"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Practica1"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Practica5"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -44,6 +44,6 @@ public class ActHuirHaciaPPill implements Action{
 
 	@Override
 	public String getActionId() {
-		return "Huir Hacia Power Pill";
+		return "ActHuirHaciaPPill";
 	}
 }

@@ -40,7 +40,7 @@ public class ActKamikazeFantasma implements Action {
 	
 	@Override
 	public String getActionId() {
-		return "Kamikaze a fantasma";
+		return "ActKamikazeFantasma";
 	}
 	
 }
