@@ -10,8 +10,15 @@ import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostFuzzyData;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsActionSelector;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsFuzzyMemory;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsInput;
-import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.ChaseMspacman;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.ChaseMsPacman;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.FlankMsPacman;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.GoToFirstJunction;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.LookForMsPacman;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.MaintainDistance;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.RunAwayFromMs;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.RunAwayScattering;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.RunAwayToChasing;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.Scatter;
 import es.ucm.fdi.ici.fuzzy.ActionSelector;
 import es.ucm.fdi.ici.fuzzy.FuzzyEngine;
 import es.ucm.fdi.ici.fuzzy.observers.ConsoleFuzzyEngineObserver;
@@ -54,7 +61,18 @@ public class Ghosts extends GhostController {
 		ActionSelector actionSelector;
 		for(GHOST g: GHOST.values()) {
 			
-			Action[] actions = {new ChaseMspacman(g, data), new GoToFirstJunction(g)};
+			Action[] actions = 
+			{
+				new ChaseMsPacman(g, data), 
+				new GoToFirstJunction(g, data),
+				new FlankMsPacman(g, data),
+				new LookForMsPacman(g, data),
+				new MaintainDistance(g, data),
+				new RunAwayFromMs(g, data),
+				new RunAwayScattering(g, data),
+				new RunAwayToChasing(g, data),
+				new Scatter(g, data)
+			};
 			actionSelector = new GhostsActionSelector(actions);
 			
 			ghostFuzzyEngine = new FuzzyEngine(g.toString(),
@@ -64,7 +82,7 @@ public class Ghosts extends GhostController {
 			
 			// Añadimos un observer a blinky.
 			if(g == GHOST.BLINKY) {
-				ConsoleFuzzyEngineObserver observer = new ConsoleFuzzyEngineObserver("MsPacMan","MsPacManRules");
+				ConsoleFuzzyEngineObserver observer = new ConsoleFuzzyEngineObserver("BLINKY","BLINKYrules");
 				ghostFuzzyEngine.addObserver(observer);
 			}
 			

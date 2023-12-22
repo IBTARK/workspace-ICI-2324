@@ -7,12 +7,12 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-public class ChaseMspacman implements Action {
+public class ChaseMsPacman implements Action {
 
 	private GHOST ghost;
 	private GhostFuzzyData data;
 	
-	public ChaseMspacman(GHOST g, GhostFuzzyData data) {
+	public ChaseMsPacman(GHOST g, GhostFuzzyData data) {
 		this.ghost = g;
 		this.data = data;
 	}
