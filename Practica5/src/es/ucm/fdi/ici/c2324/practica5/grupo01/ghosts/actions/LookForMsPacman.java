@@ -4,6 +4,7 @@ import java.util.Random;
 
 import es.ucm.fdi.ici.Action;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostFuzzyData;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.GhostsTools;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
@@ -33,9 +34,20 @@ public class LookForMsPacman implements Action {
 		
 		if (game.doesGhostRequireAction(ghost))        //if it requires an action
         {
+			int gIndex = game.getGhostCurrentNodeIndex(ghost);
+			MOVE gLastMove = game.getGhostLastMoveMade(ghost);
+			
 			MOVE possibleMoves[] = game.getPossibleMoves(game.getGhostCurrentNodeIndex(ghost), game.getGhostLastMoveMade(ghost));
-			Random rnd = new Random();
-			nextMove = possibleMoves[rnd.nextInt(possibleMoves.length)];			
+			Random rnd = new Random(game.getTotalTime());
+			nextMove = possibleMoves[rnd.nextInt(possibleMoves.length)];
+					
+			GHOST nearestChasing = GhostsTools.getNearestChasing(game, ghost, 50);;
+			if(nearestChasing != null) {
+				MOVE nearestChasingMove = game.getApproximateNextMoveTowardsTarget(gIndex, game.getGhostCurrentNodeIndex(nearestChasing), gLastMove, DM.PATH);
+				if(nextMove == nearestChasingMove)
+					nextMove = game.getApproximateNextMoveAwayFromTarget(gIndex, game.getGhostCurrentNodeIndex(nearestChasing), gLastMove, DM.PATH);
+			}
+			
         }
             
         return nextMove;	

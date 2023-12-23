@@ -75,6 +75,7 @@ FUZZIFY BLINKYtoFIRSTJUNCTION
 END_FUZZIFY
 
 FUZZIFY BLINKYtoCHASING
+	TERM supernear := (0, 1) (5, 1) (8, 0);
 	TERM near := (0, 1) (15, 1) (25, 0); 
 	TERM medium := (15, 0) (30, 1) (35, 1) (45, 0);
 	TERM far := (40, 0) (50, 1) (200, 1);
@@ -250,6 +251,7 @@ RULEBLOCK BLINKYactions
 	RULE 38: IF MSconfidence IS low THEN FlankMsPacman IS impossible;
 	RULE 39: IF MSconfidence IS low AND BLINKYtoCHASING IS near THEN LookForMsPacman IS impossible;
 
+	RULE 40: IF BLINKYedible IS false AND BLINKYtoCHASING IS supernear THEN Scatter IS sure;
 	
 END_RULEBLOCK
 
@@ -335,6 +337,7 @@ FUZZIFY PINKYtoFIRSTJUNCTION
 END_FUZZIFY
 
 FUZZIFY PINKYtoCHASING
+	TERM supernear := (0, 1) (5, 1) (8, 0);
 	TERM near := (0, 1) (15, 1) (25, 0); 
 	TERM medium := (15, 0) (30, 1) (35, 1) (45, 0);
 	TERM far := (40, 0) (50, 1) (200, 1);
@@ -511,6 +514,7 @@ RULEBLOCK PINKYactions
 	RULE 38: IF MSconfidence IS low THEN FlankMsPacman IS impossible;
 	RULE 39: IF MSconfidence IS low AND PINKYtoCHASING IS near THEN LookForMsPacman IS impossible;
 	
+	RULE 40: IF PINKYedible IS false AND PINKYtoCHASING IS supernear THEN Scatter IS sure;
 	
 	
 END_RULEBLOCK
@@ -595,6 +599,7 @@ FUZZIFY INKYtoFIRSTJUNCTION
 END_FUZZIFY
 
 FUZZIFY INKYtoCHASING
+	TERM supernear := (0, 1) (5, 1) (8, 0);
 	TERM near := (0, 1) (15, 1) (25, 0); 
 	TERM medium := (15, 0) (30, 1) (35, 1) (45, 0);
 	TERM far := (40, 0) (50, 1) (200, 1);
@@ -770,6 +775,7 @@ RULEBLOCK INKYactions
 	RULE 38: IF MSconfidence IS low THEN FlankMsPacman IS impossible;
 	RULE 39: IF MSconfidence IS low AND INKYtoCHASING IS near THEN LookForMsPacman IS impossible;
 
+	RULE 40: IF INKYedible IS false AND INKYtoCHASING IS supernear THEN Scatter IS sure;
 	
 	
 END_RULEBLOCK
@@ -853,6 +859,7 @@ FUZZIFY SUEtoFIRSTJUNCTION
 END_FUZZIFY
 
 FUZZIFY SUEtoCHASING
+	TERM supernear := (0, 1) (5, 1) (8, 0);
 	TERM near := (0, 1) (15, 1) (25, 0); 
 	TERM medium := (15, 0) (30, 1) (35, 1) (45, 0);
 	TERM far := (40, 0) (50, 1) (200, 1);
@@ -1029,6 +1036,7 @@ RULEBLOCK SUEactions
 	RULE 38: IF MSconfidence IS low THEN FlankMsPacman IS impossible;
 	RULE 39: IF MSconfidence IS low AND SUEtoCHASING IS near THEN LookForMsPacman IS impossible;
 
+	RULE 40: IF SUEedible IS false AND SUEtoCHASING IS supernear THEN Scatter IS sure;
 	
 END_RULEBLOCK
 
