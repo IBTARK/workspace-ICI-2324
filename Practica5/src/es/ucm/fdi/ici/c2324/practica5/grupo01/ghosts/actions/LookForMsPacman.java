@@ -41,12 +41,14 @@ public class LookForMsPacman implements Action {
 			Random rnd = new Random(game.getTotalTime());
 			nextMove = possibleMoves[rnd.nextInt(possibleMoves.length)];
 					
-			GHOST nearestChasing = GhostsTools.getNearestChasing(game, ghost, 50);;
+			/*
+			GHOST nearestChasing = GhostsTools.getNearestChasing(game, ghost);;
 			if(nearestChasing != null) {
 				MOVE nearestChasingMove = game.getApproximateNextMoveTowardsTarget(gIndex, game.getGhostCurrentNodeIndex(nearestChasing), gLastMove, DM.PATH);
 				if(nextMove == nearestChasingMove)
 					nextMove = game.getApproximateNextMoveAwayFromTarget(gIndex, game.getGhostCurrentNodeIndex(nearestChasing), gLastMove, DM.PATH);
 			}
+			*/
 			
         }
             

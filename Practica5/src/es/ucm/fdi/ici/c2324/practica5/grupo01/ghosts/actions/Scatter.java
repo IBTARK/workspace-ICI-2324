@@ -37,7 +37,7 @@ public class Scatter implements Action {
 			GHOST nearestChasing = GhostsTools.getNearestChasing(game, ghost);
 			
 			if(nearestChasing != null)
-				nextMove = game.getApproximateNextMoveTowardsTarget(
+				nextMove = game.getApproximateNextMoveAwayFromTarget(
 					gIndex, 
 					game.getGhostCurrentNodeIndex(nearestChasing), 
 					gLastMove, 
