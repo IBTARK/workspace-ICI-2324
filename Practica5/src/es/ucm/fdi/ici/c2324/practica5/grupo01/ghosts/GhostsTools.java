@@ -264,37 +264,74 @@ public class GhostsTools {
 		return bestMove;
 	}
 
+	/**
+	 * Devuelve para el ghost dado, su movimiento "optimo" (no es optimo en esta version, es minimo) contando con los posibles movimientos de los otros fantasmas.
+	 * @param game
+	 * @param ghost
+	 * @param mspacman
+	 * @param msLastMove
+	 * @return
+	 */
 	public static MOVE getOptimalFlankingMove(Game game, GHOST ghost, int mspacman, MOVE msLastMove) {
-		MOVE returnMove = MOVE.NEUTRAL;
+		MOVE returnMove = MOVE.NEUTRAL;		
+		int junctionObjective = -1;
 		
-		int g = game.getGhostCurrentNodeIndex(ghost);
-		MOVE gLastMove = game.getGhostLastMoveMade(ghost);
 		HashMap<Integer, Integer[]> level3JunctionsMap = new HashMap<Integer, Integer[]>();
 		Integer level2Junctions[] = GhostsTools.nextJunctions(game, mspacman, msLastMove, level3JunctionsMap);
 		
-		int nearestJunction=-1, curLvl2Junction, nearestJunctionDistance = Integer.MAX_VALUE, curJunctionDistance;
-		int curJunctionPath[];
-		int nextJunction = level2Junctions[0];
-		for(int i = 1; i < level2Junctions.length; i++) {
-			curLvl2Junction = level2Junctions[i];
-			curJunctionPath = game.getShortestPath(g, curLvl2Junction, gLastMove);
-			curJunctionDistance = curJunctionPath.length;
-			if(nearestJunctionDistance > curJunctionDistance) {
-				if(curJunctionDistance == 0) 
-					nearestJunction = nextJunction;
-				else 
-					nearestJunction = curLvl2Junction;
-				nearestJunctionDistance = curJunctionDistance;
+		ArrayList<GHOST> assignedGhosts = new ArrayList<GHOST>();
+		// Primero asignamos a cada junction de nivel 2 su fantasma mas cercano
+		for(int i = 1; i < level2Junctions.length && (junctionObjective==-1); ++i) {
+			int curJunction = level2Junctions[i];
+			int curJunctionDistance, minJunctionDistance = Integer.MAX_VALUE;
+			GHOST nearestGhost = null;
+			for(GHOST g : GHOST.values()) {
+				if(game.getGhostLairTime(g)<= 0
+					&& !game.isGhostEdible(g)
+					&& !assignedGhosts.contains(g)) {
+					
+					curJunctionDistance = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(g), curJunction, game.getGhostLastMoveMade(g));
+					if(curJunctionDistance < minJunctionDistance) {
+						minJunctionDistance = curJunctionDistance;
+						nearestGhost = g;
+					}
+				}				
 			}
-			// Integer level3Junctions[] = level3JunctionsMap.get(curLvl2Junction);
-			// Hacer un for
+			if(nearestGhost != null)
+				assignedGhosts.add(nearestGhost);
+			
+			if(nearestGhost == ghost) {
+				if(minJunctionDistance == 0)
+					junctionObjective = level2Junctions[0]; // nextJunction.
+				else
+					junctionObjective = curJunction; // Junction de nivel 2
+			}
 		}
 		
-		if(nearestJunction!=-1) {
-			returnMove = game.getApproximateNextMoveTowardsTarget(g, nearestJunction, gLastMove, DM.PATH);
+		// Despues de asignar los junctions de nivel 2, si el "ghost" no ha sido asignado, le asignamos un junction de nivel 3 cercano.
+		if(junctionObjective == -1) {
+			int curJunctionDistance, minJunctionDistance = Integer.MAX_VALUE;
+			for(int i = 1; i<level2Junctions.length && minJunctionDistance>0; ++i) {
+				
+				int level2Junction = level2Junctions[i];
+				Integer level3Junctions[] = level3JunctionsMap.get(level2Junction);
+				
+				for(int j = 0; j<level3Junctions.length; ++j) {
+					
+					int level3Junction =  level3Junctions[j];
+					
+					curJunctionDistance = game.getShortestPathDistance(game.getGhostCurrentNodeIndex(ghost), level3Junction, game.getGhostLastMoveMade(ghost));
+					if(curJunctionDistance < minJunctionDistance) {
+						minJunctionDistance = curJunctionDistance;
+						junctionObjective = curJunctionDistance == 0 ? level2Junction : level3Junction;
+					}
+				}
+			}
 		}
-			
-		returnMove = MOVE.NEUTRAL;
+		
+		if(junctionObjective != -1)
+			returnMove = game.getApproximateNextMoveTowardsTarget(game.getGhostCurrentNodeIndex(ghost), junctionObjective, game.getGhostLastMoveMade(ghost), DM.PATH);
+		
 		return returnMove;
 	}
 }
