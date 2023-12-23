@@ -40,7 +40,7 @@ public class GhostsInput extends FuzzyInput {
 		nearestChasingDistance = new double[] {MAX_DISTANCE,MAX_DISTANCE,MAX_DISTANCE,MAX_DISTANCE};
 		nearestEdibleDistance = new double[] {MAX_DISTANCE,MAX_DISTANCE,MAX_DISTANCE,MAX_DISTANCE};
 		
-		// Se tiene que ver si está permitido, si no, chequeamos que algun fantasma 
+		// Parseamos los valores que utilizaremos despues en el fuzzyMemory
 		ppillEaten = game.wasPowerPillEaten();		
 		mspacmanEaten = game.wasPacManEaten();
 		currentLevel = game.getCurrentLevel();
@@ -55,6 +55,7 @@ public class GhostsInput extends FuzzyInput {
 		}
 		
 		int index, pos;
+		// Añadimos para cada fantasma, sus distintos valores a parsear para el input.
 		for(GHOST g: GHOST.values()) {
 			index = g.ordinal();
 			pos = game.getGhostCurrentNodeIndex(g);

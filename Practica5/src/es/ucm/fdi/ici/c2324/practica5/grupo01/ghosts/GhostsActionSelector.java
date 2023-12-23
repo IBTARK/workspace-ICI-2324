@@ -15,6 +15,9 @@ public class GhostsActionSelector implements ActionSelector {
 		this.actions = actions;
 	}
 	
+	/**
+	 * Returns the action with the maximum value
+	 */
 	@Override
 	public Action selectAction(HashMap<String, Double> fuzzyOutput) {
 		double max = Double.NEGATIVE_INFINITY;

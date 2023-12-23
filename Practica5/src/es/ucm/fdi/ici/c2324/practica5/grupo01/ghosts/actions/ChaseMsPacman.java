@@ -23,6 +23,9 @@ public class ChaseMsPacman implements Action {
 		return "ChaseMsPacman";
 	}
 
+	/**
+	 * Returns a direct next move towards pacman.
+	 */
 	@Override
 	public MOVE execute(Game game) {
 		MOVE nextMove = MOVE.NEUTRAL;

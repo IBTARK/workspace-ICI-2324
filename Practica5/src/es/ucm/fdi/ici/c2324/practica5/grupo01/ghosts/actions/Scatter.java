@@ -25,6 +25,9 @@ public class Scatter implements Action {
 		return "Scatter";
 	}
 
+	/**
+	 * Returns a direct move away from our nearest chasing ghost.
+	 */
 	@Override
 	public MOVE execute(Game game) {
 		MOVE nextMove = MOVE.NEUTRAL;

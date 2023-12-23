@@ -27,6 +27,9 @@ public class LookForMsPacman implements Action {
 		return "LookForMsPacman";
 	}
 
+	/**
+	 * Returns a random move.
+	 */
 	@Override
 	public MOVE execute(Game game) {
 		MOVE nextMove = MOVE.NEUTRAL;

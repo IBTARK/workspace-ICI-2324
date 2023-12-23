@@ -24,6 +24,9 @@ public class RunAwayToChasing implements Action {
 		return "RunAwayToChasing";
 	}
 
+	/**
+	 * Returns a direct move towards our nearest chasing ghost.
+	 */
 	@Override
 	public MOVE execute(Game game) {
 		MOVE nextMove = MOVE.NEUTRAL;

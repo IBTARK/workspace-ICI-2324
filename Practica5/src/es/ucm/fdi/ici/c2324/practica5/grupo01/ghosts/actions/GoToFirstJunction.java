@@ -24,6 +24,9 @@ public class GoToFirstJunction implements Action{
 		return "GoToFirstJunction";
 	}
 
+	/**
+	 * Returns a direct move towards mspacman's next junction.
+	 */
 	@Override
 	public MOVE execute(Game game) {
 		MOVE nextMove = MOVE.NEUTRAL;

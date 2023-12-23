@@ -24,6 +24,9 @@ public class RunAwayFromMs implements Action{
 		return "RunAwayFromMs";
 	}
 
+	/**
+	 * Returns a direct move away from mspacman.
+	 */
 	@Override
 	public MOVE execute(Game game) {
 		MOVE nextMove = MOVE.NEUTRAL;

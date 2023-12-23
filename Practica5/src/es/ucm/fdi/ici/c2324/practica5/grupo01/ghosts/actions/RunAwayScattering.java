@@ -18,6 +18,9 @@ public class RunAwayScattering implements Action {
 		this.data = data;
 	}
 
+	/**
+	 * Returns (if possible) a move that ensures getting away from our nearest edible ghost and away from pacman.
+	 */
 	@Override
 	public String getActionId() {
 		// TODO Auto-generated method stub

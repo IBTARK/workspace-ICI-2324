@@ -24,6 +24,9 @@ public class ScatterEdible implements Action {
 		return "ScatterEdible";
 	}
 
+	/**
+	 * Returns a direct move away from the nearest edible ghost.
+	 */
 	@Override
 	public MOVE execute(Game game) {
 		MOVE nextMove = MOVE.NEUTRAL;

@@ -25,6 +25,9 @@ public class FlankMsPacman implements Action {
 		return "FlankMsPacman";
 	}
 
+	/**
+	 * Returns an "optimal" next move towards one of the next junctions of pacman.
+	 */
 	@Override
 	public MOVE execute(Game game) {
 		MOVE nextMove = MOVE.NEUTRAL;

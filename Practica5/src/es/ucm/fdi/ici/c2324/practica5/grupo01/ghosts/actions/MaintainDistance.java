@@ -24,6 +24,9 @@ public class MaintainDistance implements Action {
 		return "MaintainDistance";
 	}
 
+	/**
+	 * Returns (if possible) a move that is different than the direct move towards and the direct move away from mspacman.
+	 */
 	@Override
 	public MOVE execute(Game game) {
 		MOVE nextMove = MOVE.NEUTRAL;
