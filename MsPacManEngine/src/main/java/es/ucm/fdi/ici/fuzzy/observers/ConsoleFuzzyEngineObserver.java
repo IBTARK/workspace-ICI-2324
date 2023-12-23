@@ -46,7 +46,6 @@ public class ConsoleFuzzyEngineObserver implements FuzzyEngineObserver {
 	public void actionFired(String action, HashMap<String, Double> input, HashMap<String, Double> output,
 			Collection<String> rulesInfo) {
 		System.out.println(String.format("[%s] action fired: %s", this.ruleEngineId, action));
-		/*
 		System.out.println("***INPUT***");
 		List<String> list = new ArrayList<String>(input.keySet());
 		Collections.sort(list);
@@ -63,7 +62,6 @@ public class ConsoleFuzzyEngineObserver implements FuzzyEngineObserver {
 			for(String s: rulesInfo)
 				System.out.println(s);
 		}
-		*/
 	}
 
 }
