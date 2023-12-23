@@ -14,6 +14,7 @@ public class GhostsInput extends FuzzyInput {
 	private boolean msVisible;
 	private int currentLevel;
 	private boolean ppillEaten;
+	private boolean mspacmanEaten;
 	
 	private double msToPPill;
 	private double[] alives;
@@ -41,7 +42,7 @@ public class GhostsInput extends FuzzyInput {
 		
 		// Se tiene que ver si está permitido, si no, chequeamos que algun fantasma 
 		ppillEaten = game.wasPowerPillEaten();		
-		
+		mspacmanEaten = game.wasPacManEaten();
 		currentLevel = game.getCurrentLevel();
 		
 		int mspacman = game.getPacmanCurrentNodeIndex();	
@@ -57,14 +58,31 @@ public class GhostsInput extends FuzzyInput {
 		for(GHOST g: GHOST.values()) {
 			index = g.ordinal();
 			pos = game.getGhostCurrentNodeIndex(g);
+			MOVE lastMove = game.getGhostLastMoveMade(g);
 			if(game.getGhostLairTime(g) <= 0) {
 				alives[index] = 1;
 				
 				if(mspacman != -1) {
-					msDistance[index] = game.getShortestPathDistance(pos, game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(g));
+					msDistance[index] = game.getShortestPathDistance(pos, mspacman, lastMove);
 					
 					int msNextJunction = GhostsTools.nextJunction(game, mspacman, msLastMove);
-					msFirstJunctionDistance[index] = game.getShortestPathDistance(pos, msNextJunction, game.getGhostLastMoveMade(g));
+					int[] shortestGhostPath = game.getShortestPath(pos, msNextJunction, msLastMove);
+					
+					// Lo siguiente sirve para detectar si perseguiríamos por detras a mspacman
+					// En caso de que la distancia al first junction sea corto detectamos si el camino iria por detras de mspacman
+					boolean caminoCorrecto = true;
+					if(shortestGhostPath.length<20) {
+						int i = 0;
+						while(i<shortestGhostPath.length && caminoCorrecto) {
+							if(shortestGhostPath[i] == mspacman)
+								caminoCorrecto = false;
+							
+							++i;
+						}
+					}
+					
+					if(caminoCorrecto)
+						msFirstJunctionDistance[index] = shortestGhostPath.length;
 				}
 				
 				edibles[index] = game.isGhostEdible(g) ? 1 : 0;
@@ -72,13 +90,13 @@ public class GhostsInput extends FuzzyInput {
 				GHOST nearestChasing = GhostsTools.getNearestChasing(game, g);
 				if(nearestChasing != null) {
 					int nearestChasingIdx = game.getGhostCurrentNodeIndex(nearestChasing);
-					nearestChasingDistance[index] = game.getShortestPathDistance(pos, nearestChasingIdx, game.getGhostLastMoveMade(g));
+					nearestChasingDistance[index] = game.getShortestPathDistance(pos, nearestChasingIdx, lastMove);
 				}
 				
 				GHOST nearestEdible = GhostsTools.getNearestEdible(game, g);
 				if(nearestEdible != null) {
 					int nearestEdibleIdx = game.getGhostCurrentNodeIndex(nearestEdible);
-					nearestEdibleDistance[index] = game.getShortestPathDistance(pos, nearestEdibleIdx, game.getGhostLastMoveMade(g));
+					nearestEdibleDistance[index] = game.getShortestPathDistance(pos, nearestEdibleIdx, lastMove);
 				}
 			}
 			
@@ -109,6 +127,10 @@ public class GhostsInput extends FuzzyInput {
 	
 	public boolean wasPPillEaten() {
 		return ppillEaten;
+	}
+	
+	public boolean wasMspacmanEaten() {
+		return mspacmanEaten;
 	}
 	
 	@Override

@@ -27,6 +27,11 @@ public class GhostsFuzzyMemory {
 			ppillsRemaining = 4;
 		}
 		
+		// Si nos hemos comido a pacman ponemos la confianza a 0, luego si la vemos ya la ponemos a 100.
+		if(input.wasMspacmanEaten()) {
+			pacmanVisibilityConfidence = 0;
+		}
+		
 		if(input.isMsPacManVisible())
 			pacmanVisibilityConfidence = 100;
 		else

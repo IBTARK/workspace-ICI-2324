@@ -19,6 +19,7 @@ import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.RunAwayFromMs;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.RunAwayScattering;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.RunAwayToChasing;
 import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.Scatter;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts.actions.ScatterEdible;
 import es.ucm.fdi.ici.fuzzy.ActionSelector;
 import es.ucm.fdi.ici.fuzzy.FuzzyEngine;
 import es.ucm.fdi.ici.fuzzy.observers.ConsoleFuzzyEngineObserver;
@@ -71,7 +72,8 @@ public class Ghosts extends GhostController {
 				new RunAwayFromMs(g, fuzzyData),
 				new RunAwayScattering(g, fuzzyData),
 				new RunAwayToChasing(g, fuzzyData),
-				new Scatter(g, fuzzyData)
+				new Scatter(g, fuzzyData),
+				new ScatterEdible(g, fuzzyData)
 			};
 			actionSelector = new GhostsActionSelector(actions);
 			String fuzzyBlockName = "Fuzzy"+g.toString();
@@ -104,6 +106,7 @@ public class Ghosts extends GhostController {
 		
 		if(game.getPacmanCurrentNodeIndex()!=-1) {
 			fuzzyData.setMspacman(game.getPacmanCurrentNodeIndex());
+			fuzzyData.setMsLastMove(game.getPacmanLastMoveMade());
 		}
 		
 		HashMap<String, Double> fvars = input.getFuzzyValues();

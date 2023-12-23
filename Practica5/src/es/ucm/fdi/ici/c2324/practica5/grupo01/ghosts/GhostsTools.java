@@ -261,14 +261,5 @@ public class GhostsTools {
 		}
 		return bestMove;
 	}
-
-	public static Integer distanceToMspacmanFromFront(Game game, int gIndex, MOVE gLastMove, int mspacman,
-			MOVE msLastMove) {
-		
-		
-
-		
-		return null;
-	}
 }
 
