@@ -83,10 +83,10 @@ public class Ghosts extends GhostController {
 					actionSelector);
 			
 			// Añadimos un observer a blinky.
-			if(g == GHOST.BLINKY) {
-				ConsoleFuzzyEngineObserver observer = new ConsoleFuzzyEngineObserver(g.toString(),g.toString()+"rules");
-				ghostFuzzyEngine.addObserver(observer);
-			}
+			//if(g == GHOST.BLINKY) {
+			//	ConsoleFuzzyEngineObserver observer = new ConsoleFuzzyEngineObserver(g.toString(),g.toString()+"rules");
+			//	ghostFuzzyEngine.addObserver(observer);
+			//}
 			
 			fuzzyEngines.put(g, ghostFuzzyEngine);	
 		}
