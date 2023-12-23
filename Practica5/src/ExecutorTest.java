@@ -1,6 +1,7 @@
 
 
 import es.ucm.fdi.ici.c2324.practica5.grupo01.MsPacMan;
+import es.ucm.fdi.ici.c2324.practica5.grupo01.Ghosts;
 import pacman.Executor;
 import pacman.controllers.GhostController;
 import pacman.controllers.PacmanController;
@@ -23,7 +24,7 @@ public class ExecutorTest {
                 .build();
 
         PacmanController pacMan = new MsPacMan();
-        GhostController ghosts = new GhostsRandom();
+        GhostController ghosts = new Ghosts();
         
         System.out.println( 
         		executor.runGame(pacMan, ghosts, 5)
