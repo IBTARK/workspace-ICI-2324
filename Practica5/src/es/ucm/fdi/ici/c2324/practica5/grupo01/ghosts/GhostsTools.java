@@ -2,8 +2,10 @@ package es.ucm.fdi.ici.c2324.practica5.grupo01.ghosts;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
+import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
@@ -260,6 +262,40 @@ public class GhostsTools {
 			}
 		}
 		return bestMove;
+	}
+
+	public static MOVE getOptimalFlankingMove(Game game, GHOST ghost, int mspacman, MOVE msLastMove) {
+		MOVE returnMove = MOVE.NEUTRAL;
+		
+		int g = game.getGhostCurrentNodeIndex(ghost);
+		MOVE gLastMove = game.getGhostLastMoveMade(ghost);
+		HashMap<Integer, Integer[]> level3JunctionsMap = new HashMap<Integer, Integer[]>();
+		Integer level2Junctions[] = GhostsTools.nextJunctions(game, mspacman, msLastMove, level3JunctionsMap);
+		
+		int nearestJunction=-1, curLvl2Junction, nearestJunctionDistance = Integer.MAX_VALUE, curJunctionDistance;
+		int curJunctionPath[];
+		int nextJunction = level2Junctions[0];
+		for(int i = 1; i < level2Junctions.length; i++) {
+			curLvl2Junction = level2Junctions[i];
+			curJunctionPath = game.getShortestPath(g, curLvl2Junction, gLastMove);
+			curJunctionDistance = curJunctionPath.length;
+			if(nearestJunctionDistance > curJunctionDistance) {
+				if(curJunctionDistance == 0) 
+					nearestJunction = nextJunction;
+				else 
+					nearestJunction = curLvl2Junction;
+				nearestJunctionDistance = curJunctionDistance;
+			}
+			// Integer level3Junctions[] = level3JunctionsMap.get(curLvl2Junction);
+			// Hacer un for
+		}
+		
+		if(nearestJunction!=-1) {
+			returnMove = game.getApproximateNextMoveTowardsTarget(g, nearestJunction, gLastMove, DM.PATH);
+		}
+			
+		returnMove = MOVE.NEUTRAL;
+		return returnMove;
 	}
 }
 
