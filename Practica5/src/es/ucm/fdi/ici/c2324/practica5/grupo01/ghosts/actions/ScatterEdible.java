@@ -36,7 +36,7 @@ public class ScatterEdible implements Action {
 			GHOST nearestEdible = GhostsTools.getNearestEdible(game, ghost);
 			
 			if(nearestEdible != null)
-				nextMove = game.getApproximateNextMoveTowardsTarget(
+				nextMove = game.getApproximateNextMoveAwayFromTarget(
 					gIndex, 
 					game.getGhostCurrentNodeIndex(nearestEdible), 
 					gLastMove, 
